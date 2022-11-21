@@ -4,7 +4,7 @@
 4) Place your "Anbeeld's Revision of AI" folder here
 5) Open launcher and add the mod to your playset or create a new playset with it if you don't have one
 
-Support my work: https://www.patreon.com/anbeeld or https://www.buymeacoffee.com/anbeeld
+Support my work: https://www.buymeacoffee.com/anbeeld
 
 Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2880152075
 
