@@ -1,4 +1,4 @@
-1) Download the archive
+1) Download the archive with the latest version or one of the previous ones
 2) Unpack it so you have a folder named "Anbeeld's Revision of AI" with mod's contents inside
 3) Go to "Documents > Paradox Interactive > Victoria 3 > mod" or create such a folder if it doesn't exist
 4) Place your "Anbeeld's Revision of AI" folder here
