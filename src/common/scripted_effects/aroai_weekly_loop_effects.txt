@@ -1,0 +1,1067 @@
+﻿#
+aroai_perform_iteration_of_weekly_loop = {
+
+    #
+    aroai_add_progress_to_ongoing_constructions = yes
+
+    #
+    aroai_weekly_check_of_building_data = {
+        day_1_of_main_loop = $day_1_of_main_loop$
+    }
+
+    # Contains initial budget surplus calculation
+    aroai_calculate_investment_pool_transfer = {
+        day_1_of_main_loop = $day_1_of_main_loop$
+    }
+    
+    #
+    aroai_calculate_usage_of_construction_points = yes
+
+    #
+    aroai_count_and_schedule_iterations_of_weekly_loop = {
+        day_1_of_main_loop = $day_1_of_main_loop$
+    }
+
+    #
+    aroai_calculate_building_construction_sector_expenses_per_point = yes
+
+    # 
+    aroai_calculate_budget_surplus = yes
+
+    # Garbage collection
+    aroai_clear_weekly_loop_local_variables = yes
+}
+
+# Add a week of progress to elements of aroai_ongoing_constructions
+aroai_add_progress_to_ongoing_constructions = {
+    every_scope_state = {
+        limit = {
+            aroai_has_variable_list = {
+                name = aroai_ongoing_constructions
+            }
+        }
+        save_scope_as = aroai_current_state
+        every_in_list = {
+            variable = aroai_ongoing_constructions
+
+            # Building is being constructed, subtract construction points from cell 2 until it reaches zero
+            if = {
+                limit = {
+                    aroai_current_ongoing_constructions_element_3 = 1
+                    aroai_current_ongoing_constructions_element_2 > 0
+                }
+                set_local_variable = {
+                    name = aroai_modified_current_ongoing_constructions_element
+                    value = {
+                        value = this
+                        subtract = {
+                            value = define:NEconomy|MAX_WEEKLY_CONSTRUCTION_PROGRESS
+                            round = yes
+                            max = aroai_current_ongoing_constructions_element_2
+                            multiply = 100
+                        }
+                    }
+                }
+            }
+
+            # Construction is expected to be finished or was finished for sure
+            else = {
+
+                # Add weeks to cell 2 until enough of them would pass for the building to reach reasonable occupancy
+                set_local_variable = {
+                    name = aroai_modified_current_ongoing_constructions_element
+                    value = {
+                        value = this
+                        add = 100
+                    }
+                }
+
+                # Manage construction status, going from "is under construction" to "expected to be finished" and
+                # "was finished for sure". Do it only if weeks are below threshold, otherwise just delete the element.
+                if = {
+                    limit = {
+                        aroai_modified_current_ongoing_constructions_element_2 < 5
+                    }
+                    
+                    # Change status and thus cell 2 from points to weeks after construction ended to roughly track new
+                    # levels getting employees. Cell 2 stays at 0 during transition so we hang on an extra week before
+                    # claiming construction is done to account for desync between weekly loop and actual weekly tick.
+                    if = {
+                        limit = {
+                            aroai_modified_current_ongoing_constructions_element_3 = 1
+                        }
+                        change_local_variable = {
+                            name = aroai_modified_current_ongoing_constructions_element
+                            add = 1000000
+                        }
+                    }
+                    
+                    # If we weren't sure before if building was constructed but we see no building of such type under
+                    # construction in this state, we swap from "expected to be finished" to "was finished for sure".
+                    if = {
+                        limit = {
+                            aroai_modified_current_ongoing_constructions_element_3 = 2
+                            NOT = {
+                                scope:aroai_current_state = {
+                                    any_scope_building = {
+                                        aroai_is_true_for_any_building_type = {
+                                            trigger = 1 # is_building_type = $key$
+                                        }
+                                        is_under_construction = yes
+                                    }
+                                }
+                            }
+                        }
+                        change_local_variable = {
+                            name = aroai_modified_current_ongoing_constructions_element
+                            add = 1000000
+                        }
+                    }
+                }
+
+                # If enough weeks have passed, remove the element from the list
+                else = {
+                    remove_local_variable = aroai_modified_current_ongoing_constructions_element
+                }
+            }
+
+            # Add the element to a modified version of the list
+            scope:aroai_current_state = {
+                remove_list_variable = {
+                    name = aroai_ongoing_constructions
+                    target = prev
+                }
+                if = {
+                    limit = {
+                        has_local_variable = aroai_modified_current_ongoing_constructions_element
+                    }
+                    add_to_variable_list = {
+                        name = aroai_modified_ongoing_constructions
+                        target = local_var:aroai_modified_current_ongoing_constructions_element
+                    }
+                    remove_local_variable = aroai_modified_current_ongoing_constructions_element
+                }
+            }
+            
+        }
+
+        # Move modified version of the list to a regular one
+        clear_variable_list = aroai_ongoing_constructions
+        every_in_list = {
+            variable = aroai_modified_ongoing_constructions
+            scope:aroai_current_state = {
+                add_to_variable_list = {
+                    name = aroai_ongoing_constructions
+                    target = prev
+                }
+                remove_list_variable = {
+                    name = aroai_modified_ongoing_constructions
+                    target = prev
+                }
+            }
+        }
+        clear_variable_list = aroai_modified_ongoing_constructions
+
+        # Garbage collection
+        clear_saved_scope = aroai_current_state
+    }
+}
+
+# Costs, shortages, ongoings
+aroai_weekly_check_of_building_data = {
+    
+    # Set up estimate variables
+    set_local_variable = {
+        name = aroai_building_government_administration_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_university_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_construction_sector_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_port_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_barracks_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_naval_base_expenses
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_building_conscription_center_expenses
+        value = 0
+    }
+    if = {
+        limit = {
+            $day_1_of_main_loop$ = yes
+        }
+        set_variable = {
+            name = aroai_building_construction_sector_total
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_barracks_total
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_conscription_center_total
+            value = 0
+        }
+    }
+    
+    # Collect expenses data from buildings, with total levels, shortages and counters also being collected
+    # on day 1 of economy cycle iteration.
+    every_scope_building = {
+        if = {
+            limit = {
+                is_building_type = building_government_administration
+            }
+            change_local_variable = {
+                name = aroai_building_government_administration_expenses
+                subtract = weekly_profit
+            }
+            if = {
+                limit = {
+                    $day_1_of_main_loop$ = yes
+                }
+                if = {
+                    limit = {
+                        level > 0
+                        state.market_access >= 0.80
+                    }
+                    aroai_collect_building_shortages = {
+                        id = 1
+                    }
+                }
+                if = {
+                    limit = {
+                        is_under_construction = yes
+                    }
+                    root = {
+                        aroai_add_to_building_counter = {
+                            counter = 1
+                            value = 1
+                        }
+                    }
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_university
+            }
+            change_local_variable = {
+                name = aroai_building_university_expenses
+                subtract = weekly_profit
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_construction_sector
+            }
+            change_local_variable = {
+                name = aroai_building_construction_sector_expenses
+                subtract = weekly_profit
+            }
+            if = {
+                limit = {
+                    $day_1_of_main_loop$ = yes
+                }
+                root = {
+                    change_variable = {
+                        name = aroai_building_construction_sector_total
+                        add = prev.level
+                    }
+                }
+                if = {
+                    limit = {
+                        level > 0
+                        state.market_access >= 0.80
+                    }
+                    aroai_collect_building_shortages = {
+                        id = 3
+                    }
+                }
+                if = {
+                    limit = {
+                        is_under_construction = yes
+                    }
+                    root = {
+                        aroai_add_to_building_counter = {
+                            counter = 3
+                            value = 1
+                        }
+                    }
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_railway
+            }
+
+            # Railways should always be subsidized
+            if = {
+                limit = {
+                    is_subsidized = no
+                }
+                set_subsidized = yes
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_port
+            }
+            change_local_variable = {
+                name = aroai_building_port_expenses
+                subtract = weekly_profit
+            }
+            if = {
+                limit = {
+                    $day_1_of_main_loop$ = yes
+                }
+                if = {
+                    limit = {
+                        level > 0
+                        state.market_access >= 0.80
+                    }
+                    aroai_collect_building_shortages = {
+                        id = 5
+                    }
+                }
+                if = {
+                    limit = {
+                        is_under_construction = yes
+                    }
+                    root = {
+                        aroai_add_to_building_counter = {
+                            counter = 5
+                            value = 1
+                        }
+                    }
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_barracks
+            }
+            change_local_variable = {
+                name = aroai_building_barracks_expenses
+                subtract = weekly_profit
+            }
+            if = {
+                limit = {
+                    $day_1_of_main_loop$ = yes
+                }
+                root = {
+                    change_variable = {
+                        name = aroai_building_barracks_total
+                        add = prev.level
+                    }
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_naval_base
+            }
+            change_local_variable = {
+                name = aroai_building_naval_base_expenses
+                subtract = weekly_profit
+            }
+        }
+        else_if = {
+            limit = {
+                is_building_type = building_conscription_center
+            }
+            change_local_variable = {
+                name = aroai_building_conscription_center_expenses
+                subtract = weekly_profit
+            }
+            if = {
+                limit = {
+                    $day_1_of_main_loop$ = yes
+                }
+                root = {
+                    change_variable = {
+                        name = aroai_building_conscription_center_total
+                        add = prev.level
+                    }
+                }
+            }
+        }
+    }
+    
+    # We need to ensure that collected data variabled of selected building is set even if there are no such buildings
+    # We also need to make them temporary because if cycle breaks hard enough they'll be just left in memory
+    if = {
+        limit = {
+            $day_1_of_main_loop$ = yes
+        }
+        if = {
+            limit = {
+                has_variable = aroai_building_type_1_collected_data
+            }
+            aroai_transform_building_shortages = {
+                id = 1
+            }
+        }
+        set_variable = {
+            name = aroai_building_type_1_collected_data
+            value = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_type_1_collected_data
+                    }
+                    value = var:aroai_building_type_1_collected_data
+                }
+                else = {
+                    value = 0.99
+                }
+            }
+            days = aroai_days_to_keep_short_variables
+        }
+        if = {
+            limit = {
+                has_variable = aroai_building_type_3_collected_data
+            }
+            aroai_transform_building_shortages = {
+                id = 3
+            }
+        }
+        set_variable = {
+            name = aroai_building_type_3_collected_data
+            value = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_type_3_collected_data
+                    }
+                    value = var:aroai_building_type_3_collected_data
+                }
+                else = {
+                    value = 0.99
+                }
+            }
+            days = aroai_days_to_keep_short_variables
+        }
+        if = {
+            limit = {
+                has_variable = aroai_building_type_5_collected_data
+            }
+            aroai_transform_building_shortages = {
+                id = 5
+            }
+        }
+        set_variable = {
+            name = aroai_building_type_5_collected_data
+            value = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_type_5_collected_data
+                    }
+                    value = var:aroai_building_type_5_collected_data
+                }
+                else = {
+                    value = 0.99
+                }
+            }
+            days = 3aroai_days_to_keep_short_variables
+        }
+    }
+    
+    # Write collected building estimates into total expenses variable so we could calculate aroai_country_active_income
+    set_local_variable = {
+        name = aroai_total_building_expenses
+        value = {
+            value = local_var:aroai_building_government_administration_expenses
+            add = local_var:aroai_building_university_expenses
+            add = local_var:aroai_building_construction_sector_expenses
+            add = local_var:aroai_building_port_expenses
+            add = local_var:aroai_building_barracks_expenses
+            add = local_var:aroai_building_naval_base_expenses
+            add = local_var:aroai_building_conscription_center_expenses
+        }
+    }
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_total_building_expenses
+        output = aroai_total_building_expenses
+        elements = 4
+        zero = 2
+        cleanup = no
+    }
+
+    # Garbage collection; we don't need consription center expenses anywhere else
+    remove_local_variable = aroai_building_conscription_center_expenses
+    
+    # We always pretend wage level is medium
+    if = {
+        limit = {
+            NOT = {
+                modifier:country_government_wages_mult = 0.00
+            }
+        }
+        change_local_variable = {
+            name = aroai_building_government_administration_expenses
+            divide = {
+                value = 1
+                add = {
+                    value = modifier:country_government_wages_mult
+                    multiply = 0.80
+                }
+            }
+        }
+        change_local_variable = {
+            name = aroai_building_university_expenses
+            divide = {
+                value = 1
+                add = {
+                    value = modifier:country_government_wages_mult
+                    multiply = 0.95
+                }
+            }
+        }
+        change_local_variable = {
+            name = aroai_building_port_expenses
+            divide = {
+                value = 1
+                add = {
+                    value = modifier:country_government_wages_mult
+                    multiply = 0.75
+                }
+            }
+        }
+    }
+    if = {
+        limit = {
+            NOT = {
+                modifier:country_military_wages_mult = 0.00
+            }
+        }
+        change_local_variable = {
+            name = aroai_building_barracks_expenses
+            divide = {
+                value = 1
+                add = {
+                    value = modifier:country_military_wages_mult
+                    multiply = 0.60
+                }
+            }
+        }
+        change_local_variable = {
+            name = aroai_building_naval_base_expenses
+            divide = {
+                value = 1
+                add = {
+                    value = modifier:country_military_wages_mult
+                    multiply = 0.60
+                }
+            }
+        }
+    }
+    
+    # Write estimate local variables of this check into iteration data
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_government_administration_expenses
+        output = aroai_building_government_administration_spending
+        elements = aroai_weeks_in_iteration
+        zero = 2
+        cleanup = yes
+    }
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_university_expenses
+        output = aroai_building_university_spending
+        elements = aroai_weeks_in_iteration
+        zero = 2
+        cleanup = yes
+    }
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_port_expenses
+        output = aroai_building_port_spending
+        elements = aroai_weeks_in_iteration
+        zero = 2
+        cleanup = yes
+    }
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_barracks_expenses
+        output = aroai_building_barracks_spending
+        elements = aroai_weeks_in_iteration
+        zero = 2
+        cleanup = yes
+    }
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_naval_base_expenses
+        output = aroai_building_naval_base_spending
+        elements = aroai_weeks_in_iteration
+        zero = 2
+        cleanup = yes
+    }
+}
+
+#
+aroai_calculate_investment_pool_transfer = {
+
+    # First get raw budget surplus required to calculate investment pool transfer
+    if = {
+        limit = {
+            has_variable = aroai_country_previous_treasury
+            NOR = {
+                aroai_country_current_treasury < aroai_95_percent_of_credit
+                var:aroai_country_previous_treasury < aroai_95_percent_of_credit
+            }
+        }
+        set_local_variable = {
+            name = aroai_country_budget_surplus
+            value = {
+                value = aroai_country_current_treasury
+                subtract = var:aroai_country_previous_treasury
+                max = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_previous_weekly_net_fixed_income
+                        }
+                        value = var:aroai_previous_weekly_net_fixed_income
+                    }
+                    else = {
+                        value = weekly_net_fixed_income
+                    }
+                }
+            }
+        }
+    }
+
+    # TODO fallback
+    else = {
+        set_local_variable = {
+            name = aroai_country_budget_surplus
+            value = {
+                value = weekly_net_fixed_income
+            }
+        }
+    }
+    # else = {
+    #     set_local_variable = {
+    #         name = aroai_country_budget_surplus
+    #         value = {
+    #             if = {
+    #                 limit = {
+    #                     has_local_variable = aroai_total_building_expenses
+    #                     local_var:aroai_total_building_expenses > 0
+    #                     has_local_variable = aroai_building_construction_sector_expenses
+    #                     local_var:aroai_building_construction_sector_expenses > 0
+    #                 }
+    #                 value = income
+    #                 subtract = local_var:aroai_total_building_expenses
+    #                 if = {
+    #                     limit = {
+    #                         is_non_customs_union_subject = yes
+    #                     }
+    #                     add = weekly_net_fixed_income
+    #                     subtract = {
+    #                         value = local_var:aroai_building_construction_sector_expenses
+    #                         multiply = 0.90
+    #                     }
+    #                     divide = 2
+    #                 }
+    #             }
+    #             else = {
+    #                 value = weekly_net_fixed_income
+    #                 if = {
+    #                     limit = {
+    #                         has_local_variable = aroai_building_construction_sector_expenses
+    #                         local_var:aroai_building_construction_sector_expenses > 0
+    #                     }
+    #                     subtract = {
+    #                         value = local_var:aroai_building_construction_sector_expenses
+    #                         multiply = 0.90
+    #                     }
+    #                 }
+    #             }
+    #         }
+    #     }
+    # }
+
+    # Investment pool transfer = construction goods + raw budget surplus - fixed surplus.
+    # It is assumed that construction expenses were already collected in this iteration of weekly loop,
+    # while fixed surplus is one of these rare values accessible through a trigger.
+    set_local_variable = {
+        name = aroai_investment_pool_transfer
+        value = {
+            if = {
+                limit = {
+                    has_game_rule = autonomous_investment_pool
+                    construction_queue_num_queued_private_levels <= 0
+                }
+                value = 0
+            }
+            else = {
+                if = {
+                    limit = {
+                        has_variable = aroai_previous_building_construction_sector_expenses
+                    }
+                    value = var:aroai_previous_building_construction_sector_expenses
+                }
+                else = {
+                    value = local_var:aroai_building_construction_sector_expenses
+                }
+                multiply = aroai_building_construction_sector_share_of_goods_in_expenses
+                add = local_var:aroai_country_budget_surplus
+                if = {
+                    limit = {
+                        has_variable = aroai_previous_weekly_net_fixed_income
+                    }
+                    subtract = var:aroai_previous_weekly_net_fixed_income
+                }
+                else = {
+                    subtract = weekly_net_fixed_income
+                }
+                min = 0
+            }
+        }
+    }
+
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_investment_pool_transfer
+        output = aroai_investment_pool_transfer
+        elements = 4
+        zero = 1
+        cleanup = no
+    }
+
+    if = {
+        limit = {
+            $day_1_of_main_loop$ = yes
+        }
+        set_local_variable = {
+            name = aroai_investment_pool_expected
+            value = {
+                value = aroai_investment_pool_potential
+                round = yes
+            }
+        }
+        aroai_add_local_variable_to_array_variable = {
+            input = aroai_investment_pool_expected
+            output = aroai_investment_pool_expected
+            elements = 15
+            zero = 1
+            cleanup = yes
+        }
+    }
+}
+
+aroai_calculate_usage_of_construction_points = {
+    set_local_variable = {
+        name = aroai_usage_of_construction_points_percent
+        value = {
+            if = {
+                limit = {
+                    OR = {
+                        construction_queue_num_queued_private_levels <= 0
+                        local_var:aroai_building_construction_sector_expenses <= 0
+                        local_var:aroai_investment_pool_transfer <= 0
+                    }
+                }
+                value = construction_queue_num_queued_levels
+                divide = {
+                    value = aroai_constructions_possible_with_current_points
+                    min = 1
+                }
+            }
+            else = {
+
+                # If there are non-private constructions in the queue
+                if = {
+                    limit = {
+                        construction_queue_num_queued_levels > construction_queue_num_queued_private_levels
+                    }
+                    
+                    # Subtract private constructions of the queue and add them back, but without paused ones
+                    # by comparing investment pool transfer vs government construction expenses.
+                    value = construction_queue_num_queued_levels
+                    subtract = construction_queue_num_queued_private_levels
+                    add = {
+                        value = construction_queue_num_queued_private_levels
+                        max = {
+                            value = construction_queue_num_queued_levels
+                            subtract = construction_queue_num_queued_private_levels
+
+                            # Investment pool only cover goods, wages are paid from government money
+                            divide = {
+                                value = local_var:aroai_building_construction_sector_expenses
+                                subtract = {
+                                    value = local_var:aroai_investment_pool_transfer
+                                    multiply = {
+                                        value = 1
+                                        divide = aroai_building_construction_sector_share_of_goods_in_expenses
+                                    }
+                                }
+                                divide = {
+                                    value = local_var:aroai_investment_pool_transfer
+                                    multiply = {
+                                        value = 1
+                                        divide = aroai_building_construction_sector_share_of_goods_in_expenses
+                                    }
+                                }
+                                min = 0.01
+                            }
+                        }
+                    }
+                    divide = {
+                        value = aroai_constructions_possible_with_current_points
+                        min = 1
+                    }
+                }
+
+                # Otherwise it's really tough
+                else = {
+
+                    # If we have some stored country data, use aroai_usage_of_construction_points_percent value
+                    # that relies on variables that will be calculated only later in this weekly loop iteration.
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_construction_sector_expenses_per_point
+                            aroai_building_construction_sector_expenses_per_point > 0
+                        }
+                        value = aroai_usage_of_construction_points_percent
+                    }
+
+                    # And if not, no idea if you can do something other than gamble
+                    else = {
+                        value = construction_queue_num_queued_levels
+                        divide = {
+                            value = aroai_constructions_possible_with_current_points
+                            min = 1
+                        }
+                    }
+                }
+            }
+            min = 0
+            max = 1
+        }
+    }
+}
+
+aroai_count_and_schedule_iterations_of_weekly_loop = {
+    if = {
+        limit = {
+            $day_1_of_main_loop$ = yes
+        }
+        remove_variable = aroai_previous_usage_of_construction_points
+        set_variable = {
+            name = aroai_previous_usage_of_construction_points
+            value = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_performed_iterations_of_weekly_loop
+                            }
+                            NOT = {
+                                has_variable = aroai_average_usage_of_construction_points
+                            }
+                            var:aroai_performed_iterations_of_weekly_loop < aroai_weeks_in_iteration
+                        }
+                    }
+                    value = 1.00
+                }
+                else = {
+                    value = var:aroai_average_usage_of_construction_points
+                    divide = {
+                        value = var:aroai_performed_iterations_of_weekly_loop
+                        min = 1
+                    }
+                }
+            }
+        }
+        remove_variable = aroai_performed_iterations_of_weekly_loop
+        remove_variable = aroai_average_usage_of_construction_points
+    }
+    aroai_add_to_variable = {
+        name = aroai_performed_iterations_of_weekly_loop
+        value = 1
+    }
+    aroai_add_to_variable = {
+        name = aroai_average_usage_of_construction_points
+        value = local_var:aroai_usage_of_construction_points_percent
+    }
+    if = {
+        limit = {
+            var:aroai_performed_iterations_of_weekly_loop < aroai_weeks_in_iteration
+        }
+        trigger_event = {
+            id = aroai_weekly_loop_events.1
+            days = 7
+        }
+    }
+}
+
+#
+aroai_calculate_building_construction_sector_expenses_per_point = {
+    
+    # If this week's data is fine, we perform some wonky calculations to roughly account for sector usage and wages level
+    # Due to no access to actual wages data and stuff, these calculations just assume that wages are 1/5 of sector expenses
+    if = {
+        limit = {
+            OR = {
+                local_var:aroai_building_construction_sector_expenses = 0
+                aroai_construction_points_from_sectors_current = 0
+                local_var:aroai_usage_of_construction_points_percent = 0
+            }
+        }
+        set_local_variable = {
+            name = aroai_building_construction_sector_expenses_per_point
+            value = 0
+        }
+    }
+    else = {
+
+        set_local_variable = {
+            name = aroai_building_construction_sector_expenses_per_point
+            value = {
+
+                # First we take the material 4/5 part but the exact ration will be changed if usage is lower than 100%
+                # The reason is if usage is not full, less materials are being used but wages stay the same
+                # For example at 50% usage the ratio shifts from 4/5 to 2/3 with wages being what's left
+                # We then divide it by usage because our goal with construction costs is for AI to always assume 100% of points are used
+                value = {
+                    value = local_var:aroai_building_construction_sector_expenses
+                    multiply = {
+                        value = {
+                            value = aroai_building_construction_sector_share_of_goods_in_expenses
+                            multiply = local_var:aroai_usage_of_construction_points_percent
+                        }
+                        divide = {
+                            value = aroai_building_construction_sector_share_of_goods_in_expenses
+                            multiply = local_var:aroai_usage_of_construction_points_percent
+                            add = aroai_building_construction_sector_share_of_wages_in_expenses
+                        }
+                    }
+                    divide = local_var:aroai_usage_of_construction_points_percent
+                }
+
+                # Then we add wages part, again usage is in the formula so we take 1/3 instead of 1/5 of expenses as wages at 50% usage
+                # We then divide it by government wages multiplier, because AI should assume normal level wages in budget distribution
+                add = {
+                    value = local_var:aroai_building_construction_sector_expenses
+                    multiply = {
+                        value = aroai_building_construction_sector_share_of_wages_in_expenses
+                        divide = {
+                            value = aroai_building_construction_sector_share_of_goods_in_expenses
+                            multiply = local_var:aroai_usage_of_construction_points_percent
+                            add = aroai_building_construction_sector_share_of_wages_in_expenses
+                        }
+                    }
+                    divide = {
+                        value = 1
+                        add = modifier:country_government_wages_mult
+                    }
+                }
+
+                # Basically we went from raw real world data to all the factors being at 100%
+                # Then we divide total costs by points from sectors to get cost per point
+                divide = aroai_construction_points_from_sectors_current
+            }
+        }
+    }
+    
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_building_construction_sector_expenses_per_point
+        output = aroai_building_construction_sector_expenses_per_point
+        elements = 4
+        zero = 3
+        cleanup = yes
+    }
+}
+
+
+# Budget surplus is calculated as a treasury delta. For any additional values previous week data is used
+# because treasury delta is a byproduct of previous week income and expenses and not this week ones.
+aroai_calculate_budget_surplus = {
+
+    # Overwrite budget surplus with its modified form, where we always assume construction sectors are used in full
+    set_local_variable = {
+        name = aroai_country_budget_surplus
+        value = {
+            value = local_var:aroai_country_budget_surplus
+            if = {
+                limit = {
+                    has_variable = aroai_previous_building_construction_sector_expenses
+                    has_variable = aroai_previous_building_construction_sector_spending_value
+                    var:aroai_previous_building_construction_sector_spending_value > 0
+                }
+                add = var:aroai_previous_building_construction_sector_expenses
+                subtract = var:aroai_previous_building_construction_sector_spending_value
+            }
+            else_if = {
+                limit = {
+                    has_local_variable = aroai_building_construction_sector_expenses
+                    aroai_building_construction_sector_spending_value > 0
+                }
+                add = local_var:aroai_building_construction_sector_expenses
+                subtract = aroai_building_construction_sector_spending_value
+            }
+        }
+    }
+
+    aroai_add_local_variable_to_array_variable = {
+        input = aroai_country_budget_surplus
+        output = aroai_country_budget_surplus
+        elements = aroai_weeks_in_iteration_minus_1
+        zero = 1
+        cleanup = yes
+    }
+
+    # Variables with previous values
+    set_variable = {
+        name = aroai_country_previous_treasury
+        value = aroai_country_current_treasury
+    }
+    set_variable = {
+        name = aroai_previous_building_construction_sector_expenses
+        value = local_var:aroai_building_construction_sector_expenses
+    }
+    set_variable = {
+        name = aroai_previous_building_construction_sector_spending_value
+        value = aroai_building_construction_sector_spending_value
+    }
+    set_variable = {
+        name = aroai_previous_weekly_net_fixed_income
+        value = weekly_net_fixed_income
+    }
+}
+
+aroai_clear_weekly_loop_variables = {
+    remove_variable = aroai_total_building_expenses
+    remove_variable = aroai_building_government_administration_spending
+    remove_variable = aroai_building_university_spending
+    remove_variable = aroai_building_construction_sector_expenses_per_point
+    remove_variable = aroai_building_port_spending
+    remove_variable = aroai_building_barracks_spending
+    remove_variable = aroai_building_naval_base_spending
+    remove_variable = aroai_country_budget_surplus
+    remove_variable = aroai_investment_pool_transfer
+
+    remove_variable = aroai_country_previous_treasury
+    remove_variable = aroai_previous_building_construction_sector_expenses
+    remove_variable = aroai_previous_weekly_net_fixed_income
+    remove_variable = aroai_previous_building_construction_sector_spending_value
+    remove_variable = aroai_investment_pool_expected
+    
+    remove_variable = aroai_average_usage_of_construction_points
+    remove_variable = aroai_previous_usage_of_construction_points
+}
+
+aroai_clear_weekly_loop_local_variables = {
+    remove_local_variable = aroai_investment_pool_transfer
+    remove_local_variable = aroai_usage_of_construction_points_percent
+    remove_local_variable = aroai_total_building_expenses
+    remove_local_variable = aroai_building_construction_sector_expenses
+}

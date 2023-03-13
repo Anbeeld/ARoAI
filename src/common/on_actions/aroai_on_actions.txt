@@ -1,0 +1,5 @@
+﻿on_monthly_pulse_country = {
+    events = {
+        aroai_framework_events.1
+    }
+}

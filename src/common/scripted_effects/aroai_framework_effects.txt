@@ -1,0 +1,1796 @@
+﻿aroai_calculate_square_root = {
+    if = {
+        limit = {
+            $input$ <= 0
+        }
+        set_variable = {
+            name = $output$
+            value = 0
+        }
+    }
+    else = {
+        set_local_variable = {
+            name = aroai_csr_root
+            value = 0
+        }
+        if = {
+            limit = {
+                $precision$ = 1
+            }
+            change_local_variable = {
+                name = aroai_csr_root
+                add = 0.1
+            }
+        }
+        else_if = {
+            limit = {
+                $precision$ = 2
+            }
+            change_local_variable = {
+                name = aroai_csr_root
+                add = 0.01
+            }
+        }
+        else = {
+            change_local_variable = {
+                name = aroai_csr_root
+                add = 1
+            }
+        }
+        set_local_variable = {
+            name = aroai_csr_square
+            value = {
+                value = local_var:aroai_csr_root
+                multiply = local_var:aroai_csr_root
+            }
+        }
+        if = {
+            limit = {
+                $precision$ = 1
+            }
+            while = {
+                limit = {
+                    $input$ > aroai_csr_square
+                }
+                aroai_calculate_square_root_1 = {
+                    input = $input$
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                $precision$ = 2
+            }
+            while = {
+                limit = {
+                    $input$ > aroai_csr_square
+                }
+                aroai_calculate_square_root_2 = {
+                    input = $input$
+                }
+            }
+        }
+        else = {
+            while = {
+                limit = {
+                    $input$ > aroai_csr_square
+                }
+                aroai_calculate_square_root_0 = {
+                    input = $input$
+                }
+            }
+        }
+        set_variable = {
+            name = $output$
+            value = local_var:aroai_csr_root
+        }
+    }
+}
+
+aroai_calculate_square_root_1 = {
+    while = {
+        limit = {
+            $input$ > aroai_csr_square
+            local_var:aroai_csr_root < 100
+        }
+        change_local_variable = {
+            name = aroai_csr_root
+            add = 0.1
+        }
+        change_local_variable = {
+            name = aroai_csr_square
+            add = {
+                value = 0
+                subtract = local_var:aroai_csr_square
+                add = {
+                    value = local_var:aroai_csr_root
+                    multiply = local_var:aroai_csr_root
+                }
+            }
+        }
+    }
+}
+
+aroai_calculate_square_root_2 = {
+    while = {
+        limit = {
+            $input$ > aroai_csr_square
+            local_var:aroai_csr_root < 10
+        }
+        change_local_variable = {
+            name = aroai_csr_root
+            add = 0.01
+        }
+        change_local_variable = {
+            name = aroai_csr_square
+            add = {
+                value = 0
+                subtract = local_var:aroai_csr_square
+                add = {
+                    value = local_var:aroai_csr_root
+                    multiply = local_var:aroai_csr_root
+                }
+            }
+        }
+    }
+}
+
+aroai_calculate_square_root_0 = {
+    while = {
+        limit = {
+            $input$ > aroai_csr_square
+            local_var:aroai_csr_root < 1000
+        }
+        change_local_variable = {
+            name = aroai_csr_root
+            add = 1
+        }
+        change_local_variable = {
+            name = aroai_csr_square
+            add = {
+                value = 0
+                subtract = local_var:aroai_csr_square
+                add = {
+                    value = local_var:aroai_csr_root
+                    multiply = local_var:aroai_csr_root
+                }
+            }
+        }
+    }
+}
+
+aroai_renew_modifier = {
+    remove_modifier = $name$
+    add_modifier = {
+        name = $name$
+        days = $days$
+    }
+}
+
+aroai_renew_variable = {
+    remove_variable = $name$
+    set_variable = {
+        name = $name$
+        days = $days$
+    }
+}
+
+aroai_add_to_variable = {
+    if = {
+        limit = {
+            NOT = {
+                has_variable = $name$
+            }
+        }
+        set_variable = {
+            name = $name$
+            value = $value$
+        }
+    }
+    else = {
+        change_variable = {
+            name = $name$
+            add = $value$
+        }
+    }
+}
+
+aroai_add_to_local_variable = {
+    if = {
+        limit = {
+            NOT = {
+                has_local_variable = $name$
+            }
+        }
+        set_local_variable = {
+            name = $name$
+            value = $value$
+        }
+    }
+    else = {
+        change_local_variable = {
+            name = $name$
+            add = $value$
+        }
+    }
+}
+
+# There's no trigger to check if an agriculture resource is available in the state as of 1.2.2.
+# As a workaround, a custom solution is used that stores data about resources as a variable in state region scope.
+# Check happens during initialization of a new game and then periodically, but not really often.
+aroai_check_agriculture_resources_in_state_regions = {
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_global_variable = aroai_date_of_last_check_of_agriculture_resources
+                }
+                aroai_days_since_agriculture_resources_were_checked >= 365
+            }
+        }
+        set_global_variable = {
+            name = aroai_date_of_last_check_of_agriculture_resources
+            value = game_date
+        }
+        every_state_region = {
+            limit = {
+                is_state_region_land = yes
+                NOT = {
+                    has_variable = aroai_available_agriculture_resources
+                }
+            }
+            set_local_variable = {
+                name = aroai_added_arable_land
+                value = 0
+            }
+
+            # Arable land is added preemptively to check resources through creating building
+            while = {
+                limit = {
+                    local_var:aroai_added_arable_land < 100
+                    any_scope_state = {
+                        free_arable_land < 2
+                    }
+                }
+                add_arable_land = 1
+                change_local_variable = {
+                    name = aroai_added_arable_land
+                    add = 1
+                }
+            }
+
+            # As this is (hopefully) a temporary solution, code below is not integrated into attribute delivery system
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_rye_farm cipher = 1 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_wheat_farm cipher = 2 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_rice_farm cipher = 3 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_maize_farm cipher = 4 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_millet_farm cipher = 5 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_livestock_ranch cipher = 10 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_cotton_plantation cipher = 20 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_dye_plantation cipher = 100 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_silk_plantation cipher = 200 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_banana_plantation cipher = 1000 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_sugar_plantation cipher = 2000 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_tea_plantation cipher = 10000 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_coffee_plantation cipher = 20000 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_tobacco_plantation cipher = 100000 }
+            aroai_check_if_state_region_has_agriculture_resource = { key = building_opium_plantation cipher = 200000 }
+
+            # Added arable land is removed
+            while = {
+                limit = {
+                    local_var:aroai_added_arable_land > 0
+                }
+                add_arable_land = -1
+                change_local_variable = {
+                    name = aroai_added_arable_land
+                    subtract = 1
+                }
+            }
+        }
+    }
+}
+
+# First check if such building already exists in the state, otherwise try to create it and check if it may be expanded.
+aroai_check_if_state_region_has_agriculture_resource = {
+    if = {
+        limit = {
+            any_scope_state = {
+                any_scope_building = {
+                    is_building_type = $key$
+                }
+            }
+        }
+        aroai_add_to_variable = {
+            name = aroai_available_agriculture_resources
+            value = $cipher$
+        }
+    }
+    else = {
+        every_scope_state = {
+            limit = {
+                free_arable_land >= 2
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_local_variable = aroai_agriculture_resource_was_found
+                    }
+                }
+                create_building = {
+                    building = $key$
+                    level = 1
+                }
+                if = {
+                    limit = {
+                        any_scope_building = {
+                            is_building_type = $key$
+                            can_queue_building_levels = 1
+                        }
+                    }
+                    state_region = {
+                        aroai_add_to_variable = {
+                            name = aroai_available_agriculture_resources
+                            value = $cipher$
+                        }
+                    }
+                    set_local_variable = aroai_agriculture_resource_was_found
+                }
+                remove_building = $key$
+            }
+        }
+        remove_local_variable = aroai_agriculture_resource_was_found
+    }
+}
+
+# Normally this stuff is counted during building cycle, but every country depends on counts of all the other ones
+# for military calculations, so we just count them all at game start.
+aroai_count_barracks_and_conscription_centers_of_all_countries = {
+    if = {
+        limit = {
+            NOT = {
+                has_global_variable = aroai_barracks_and_conscription_centers_were_counted
+            }
+        }
+        set_global_variable = aroai_barracks_and_conscription_centers_were_counted
+        every_country = {
+            limit = {
+                aroai_is_country_allowed = yes
+            }
+            set_variable = {
+                name = aroai_building_barracks_total
+                value = 0
+            }
+            set_variable = {
+                name = aroai_building_conscription_center_total
+                value = 0
+            }
+            every_scope_building = {
+                if = {
+                    limit = {
+                        is_building_type = building_barracks
+                    }
+                    owner = {
+                        change_variable = {
+                            name = aroai_building_barracks_total
+                            add = prev.level
+                        }
+                    }
+                }
+                else_if = {
+                    limit = {
+                        is_building_type = building_conscription_center
+                    }
+                    owner = {
+                        change_variable = {
+                            name = aroai_building_conscription_center_total
+                            add = prev.level
+                        }
+                    }
+                }
+            }
+        }
+
+        # This is just a hack to avoid error log complaining about variables never being set, this never executes.
+        if = {
+            limit = {
+                NOT = {
+                    has_global_variable = aroai_barracks_and_conscription_centers_were_counted
+                }
+            }
+            aroai_fix_error_log_complaining_about_variables = yes
+        }
+    }
+}
+
+# At game start we should give every country date of next iteration.
+# A lot of weightning is done to ensure even distribution and to reduce load in first months of the game.
+# while = { random_country = { } } is used instead of every_country = { } to avoid results being deterministic.
+# TODO rework fixed days into usage of values such as aroai_days_in_the_iteration
+aroai_set_date_of_next_iteration_for_all_countries = {
+    if = {
+        limit = {
+            NOT = {
+                has_global_variable = aroai_order_of_countries_was_determined
+            }
+        }
+        set_global_variable = aroai_order_of_countries_was_determined
+
+        # First distribute 14 biggest countries on uneven days in {1, 28}
+        set_local_variable = {
+            name = aroai_amount_of_states
+            value = 1
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    count > 14
+                }
+            }
+            change_local_variable = {
+                name = aroai_amount_of_states
+                add = 1
+            }
+        }
+        set_local_variable = {
+            name = aroai_date_of_next_iteration_offset
+            value = 1
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+            }
+            random_country = {
+                limit = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+                set_variable = {
+                    name = aroai_date_of_next_iteration
+                    value = {
+                        value = game_date
+                        add = local_var:aroai_date_of_next_iteration_offset
+                    }
+                }
+            }
+            change_local_variable = {
+                name = aroai_date_of_next_iteration_offset
+                add = 2
+            }
+        }
+
+        # Then distribute 14 biggest countries left on even days in {1, 28}
+        set_local_variable = {
+            name = aroai_amount_of_states
+            value = 1
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    count > 28
+                }
+            }
+            change_local_variable = {
+                name = aroai_amount_of_states
+                add = 1
+            }
+        }
+        set_local_variable = {
+            name = aroai_date_of_next_iteration_offset
+            value = 2
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+            }
+            random_country = {
+                limit = {
+                    aroai_is_country_allowed = yes
+                    any_scope_state = {
+                        count >= local_var:aroai_amount_of_states
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+                set_variable = {
+                    name = aroai_date_of_next_iteration
+                    value = {
+                        value = game_date
+                        add = local_var:aroai_date_of_next_iteration_offset
+                    }
+                }
+            }
+            change_local_variable = {
+                name = aroai_date_of_next_iteration_offset
+                add = 2
+            }
+        }
+
+        # Then distibute all the players and countries over country rank 2 in days {1, 28}
+        set_local_variable = {
+            name = aroai_date_of_next_iteration_offset
+            value = 1
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    OR = {
+                        is_player = yes
+                        country_rank > 2
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+            }
+            random_country = {
+                limit = {
+                    aroai_is_country_allowed = yes
+                    OR = {
+                        is_player = yes
+                        country_rank > 2
+                    }
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+                set_variable = {
+                    name = aroai_date_of_next_iteration
+                    value = {
+                        value = game_date
+                        add = local_var:aroai_date_of_next_iteration_offset
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    local_var:aroai_date_of_next_iteration_offset >= 28
+                }
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    subtract = 27
+                }
+            }
+            else = {
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    add = 1
+                }
+            }
+        }
+
+        # Then distibute all the countries over country rank 1 in days {29, 56}
+        set_local_variable = {
+            name = aroai_date_of_next_iteration_offset
+            value = 29
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    country_rank > 1
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+            }
+            random_country = {
+                limit = {
+                    aroai_is_country_allowed = yes
+                    country_rank > 1
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+                set_variable = {
+                    name = aroai_date_of_next_iteration
+                    value = {
+                        value = game_date
+                        add = local_var:aroai_date_of_next_iteration_offset
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    local_var:aroai_date_of_next_iteration_offset >= 56
+                }
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    subtract = 27
+                }
+            }
+            else = {
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    add = 1
+                }
+            }
+        }
+
+        # Then distibute everything what's left in days {57, 84}
+        set_local_variable = {
+            name = aroai_date_of_next_iteration_offset
+            value = 57
+        }
+        while = {
+            limit = {
+                any_country = {
+                    aroai_is_country_allowed = yes
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+            }
+            random_country = {
+                limit = {
+                    aroai_is_country_allowed = yes
+                    NOT = {
+                        has_variable = aroai_date_of_next_iteration
+                    }
+                }
+                set_variable = {
+                    name = aroai_date_of_next_iteration
+                    value = {
+                        value = game_date
+                        add = local_var:aroai_date_of_next_iteration_offset
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    local_var:aroai_date_of_next_iteration_offset >= 84
+                }
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    subtract = 27
+                }
+            }
+            else = {
+                change_local_variable = {
+                    name = aroai_date_of_next_iteration_offset
+                    add = 1
+                }
+            }
+        }
+    }
+}
+
+# If a game rule to buff AI construction is set, we achieve this through country wide construction efficiency modifiers
+aroai_apply_accelerated_construction_modifiers = {
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_global_variable = aroai_date_of_last_applying_of_construction_modifiers
+                }
+                aroai_days_since_construction_modifiers_were_applied >= 30
+            }
+            OR = {
+                has_game_rule = aroai_construction_of_ai_countries_110
+                has_game_rule = aroai_construction_of_ai_countries_120
+                has_game_rule = aroai_construction_of_ai_countries_130
+                has_game_rule = aroai_construction_of_ai_countries_140
+                has_game_rule = aroai_construction_of_ai_countries_150
+                has_game_rule = aroai_construction_of_ai_countries_160
+                has_game_rule = aroai_construction_of_ai_countries_170
+                has_game_rule = aroai_construction_of_ai_countries_180
+                has_game_rule = aroai_construction_of_ai_countries_190
+                has_game_rule = aroai_construction_of_ai_countries_200
+                AND = {
+                    OR = {
+                        has_game_rule = aroai_construction_of_player_subjects_110
+                        has_game_rule = aroai_construction_of_player_subjects_120
+                        has_game_rule = aroai_construction_of_player_subjects_130
+                        has_game_rule = aroai_construction_of_player_subjects_140
+                        has_game_rule = aroai_construction_of_player_subjects_150
+                        has_game_rule = aroai_construction_of_player_subjects_160
+                        has_game_rule = aroai_construction_of_player_subjects_170
+                        has_game_rule = aroai_construction_of_player_subjects_180
+                        has_game_rule = aroai_construction_of_player_subjects_190
+                        has_game_rule = aroai_construction_of_player_subjects_200
+                    }
+                    any_country = {
+                        aroai_is_country_allowed = yes
+                        is_player = no
+                        market.owner = {
+                            is_player = yes
+                        }
+                    }
+                }
+            }
+        }
+        set_global_variable = {
+            name = aroai_date_of_last_applying_of_construction_modifiers
+            value = game_date
+        }
+        every_country = {
+            limit = {
+                aroai_is_country_allowed = yes
+                is_player = no
+            }
+            if = {
+                limit = {
+                    OR = {
+                        has_game_rule = aroai_construction_of_player_subjects_same
+                        market.owner = {
+                            is_player = no
+                        }
+                    }
+                }
+                if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_110
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_10_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_120
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_20_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_130
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_30_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_140
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_40_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_150
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_50_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_160
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_60_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_170
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_70_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_180
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_80_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_190
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_90_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_ai_countries_200
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_100_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+            }
+            else = {
+                if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_110
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_10_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_120
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_20_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_130
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_30_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_140
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_40_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_150
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_50_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_160
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_60_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_170
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_70_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_180
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_80_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_190
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_90_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+                else_if = {
+                    limit = {
+                        has_game_rule = aroai_construction_of_player_subjects_200
+                    }
+                    aroai_renew_modifier = {
+                        name = aroai_100_percent_accelerated_construction
+                        days = 31
+                    }
+                }
+            }
+        }
+    }
+}
+
+# $zero$ parameter controls behaviour between input and array when either of them have value equal to 0.
+# 1 = add, same behaviour as if it was any other value, input is just added to array as usual.
+# 2 - overwrite, input value of 0 will erase all the other values in array, and non-0 input will overwrite array if it's 0.
+# 3 = ignore, array is untouched, potentially even stays uninitialized.
+aroai_add_local_variable_to_array_variable = {
+
+    if = {
+        limit = {
+            OR = {
+                $zero$ != 3
+                local_var:$input$ != 0
+            }
+        }
+
+        # Create output variable if it doesn't exist
+        if = {
+            limit = {
+                NOT = {
+                    has_variable = $output$
+                }
+            }
+            set_variable = {
+                name = $output$
+                value = 0
+            }
+        }
+        else = {
+
+            # If input or output contains no value, zero it so we basically overwrite it with input
+            if = {
+                limit = {
+                    $zero$ = 2
+                    OR = {
+                        local_var:$input$ = 0
+                        AND = {
+                            var:$output$ < 1
+                            var:$output$ > -1
+                        }
+                    }
+                }
+                set_variable = {
+                    name = $output$
+                    value = 0
+                }
+            }
+            else = {
+
+                # If there is some value, make space for a new value first, starting with counting how much
+                # elements the array contains as of now
+                set_local_variable = {
+                    name = aroai_num_elements_in_array
+                    value = {
+                        if = {
+                            limit = {
+                                var:$output$ < 0
+                            }
+                            value = 0
+                            subtract = {
+                                value = var:$output$
+                                subtract = {
+                                    value = var:$output$
+                                    ceiling = yes
+                                }
+                            }
+                        }
+                        else = {
+                            value = var:$output$
+                            subtract = {
+                                value = var:$output$
+                                floor = yes
+                            }
+                        }
+                        multiply = 100
+                    }
+                }
+
+                # Remove enough elements so we could fit a new one, usually - 1 out - 1 in
+                while = {
+                    limit = {
+                        local_var:aroai_num_elements_in_array >= $elements$
+                    }
+                    change_variable = {
+                        name = $output$
+                        subtract = {
+
+                            # Get sum of all the values
+                            value = {
+                                value = var:$output$
+                                if = {
+                                    limit = {
+                                        var:$output$ < 0
+                                    }
+                                    ceiling = yes
+                                }
+                                else = {
+                                    floor = yes
+                                }
+                            }
+
+                            # Divide if by number of elements in array to get average value
+                            divide = local_var:aroai_num_elements_in_array
+
+                            # Don't forget to round it cause , part is not used in value
+                            round = yes
+                        }
+                    }
+
+                    # We manipulate only this and not counter in array itself cause it will be floored
+                    # anyways when we'll add new value and this local variable will be used in its place.
+                    change_local_variable = {
+                        name = aroai_num_elements_in_array
+                        subtract = 1
+                    }
+                }
+            }
+        }
+
+        set_variable = {
+            name = $output$
+            value = {
+                value = var:$output$
+                if = {
+                    limit = {
+                        var:$output$ < 0
+                    }
+                    ceiling = yes
+                }
+                else = {
+                    floor = yes
+                }
+                add = {
+                    value = local_var:$input$
+                    round = yes
+                    max = {
+                        value = 2147483647
+                        divide = $elements$
+                    }
+                    min = {
+                        value = -2147483647
+                        divide = $elements$
+                    }
+                }
+            }
+        }
+
+        if = {
+            limit = {
+                NOT = {
+                    has_local_variable = aroai_num_elements_in_array
+                }
+            }
+            set_local_variable = {
+                name = aroai_num_elements_in_array
+                value = 0
+            }
+        }
+        change_local_variable = {
+            name = aroai_num_elements_in_array
+            add = 1
+        }
+        if = {
+            limit = {
+                var:$output$ < 0
+            }
+            change_variable = {
+                name = $output$
+                subtract = {
+                    value = local_var:aroai_num_elements_in_array
+                    divide = 100
+                }
+            }
+        }
+        else = {
+            change_variable = {
+                name = $output$
+                add = {
+                    value = local_var:aroai_num_elements_in_array
+                    divide = 100
+                }
+            }
+        }
+        
+        remove_local_variable = aroai_num_elements_in_array
+    }
+
+    # Garbage collection
+    if = {
+        limit = {
+            $cleanup$ = yes
+        }
+        remove_local_variable = $input$
+    }
+}
+
+aroai_clear_country_cycle_variables = {
+    remove_variable = aroai_date_of_next_iteration
+    remove_variable = aroai_building_construction_sector_total
+    remove_variable = aroai_building_barracks_total
+    remove_variable = aroai_building_conscription_center_total
+
+    every_scope_state = {
+        clear_variable_list = aroai_ongoing_constructions
+    }
+    aroai_clear_weekly_loop_variables = yes
+    
+    remove_variable = aroai_median_construction_efficiency
+}
+
+aroai_clear_country_iteration_variables = {
+    
+    remove_variable = aroai_army_size_equal_to_average_threat
+    remove_variable = aroai_navy_size_equal_to_average_threat
+    remove_variable = aroai_army_size_equal_to_biggest_threat
+    remove_variable = aroai_navy_size_equal_to_biggest_threat
+    
+    remove_variable = aroai_resource_weight_factor
+    remove_variable = aroai_agriculture_weight_factor
+    remove_variable = aroai_industry_weight_factor
+    
+    remove_variable = aroai_incorporated_population
+    remove_variable = aroai_total_coastal_population
+    remove_variable = aroai_incorporated_coastal_population
+    remove_variable = aroai_incorporated_gdp
+    
+    remove_variable = aroai_surplus_bureaucracy_target
+    
+    remove_variable = aroai_square_root_of_minus_half_unincorporated_gdp_per_capita
+    remove_variable = aroai_square_root_of_construction_points
+    
+    remove_variable = aroai_chinese_population
+    remove_variable = aroai_indian_population
+    
+    remove_variable = aroai_unutilized_workforce
+
+    remove_variable = aroai_median_building_profitability
+    remove_variable = aroai_median_building_productivity
+    
+    remove_variable = aroai_capital_coastline_states
+    clear_variable_list = aroai_market_capital_coastline
+    clear_variable_list = aroai_coastline_of_outer_lands
+    clear_variable_list = aroai_safe_to_delete_ports_in_outer_lands
+    
+    # Variables from downsizing that are used in building as well
+    remove_variable = aroai_building_government_administration_total
+    remove_variable = aroai_building_university_total
+    remove_variable = aroai_building_construction_sector_total
+    #remove_variable = aroai_railway_total
+    remove_variable = aroai_building_port_total
+    #remove_variable = aroai_building_barracks_total
+    remove_variable = aroai_building_naval_base_total
+    
+    clear_variable_list = aroai_suitable_states
+    
+    remove_variable = aroai_tried_special_buildings
+    
+    aroai_clear_technical_variables = yes
+    every_scope_state = {
+        remove_variable = aroai_available_workforce
+        remove_variable = aroai_building_construction_sector_level
+        remove_variable = aroai_building_port_level
+        remove_variable = aroai_building_barracks_level
+        remove_variable = aroai_building_naval_base_level
+        remove_variable = aroai_queued_agriculture_buildings
+    }
+}
+
+aroai_add_to_building_counter = {
+    if = {
+        limit = {
+            NOT = {
+                has_variable = aroai_building_type_$counter$_collected_data
+            }
+        }
+        set_variable = {
+            name = aroai_building_type_$counter$_collected_data
+            value = {
+                value = $value$
+                multiply = 10000000
+            }
+        }
+    }
+    else = {
+        change_variable = {
+            name = aroai_building_type_$counter$_collected_data
+            add = {
+                value = $value$
+                multiply = 10000000
+            }
+        }
+    }
+}
+
+aroai_clear_technical_variables = {
+    aroai_perform_for_every_building_type = {
+        effect = 9 # aroai_clear_building_technicals
+    }
+}
+
+aroai_clear_building_technicals = {
+    remove_variable = aroai_building_type_$id$_collected_data
+    clear_variable_list = aroai_building_type_$id$_allocation_1
+    clear_variable_list = aroai_building_type_$id$_allocation_2
+    clear_variable_list = aroai_building_type_$id$_allocation_3
+    clear_variable_list = aroai_building_type_$id$_allocation_4
+    clear_variable_list = aroai_building_type_$id$_allocation_5
+    clear_variable_list = aroai_building_type_$id$_allocation_6
+    clear_variable_list = aroai_building_type_$id$_allocation_7
+    clear_variable_list = aroai_building_type_$id$_allocation_8
+    clear_variable_list = aroai_building_type_$id$_allocation_9
+    clear_variable_list = aroai_building_type_$id$_allocation_10
+}
+
+aroai_perform_for_building_type = {
+    switch = {
+        trigger = $effect$
+        1 = {
+            aroai_collect_building_level_data_1 = {
+                key = $key$
+                id = $id$
+                counter = $counter$
+                workforce = $workforce$
+            }
+        }
+        2 = {
+            aroai_collect_building_level_data_2 = {
+                key = $key$
+                id = $id$
+                counter = $counter$
+            }
+        }
+        3 = {
+            aroai_collect_building_level_data_3 = {
+                key = $key$
+                id = $id$
+                workforce = $workforce$
+            }
+        }
+        4 = {
+            aroai_downsize_production_building = {
+                key = $key$
+                id = $id$
+                workforce = $workforce$
+            }
+        }
+        5 = {
+            aroai_check_priority_of_building = {
+                key = $key$
+                id = $id$
+                class = $class$
+                counter = $counter$
+                crucial = $crucial$
+                allocate = $allocate$
+                limit = $limit$
+            }
+        }
+        6 = {
+            aroai_compare_building_priority_with_current_highest = {
+                id = $id$
+            }
+        }
+        7 = {
+            aroai_add_to_list_of_buildings_with_highest_priority = {
+                id = $id$
+                order = $order$
+            }
+        }
+        8 = {
+            if = {
+                limit = {
+                    $id$ = aroai_buildings_with_highest_priority_id
+                }
+                root = {
+                    aroai_choose_states_to_start_construction = {
+                        key = $key$
+                        id = $id$
+                        class = $class$
+                        counter = $counter$
+                        scaling = $scaling$
+                        crucial = $crucial$
+                        branching = $branching$
+                        allocate = $allocate$
+                        workforce = $workforce$
+                        limit = $limit$
+                    }
+                }
+            }
+        }
+        9 = {
+            aroai_clear_building_technicals = {
+                id = $id$
+            }
+        }
+    }
+}
+
+# Generated with a modding tool, don't edit this manually.
+aroai_refresh_list_of_compatibility_patches = {
+    clear_global_variable_list = aroai_compatibility_patches
+    aroai_add_to_list_of_compatibility_patches_1 = yes aroai_add_to_list_of_compatibility_patches_2 = yes
+    aroai_add_to_list_of_compatibility_patches_3 = yes aroai_add_to_list_of_compatibility_patches_4 = yes
+    aroai_add_to_list_of_compatibility_patches_5 = yes aroai_add_to_list_of_compatibility_patches_6 = yes
+    aroai_add_to_list_of_compatibility_patches_7 = yes aroai_add_to_list_of_compatibility_patches_8 = yes
+    aroai_add_to_list_of_compatibility_patches_9 = yes aroai_add_to_list_of_compatibility_patches_10 = yes
+    aroai_add_to_list_of_compatibility_patches_11 = yes aroai_add_to_list_of_compatibility_patches_12 = yes
+    aroai_add_to_list_of_compatibility_patches_13 = yes aroai_add_to_list_of_compatibility_patches_14 = yes
+    aroai_add_to_list_of_compatibility_patches_15 = yes aroai_add_to_list_of_compatibility_patches_16 = yes
+    aroai_add_to_list_of_compatibility_patches_17 = yes aroai_add_to_list_of_compatibility_patches_18 = yes
+    aroai_add_to_list_of_compatibility_patches_19 = yes aroai_add_to_list_of_compatibility_patches_20 = yes
+    aroai_add_to_list_of_compatibility_patches_21 = yes aroai_add_to_list_of_compatibility_patches_22 = yes
+    aroai_add_to_list_of_compatibility_patches_23 = yes aroai_add_to_list_of_compatibility_patches_24 = yes
+    aroai_add_to_list_of_compatibility_patches_25 = yes aroai_add_to_list_of_compatibility_patches_26 = yes
+    aroai_add_to_list_of_compatibility_patches_27 = yes aroai_add_to_list_of_compatibility_patches_28 = yes
+    aroai_add_to_list_of_compatibility_patches_29 = yes aroai_add_to_list_of_compatibility_patches_30 = yes
+    aroai_add_to_list_of_compatibility_patches_31 = yes aroai_add_to_list_of_compatibility_patches_32 = yes
+    aroai_add_to_list_of_compatibility_patches_33 = yes aroai_add_to_list_of_compatibility_patches_34 = yes
+    aroai_add_to_list_of_compatibility_patches_35 = yes aroai_add_to_list_of_compatibility_patches_36 = yes
+    aroai_add_to_list_of_compatibility_patches_37 = yes aroai_add_to_list_of_compatibility_patches_38 = yes
+    aroai_add_to_list_of_compatibility_patches_39 = yes aroai_add_to_list_of_compatibility_patches_40 = yes
+    aroai_add_to_list_of_compatibility_patches_41 = yes aroai_add_to_list_of_compatibility_patches_42 = yes
+    aroai_add_to_list_of_compatibility_patches_43 = yes aroai_add_to_list_of_compatibility_patches_44 = yes
+    aroai_add_to_list_of_compatibility_patches_45 = yes aroai_add_to_list_of_compatibility_patches_46 = yes
+    aroai_add_to_list_of_compatibility_patches_47 = yes aroai_add_to_list_of_compatibility_patches_48 = yes
+    aroai_add_to_list_of_compatibility_patches_49 = yes aroai_add_to_list_of_compatibility_patches_50 = yes
+    aroai_add_to_list_of_compatibility_patches_51 = yes aroai_add_to_list_of_compatibility_patches_52 = yes
+    aroai_add_to_list_of_compatibility_patches_53 = yes aroai_add_to_list_of_compatibility_patches_54 = yes
+    aroai_add_to_list_of_compatibility_patches_55 = yes aroai_add_to_list_of_compatibility_patches_56 = yes
+    aroai_add_to_list_of_compatibility_patches_57 = yes aroai_add_to_list_of_compatibility_patches_58 = yes
+    aroai_add_to_list_of_compatibility_patches_59 = yes aroai_add_to_list_of_compatibility_patches_60 = yes
+    aroai_add_to_list_of_compatibility_patches_61 = yes aroai_add_to_list_of_compatibility_patches_62 = yes
+    aroai_add_to_list_of_compatibility_patches_63 = yes aroai_add_to_list_of_compatibility_patches_64 = yes
+    aroai_add_to_list_of_compatibility_patches_65 = yes aroai_add_to_list_of_compatibility_patches_66 = yes
+    aroai_add_to_list_of_compatibility_patches_67 = yes aroai_add_to_list_of_compatibility_patches_68 = yes
+    aroai_add_to_list_of_compatibility_patches_69 = yes aroai_add_to_list_of_compatibility_patches_70 = yes
+    aroai_add_to_list_of_compatibility_patches_71 = yes aroai_add_to_list_of_compatibility_patches_72 = yes
+    aroai_add_to_list_of_compatibility_patches_73 = yes aroai_add_to_list_of_compatibility_patches_74 = yes
+    aroai_add_to_list_of_compatibility_patches_75 = yes aroai_add_to_list_of_compatibility_patches_76 = yes
+    aroai_add_to_list_of_compatibility_patches_77 = yes aroai_add_to_list_of_compatibility_patches_78 = yes
+    aroai_add_to_list_of_compatibility_patches_79 = yes aroai_add_to_list_of_compatibility_patches_80 = yes
+    aroai_add_to_list_of_compatibility_patches_81 = yes aroai_add_to_list_of_compatibility_patches_82 = yes
+    aroai_add_to_list_of_compatibility_patches_83 = yes aroai_add_to_list_of_compatibility_patches_84 = yes
+    aroai_add_to_list_of_compatibility_patches_85 = yes aroai_add_to_list_of_compatibility_patches_86 = yes
+    aroai_add_to_list_of_compatibility_patches_87 = yes aroai_add_to_list_of_compatibility_patches_88 = yes
+    aroai_add_to_list_of_compatibility_patches_89 = yes aroai_add_to_list_of_compatibility_patches_90 = yes
+    aroai_add_to_list_of_compatibility_patches_91 = yes aroai_add_to_list_of_compatibility_patches_92 = yes
+    aroai_add_to_list_of_compatibility_patches_93 = yes aroai_add_to_list_of_compatibility_patches_94 = yes
+    aroai_add_to_list_of_compatibility_patches_95 = yes aroai_add_to_list_of_compatibility_patches_96 = yes
+    aroai_add_to_list_of_compatibility_patches_97 = yes aroai_add_to_list_of_compatibility_patches_98 = yes
+    aroai_add_to_list_of_compatibility_patches_99 = yes aroai_add_to_list_of_compatibility_patches_100 = yes
+    aroai_add_to_list_of_compatibility_patches_101 = yes aroai_add_to_list_of_compatibility_patches_102 = yes
+    aroai_add_to_list_of_compatibility_patches_103 = yes aroai_add_to_list_of_compatibility_patches_104 = yes
+    aroai_add_to_list_of_compatibility_patches_105 = yes aroai_add_to_list_of_compatibility_patches_106 = yes
+    aroai_add_to_list_of_compatibility_patches_107 = yes aroai_add_to_list_of_compatibility_patches_108 = yes
+    aroai_add_to_list_of_compatibility_patches_109 = yes aroai_add_to_list_of_compatibility_patches_110 = yes
+    aroai_add_to_list_of_compatibility_patches_111 = yes aroai_add_to_list_of_compatibility_patches_112 = yes
+    aroai_add_to_list_of_compatibility_patches_113 = yes aroai_add_to_list_of_compatibility_patches_114 = yes
+    aroai_add_to_list_of_compatibility_patches_115 = yes aroai_add_to_list_of_compatibility_patches_116 = yes
+    aroai_add_to_list_of_compatibility_patches_117 = yes aroai_add_to_list_of_compatibility_patches_118 = yes
+    aroai_add_to_list_of_compatibility_patches_119 = yes aroai_add_to_list_of_compatibility_patches_120 = yes
+    aroai_add_to_list_of_compatibility_patches_121 = yes aroai_add_to_list_of_compatibility_patches_122 = yes
+    aroai_add_to_list_of_compatibility_patches_123 = yes aroai_add_to_list_of_compatibility_patches_124 = yes
+    aroai_add_to_list_of_compatibility_patches_125 = yes aroai_add_to_list_of_compatibility_patches_126 = yes
+    aroai_add_to_list_of_compatibility_patches_127 = yes aroai_add_to_list_of_compatibility_patches_128 = yes
+    aroai_add_to_list_of_compatibility_patches_129 = yes aroai_add_to_list_of_compatibility_patches_130 = yes
+    aroai_add_to_list_of_compatibility_patches_131 = yes aroai_add_to_list_of_compatibility_patches_132 = yes
+    aroai_add_to_list_of_compatibility_patches_133 = yes aroai_add_to_list_of_compatibility_patches_134 = yes
+    aroai_add_to_list_of_compatibility_patches_135 = yes aroai_add_to_list_of_compatibility_patches_136 = yes
+    aroai_add_to_list_of_compatibility_patches_137 = yes aroai_add_to_list_of_compatibility_patches_138 = yes
+    aroai_add_to_list_of_compatibility_patches_139 = yes aroai_add_to_list_of_compatibility_patches_140 = yes
+    aroai_add_to_list_of_compatibility_patches_141 = yes aroai_add_to_list_of_compatibility_patches_142 = yes
+    aroai_add_to_list_of_compatibility_patches_143 = yes aroai_add_to_list_of_compatibility_patches_144 = yes
+    aroai_add_to_list_of_compatibility_patches_145 = yes aroai_add_to_list_of_compatibility_patches_146 = yes
+    aroai_add_to_list_of_compatibility_patches_147 = yes aroai_add_to_list_of_compatibility_patches_148 = yes
+    aroai_add_to_list_of_compatibility_patches_149 = yes aroai_add_to_list_of_compatibility_patches_150 = yes
+    aroai_add_to_list_of_compatibility_patches_151 = yes aroai_add_to_list_of_compatibility_patches_152 = yes
+    aroai_add_to_list_of_compatibility_patches_153 = yes aroai_add_to_list_of_compatibility_patches_154 = yes
+    aroai_add_to_list_of_compatibility_patches_155 = yes aroai_add_to_list_of_compatibility_patches_156 = yes
+    aroai_add_to_list_of_compatibility_patches_157 = yes aroai_add_to_list_of_compatibility_patches_158 = yes
+    aroai_add_to_list_of_compatibility_patches_159 = yes aroai_add_to_list_of_compatibility_patches_160 = yes
+    aroai_add_to_list_of_compatibility_patches_161 = yes aroai_add_to_list_of_compatibility_patches_162 = yes
+    aroai_add_to_list_of_compatibility_patches_163 = yes aroai_add_to_list_of_compatibility_patches_164 = yes
+    aroai_add_to_list_of_compatibility_patches_165 = yes aroai_add_to_list_of_compatibility_patches_166 = yes
+    aroai_add_to_list_of_compatibility_patches_167 = yes aroai_add_to_list_of_compatibility_patches_168 = yes
+    aroai_add_to_list_of_compatibility_patches_169 = yes aroai_add_to_list_of_compatibility_patches_170 = yes
+    aroai_add_to_list_of_compatibility_patches_171 = yes aroai_add_to_list_of_compatibility_patches_172 = yes
+    aroai_add_to_list_of_compatibility_patches_173 = yes aroai_add_to_list_of_compatibility_patches_174 = yes
+    aroai_add_to_list_of_compatibility_patches_175 = yes aroai_add_to_list_of_compatibility_patches_176 = yes
+    aroai_add_to_list_of_compatibility_patches_177 = yes aroai_add_to_list_of_compatibility_patches_178 = yes
+    aroai_add_to_list_of_compatibility_patches_179 = yes aroai_add_to_list_of_compatibility_patches_180 = yes
+    aroai_add_to_list_of_compatibility_patches_181 = yes aroai_add_to_list_of_compatibility_patches_182 = yes
+    aroai_add_to_list_of_compatibility_patches_183 = yes aroai_add_to_list_of_compatibility_patches_184 = yes
+    aroai_add_to_list_of_compatibility_patches_185 = yes aroai_add_to_list_of_compatibility_patches_186 = yes
+    aroai_add_to_list_of_compatibility_patches_187 = yes aroai_add_to_list_of_compatibility_patches_188 = yes
+    aroai_add_to_list_of_compatibility_patches_189 = yes aroai_add_to_list_of_compatibility_patches_190 = yes
+    aroai_add_to_list_of_compatibility_patches_191 = yes aroai_add_to_list_of_compatibility_patches_192 = yes
+    aroai_add_to_list_of_compatibility_patches_193 = yes aroai_add_to_list_of_compatibility_patches_194 = yes
+    aroai_add_to_list_of_compatibility_patches_195 = yes aroai_add_to_list_of_compatibility_patches_196 = yes
+    aroai_add_to_list_of_compatibility_patches_197 = yes aroai_add_to_list_of_compatibility_patches_198 = yes
+    aroai_add_to_list_of_compatibility_patches_199 = yes aroai_add_to_list_of_compatibility_patches_200 = yes
+}
+
+aroai_add_to_list_of_compatibility_patches_1 = {} aroai_add_to_list_of_compatibility_patches_2 = {}
+aroai_add_to_list_of_compatibility_patches_3 = {} aroai_add_to_list_of_compatibility_patches_4 = {}
+aroai_add_to_list_of_compatibility_patches_5 = {} aroai_add_to_list_of_compatibility_patches_6 = {}
+aroai_add_to_list_of_compatibility_patches_7 = {} aroai_add_to_list_of_compatibility_patches_8 = {}
+aroai_add_to_list_of_compatibility_patches_9 = {} aroai_add_to_list_of_compatibility_patches_10 = {}
+aroai_add_to_list_of_compatibility_patches_11 = {} aroai_add_to_list_of_compatibility_patches_12 = {}
+aroai_add_to_list_of_compatibility_patches_13 = {} aroai_add_to_list_of_compatibility_patches_14 = {}
+aroai_add_to_list_of_compatibility_patches_15 = {} aroai_add_to_list_of_compatibility_patches_16 = {}
+aroai_add_to_list_of_compatibility_patches_17 = {} aroai_add_to_list_of_compatibility_patches_18 = {}
+aroai_add_to_list_of_compatibility_patches_19 = {} aroai_add_to_list_of_compatibility_patches_20 = {}
+aroai_add_to_list_of_compatibility_patches_21 = {} aroai_add_to_list_of_compatibility_patches_22 = {}
+aroai_add_to_list_of_compatibility_patches_23 = {} aroai_add_to_list_of_compatibility_patches_24 = {}
+aroai_add_to_list_of_compatibility_patches_25 = {} aroai_add_to_list_of_compatibility_patches_26 = {}
+aroai_add_to_list_of_compatibility_patches_27 = {} aroai_add_to_list_of_compatibility_patches_28 = {}
+aroai_add_to_list_of_compatibility_patches_29 = {} aroai_add_to_list_of_compatibility_patches_30 = {}
+aroai_add_to_list_of_compatibility_patches_31 = {} aroai_add_to_list_of_compatibility_patches_32 = {}
+aroai_add_to_list_of_compatibility_patches_33 = {} aroai_add_to_list_of_compatibility_patches_34 = {}
+aroai_add_to_list_of_compatibility_patches_35 = {} aroai_add_to_list_of_compatibility_patches_36 = {}
+aroai_add_to_list_of_compatibility_patches_37 = {} aroai_add_to_list_of_compatibility_patches_38 = {}
+aroai_add_to_list_of_compatibility_patches_39 = {} aroai_add_to_list_of_compatibility_patches_40 = {}
+aroai_add_to_list_of_compatibility_patches_41 = {} aroai_add_to_list_of_compatibility_patches_42 = {}
+aroai_add_to_list_of_compatibility_patches_43 = {} aroai_add_to_list_of_compatibility_patches_44 = {}
+aroai_add_to_list_of_compatibility_patches_45 = {} aroai_add_to_list_of_compatibility_patches_46 = {}
+aroai_add_to_list_of_compatibility_patches_47 = {} aroai_add_to_list_of_compatibility_patches_48 = {}
+aroai_add_to_list_of_compatibility_patches_49 = {} aroai_add_to_list_of_compatibility_patches_50 = {}
+aroai_add_to_list_of_compatibility_patches_51 = {} aroai_add_to_list_of_compatibility_patches_52 = {}
+aroai_add_to_list_of_compatibility_patches_53 = {} aroai_add_to_list_of_compatibility_patches_54 = {}
+aroai_add_to_list_of_compatibility_patches_55 = {} aroai_add_to_list_of_compatibility_patches_56 = {}
+aroai_add_to_list_of_compatibility_patches_57 = {} aroai_add_to_list_of_compatibility_patches_58 = {}
+aroai_add_to_list_of_compatibility_patches_59 = {} aroai_add_to_list_of_compatibility_patches_60 = {}
+aroai_add_to_list_of_compatibility_patches_61 = {} aroai_add_to_list_of_compatibility_patches_62 = {}
+aroai_add_to_list_of_compatibility_patches_63 = {} aroai_add_to_list_of_compatibility_patches_64 = {}
+aroai_add_to_list_of_compatibility_patches_65 = {} aroai_add_to_list_of_compatibility_patches_66 = {}
+aroai_add_to_list_of_compatibility_patches_67 = {} aroai_add_to_list_of_compatibility_patches_68 = {}
+aroai_add_to_list_of_compatibility_patches_69 = {} aroai_add_to_list_of_compatibility_patches_70 = {}
+aroai_add_to_list_of_compatibility_patches_71 = {} aroai_add_to_list_of_compatibility_patches_72 = {}
+aroai_add_to_list_of_compatibility_patches_73 = {} aroai_add_to_list_of_compatibility_patches_74 = {}
+aroai_add_to_list_of_compatibility_patches_75 = {} aroai_add_to_list_of_compatibility_patches_76 = {}
+aroai_add_to_list_of_compatibility_patches_77 = {} aroai_add_to_list_of_compatibility_patches_78 = {}
+aroai_add_to_list_of_compatibility_patches_79 = {} aroai_add_to_list_of_compatibility_patches_80 = {}
+aroai_add_to_list_of_compatibility_patches_81 = {} aroai_add_to_list_of_compatibility_patches_82 = {}
+aroai_add_to_list_of_compatibility_patches_83 = {} aroai_add_to_list_of_compatibility_patches_84 = {}
+aroai_add_to_list_of_compatibility_patches_85 = {} aroai_add_to_list_of_compatibility_patches_86 = {}
+aroai_add_to_list_of_compatibility_patches_87 = {} aroai_add_to_list_of_compatibility_patches_88 = {}
+aroai_add_to_list_of_compatibility_patches_89 = {} aroai_add_to_list_of_compatibility_patches_90 = {}
+aroai_add_to_list_of_compatibility_patches_91 = {} aroai_add_to_list_of_compatibility_patches_92 = {}
+aroai_add_to_list_of_compatibility_patches_93 = {} aroai_add_to_list_of_compatibility_patches_94 = {}
+aroai_add_to_list_of_compatibility_patches_95 = {} aroai_add_to_list_of_compatibility_patches_96 = {}
+aroai_add_to_list_of_compatibility_patches_97 = {} aroai_add_to_list_of_compatibility_patches_98 = {}
+aroai_add_to_list_of_compatibility_patches_99 = {} aroai_add_to_list_of_compatibility_patches_100 = {}
+aroai_add_to_list_of_compatibility_patches_101 = {} aroai_add_to_list_of_compatibility_patches_102 = {}
+aroai_add_to_list_of_compatibility_patches_103 = {} aroai_add_to_list_of_compatibility_patches_104 = {}
+aroai_add_to_list_of_compatibility_patches_105 = {} aroai_add_to_list_of_compatibility_patches_106 = {}
+aroai_add_to_list_of_compatibility_patches_107 = {} aroai_add_to_list_of_compatibility_patches_108 = {}
+aroai_add_to_list_of_compatibility_patches_109 = {} aroai_add_to_list_of_compatibility_patches_110 = {}
+aroai_add_to_list_of_compatibility_patches_111 = {} aroai_add_to_list_of_compatibility_patches_112 = {}
+aroai_add_to_list_of_compatibility_patches_113 = {} aroai_add_to_list_of_compatibility_patches_114 = {}
+aroai_add_to_list_of_compatibility_patches_115 = {} aroai_add_to_list_of_compatibility_patches_116 = {}
+aroai_add_to_list_of_compatibility_patches_117 = {} aroai_add_to_list_of_compatibility_patches_118 = {}
+aroai_add_to_list_of_compatibility_patches_119 = {} aroai_add_to_list_of_compatibility_patches_120 = {}
+aroai_add_to_list_of_compatibility_patches_121 = {} aroai_add_to_list_of_compatibility_patches_122 = {}
+aroai_add_to_list_of_compatibility_patches_123 = {} aroai_add_to_list_of_compatibility_patches_124 = {}
+aroai_add_to_list_of_compatibility_patches_125 = {} aroai_add_to_list_of_compatibility_patches_126 = {}
+aroai_add_to_list_of_compatibility_patches_127 = {} aroai_add_to_list_of_compatibility_patches_128 = {}
+aroai_add_to_list_of_compatibility_patches_129 = {} aroai_add_to_list_of_compatibility_patches_130 = {}
+aroai_add_to_list_of_compatibility_patches_131 = {} aroai_add_to_list_of_compatibility_patches_132 = {}
+aroai_add_to_list_of_compatibility_patches_133 = {} aroai_add_to_list_of_compatibility_patches_134 = {}
+aroai_add_to_list_of_compatibility_patches_135 = {} aroai_add_to_list_of_compatibility_patches_136 = {}
+aroai_add_to_list_of_compatibility_patches_137 = {} aroai_add_to_list_of_compatibility_patches_138 = {}
+aroai_add_to_list_of_compatibility_patches_139 = {} aroai_add_to_list_of_compatibility_patches_140 = {}
+aroai_add_to_list_of_compatibility_patches_141 = {} aroai_add_to_list_of_compatibility_patches_142 = {}
+aroai_add_to_list_of_compatibility_patches_143 = {} aroai_add_to_list_of_compatibility_patches_144 = {}
+aroai_add_to_list_of_compatibility_patches_145 = {} aroai_add_to_list_of_compatibility_patches_146 = {}
+aroai_add_to_list_of_compatibility_patches_147 = {} aroai_add_to_list_of_compatibility_patches_148 = {}
+aroai_add_to_list_of_compatibility_patches_149 = {} aroai_add_to_list_of_compatibility_patches_150 = {}
+aroai_add_to_list_of_compatibility_patches_151 = {} aroai_add_to_list_of_compatibility_patches_152 = {}
+aroai_add_to_list_of_compatibility_patches_153 = {} aroai_add_to_list_of_compatibility_patches_154 = {}
+aroai_add_to_list_of_compatibility_patches_155 = {} aroai_add_to_list_of_compatibility_patches_156 = {}
+aroai_add_to_list_of_compatibility_patches_157 = {} aroai_add_to_list_of_compatibility_patches_158 = {}
+aroai_add_to_list_of_compatibility_patches_159 = {} aroai_add_to_list_of_compatibility_patches_160 = {}
+aroai_add_to_list_of_compatibility_patches_161 = {} aroai_add_to_list_of_compatibility_patches_162 = {}
+aroai_add_to_list_of_compatibility_patches_163 = {} aroai_add_to_list_of_compatibility_patches_164 = {}
+aroai_add_to_list_of_compatibility_patches_165 = {} aroai_add_to_list_of_compatibility_patches_166 = {}
+aroai_add_to_list_of_compatibility_patches_167 = {} aroai_add_to_list_of_compatibility_patches_168 = {}
+aroai_add_to_list_of_compatibility_patches_169 = {} aroai_add_to_list_of_compatibility_patches_170 = {}
+aroai_add_to_list_of_compatibility_patches_171 = {} aroai_add_to_list_of_compatibility_patches_172 = {}
+aroai_add_to_list_of_compatibility_patches_173 = {} aroai_add_to_list_of_compatibility_patches_174 = {}
+aroai_add_to_list_of_compatibility_patches_175 = {} aroai_add_to_list_of_compatibility_patches_176 = {}
+aroai_add_to_list_of_compatibility_patches_177 = {} aroai_add_to_list_of_compatibility_patches_178 = {}
+aroai_add_to_list_of_compatibility_patches_179 = {} aroai_add_to_list_of_compatibility_patches_180 = {}
+aroai_add_to_list_of_compatibility_patches_181 = {} aroai_add_to_list_of_compatibility_patches_182 = {}
+aroai_add_to_list_of_compatibility_patches_183 = {} aroai_add_to_list_of_compatibility_patches_184 = {}
+aroai_add_to_list_of_compatibility_patches_185 = {} aroai_add_to_list_of_compatibility_patches_186 = {}
+aroai_add_to_list_of_compatibility_patches_187 = {} aroai_add_to_list_of_compatibility_patches_188 = {}
+aroai_add_to_list_of_compatibility_patches_189 = {} aroai_add_to_list_of_compatibility_patches_190 = {}
+aroai_add_to_list_of_compatibility_patches_191 = {} aroai_add_to_list_of_compatibility_patches_192 = {}
+aroai_add_to_list_of_compatibility_patches_193 = {} aroai_add_to_list_of_compatibility_patches_194 = {}
+aroai_add_to_list_of_compatibility_patches_195 = {} aroai_add_to_list_of_compatibility_patches_196 = {}
+aroai_add_to_list_of_compatibility_patches_197 = {} aroai_add_to_list_of_compatibility_patches_198 = {}
+aroai_add_to_list_of_compatibility_patches_199 = {} aroai_add_to_list_of_compatibility_patches_200 = {}
+
+# This is just a hack to avoid error log complaining about variables never being set, in reality this never executes.
+# Generated with a modding tool, don't edit this manually.
+aroai_fix_error_log_complaining_about_variables = {
+    add_to_global_variable_list = {
+        name = aroai_compatibility_patches
+        target = 0
+    }
+    set_variable = aroai_building_type_1_collected_data set_variable = aroai_building_type_2_collected_data
+    set_variable = aroai_building_type_3_collected_data set_variable = aroai_building_type_4_collected_data
+    set_variable = aroai_building_type_5_collected_data set_variable = aroai_building_type_6_collected_data
+    set_variable = aroai_building_type_7_collected_data set_variable = aroai_building_type_8_collected_data
+    set_variable = aroai_building_type_9_collected_data set_variable = aroai_building_type_10_collected_data
+    set_variable = aroai_building_type_11_collected_data set_variable = aroai_building_type_12_collected_data
+    set_variable = aroai_building_type_13_collected_data set_variable = aroai_building_type_14_collected_data
+    set_variable = aroai_building_type_15_collected_data set_variable = aroai_building_type_16_collected_data
+    set_variable = aroai_building_type_17_collected_data set_variable = aroai_building_type_18_collected_data
+    set_variable = aroai_building_type_19_collected_data set_variable = aroai_building_type_20_collected_data
+    set_variable = aroai_building_type_21_collected_data set_variable = aroai_building_type_22_collected_data
+    set_variable = aroai_building_type_23_collected_data set_variable = aroai_building_type_24_collected_data
+    set_variable = aroai_building_type_25_collected_data set_variable = aroai_building_type_26_collected_data
+    set_variable = aroai_building_type_27_collected_data set_variable = aroai_building_type_28_collected_data
+    set_variable = aroai_building_type_29_collected_data set_variable = aroai_building_type_30_collected_data
+    set_variable = aroai_building_type_31_collected_data set_variable = aroai_building_type_32_collected_data
+    set_variable = aroai_building_type_33_collected_data set_variable = aroai_building_type_34_collected_data
+    set_variable = aroai_building_type_35_collected_data set_variable = aroai_building_type_36_collected_data
+    set_variable = aroai_building_type_37_collected_data set_variable = aroai_building_type_38_collected_data
+    set_variable = aroai_building_type_39_collected_data set_variable = aroai_building_type_40_collected_data
+    set_variable = aroai_building_type_41_collected_data set_variable = aroai_building_type_42_collected_data
+    set_variable = aroai_building_type_43_collected_data set_variable = aroai_building_type_44_collected_data
+    set_variable = aroai_building_type_45_collected_data set_variable = aroai_building_type_46_collected_data
+    set_variable = aroai_building_type_47_collected_data set_variable = aroai_building_type_48_collected_data
+    set_variable = aroai_building_type_49_collected_data set_variable = aroai_building_type_50_collected_data
+    set_variable = aroai_building_type_51_collected_data set_variable = aroai_building_type_52_collected_data
+    set_variable = aroai_building_type_53_collected_data set_variable = aroai_building_type_54_collected_data
+    set_variable = aroai_building_type_55_collected_data set_variable = aroai_building_type_56_collected_data
+    set_variable = aroai_building_type_57_collected_data set_variable = aroai_building_type_58_collected_data
+    set_variable = aroai_building_type_59_collected_data set_variable = aroai_building_type_60_collected_data
+    set_variable = aroai_building_type_61_collected_data set_variable = aroai_building_type_62_collected_data
+    set_variable = aroai_building_type_63_collected_data set_variable = aroai_building_type_64_collected_data
+    set_variable = aroai_building_type_65_collected_data set_variable = aroai_building_type_66_collected_data
+    set_variable = aroai_building_type_67_collected_data set_variable = aroai_building_type_68_collected_data
+    set_variable = aroai_building_type_69_collected_data set_variable = aroai_building_type_70_collected_data
+    set_variable = aroai_building_type_71_collected_data set_variable = aroai_building_type_72_collected_data
+    set_variable = aroai_building_type_73_collected_data set_variable = aroai_building_type_74_collected_data
+    set_variable = aroai_building_type_75_collected_data set_variable = aroai_building_type_76_collected_data
+    set_variable = aroai_building_type_77_collected_data set_variable = aroai_building_type_78_collected_data
+    set_variable = aroai_building_type_79_collected_data set_variable = aroai_building_type_80_collected_data
+    set_variable = aroai_building_type_81_collected_data set_variable = aroai_building_type_82_collected_data
+    set_variable = aroai_building_type_83_collected_data set_variable = aroai_building_type_84_collected_data
+    set_variable = aroai_building_type_85_collected_data set_variable = aroai_building_type_86_collected_data
+    set_variable = aroai_building_type_87_collected_data set_variable = aroai_building_type_88_collected_data
+    set_variable = aroai_building_type_89_collected_data set_variable = aroai_building_type_90_collected_data
+    set_variable = aroai_building_type_91_collected_data set_variable = aroai_building_type_92_collected_data
+    set_variable = aroai_building_type_93_collected_data set_variable = aroai_building_type_94_collected_data
+    set_variable = aroai_building_type_95_collected_data set_variable = aroai_building_type_96_collected_data
+    set_variable = aroai_building_type_97_collected_data set_variable = aroai_building_type_98_collected_data
+    set_variable = aroai_building_type_99_collected_data set_variable = aroai_building_type_100_collected_data
+    set_variable = aroai_building_type_101_collected_data set_variable = aroai_building_type_102_collected_data
+    set_variable = aroai_building_type_103_collected_data set_variable = aroai_building_type_104_collected_data
+    set_variable = aroai_building_type_105_collected_data set_variable = aroai_building_type_106_collected_data
+    set_variable = aroai_building_type_107_collected_data set_variable = aroai_building_type_108_collected_data
+    set_variable = aroai_building_type_109_collected_data set_variable = aroai_building_type_110_collected_data
+    set_variable = aroai_building_type_111_collected_data set_variable = aroai_building_type_112_collected_data
+    set_variable = aroai_building_type_113_collected_data set_variable = aroai_building_type_114_collected_data
+    set_variable = aroai_building_type_115_collected_data set_variable = aroai_building_type_116_collected_data
+    set_variable = aroai_building_type_117_collected_data set_variable = aroai_building_type_118_collected_data
+    set_variable = aroai_building_type_119_collected_data set_variable = aroai_building_type_120_collected_data
+    set_variable = aroai_building_type_121_collected_data set_variable = aroai_building_type_122_collected_data
+    set_variable = aroai_building_type_123_collected_data set_variable = aroai_building_type_124_collected_data
+    set_variable = aroai_building_type_125_collected_data set_variable = aroai_building_type_126_collected_data
+    set_variable = aroai_building_type_127_collected_data set_variable = aroai_building_type_128_collected_data
+    set_variable = aroai_building_type_129_collected_data set_variable = aroai_building_type_130_collected_data
+    set_variable = aroai_building_type_131_collected_data set_variable = aroai_building_type_132_collected_data
+    set_variable = aroai_building_type_133_collected_data set_variable = aroai_building_type_134_collected_data
+    set_variable = aroai_building_type_135_collected_data set_variable = aroai_building_type_136_collected_data
+    set_variable = aroai_building_type_137_collected_data set_variable = aroai_building_type_138_collected_data
+    set_variable = aroai_building_type_139_collected_data set_variable = aroai_building_type_140_collected_data
+    set_variable = aroai_building_type_141_collected_data set_variable = aroai_building_type_142_collected_data
+    set_variable = aroai_building_type_143_collected_data set_variable = aroai_building_type_144_collected_data
+    set_variable = aroai_building_type_145_collected_data set_variable = aroai_building_type_146_collected_data
+    set_variable = aroai_building_type_147_collected_data set_variable = aroai_building_type_148_collected_data
+    set_variable = aroai_building_type_149_collected_data set_variable = aroai_building_type_150_collected_data
+    set_variable = aroai_building_type_151_collected_data set_variable = aroai_building_type_152_collected_data
+    set_variable = aroai_building_type_153_collected_data set_variable = aroai_building_type_154_collected_data
+    set_variable = aroai_building_type_155_collected_data set_variable = aroai_building_type_156_collected_data
+    set_variable = aroai_building_type_157_collected_data set_variable = aroai_building_type_158_collected_data
+    set_variable = aroai_building_type_159_collected_data set_variable = aroai_building_type_160_collected_data
+    set_variable = aroai_building_type_161_collected_data set_variable = aroai_building_type_162_collected_data
+    set_variable = aroai_building_type_163_collected_data set_variable = aroai_building_type_164_collected_data
+    set_variable = aroai_building_type_165_collected_data set_variable = aroai_building_type_166_collected_data
+    set_variable = aroai_building_type_167_collected_data set_variable = aroai_building_type_168_collected_data
+    set_variable = aroai_building_type_169_collected_data set_variable = aroai_building_type_170_collected_data
+    set_variable = aroai_building_type_171_collected_data set_variable = aroai_building_type_172_collected_data
+    set_variable = aroai_building_type_173_collected_data set_variable = aroai_building_type_174_collected_data
+    set_variable = aroai_building_type_175_collected_data set_variable = aroai_building_type_176_collected_data
+    set_variable = aroai_building_type_177_collected_data set_variable = aroai_building_type_178_collected_data
+    set_variable = aroai_building_type_179_collected_data set_variable = aroai_building_type_180_collected_data
+    set_variable = aroai_building_type_181_collected_data set_variable = aroai_building_type_182_collected_data
+    set_variable = aroai_building_type_183_collected_data set_variable = aroai_building_type_184_collected_data
+    set_variable = aroai_building_type_185_collected_data set_variable = aroai_building_type_186_collected_data
+    set_variable = aroai_building_type_187_collected_data set_variable = aroai_building_type_188_collected_data
+    set_variable = aroai_building_type_189_collected_data set_variable = aroai_building_type_190_collected_data
+    set_variable = aroai_building_type_191_collected_data set_variable = aroai_building_type_192_collected_data
+    set_variable = aroai_building_type_193_collected_data set_variable = aroai_building_type_194_collected_data
+    set_variable = aroai_building_type_195_collected_data set_variable = aroai_building_type_196_collected_data
+    set_variable = aroai_building_type_197_collected_data set_variable = aroai_building_type_198_collected_data
+    set_variable = aroai_building_type_199_collected_data set_variable = aroai_building_type_200_collected_data
+    set_variable = aroai_building_type_201_collected_data set_variable = aroai_building_type_202_collected_data
+    set_variable = aroai_building_type_203_collected_data set_variable = aroai_building_type_204_collected_data
+    set_variable = aroai_building_type_205_collected_data set_variable = aroai_building_type_206_collected_data
+    set_variable = aroai_building_type_207_collected_data set_variable = aroai_building_type_208_collected_data
+    set_variable = aroai_building_type_209_collected_data set_variable = aroai_building_type_210_collected_data
+    set_variable = aroai_building_type_211_collected_data set_variable = aroai_building_type_212_collected_data
+    set_variable = aroai_building_type_213_collected_data set_variable = aroai_building_type_214_collected_data
+    set_variable = aroai_building_type_215_collected_data set_variable = aroai_building_type_216_collected_data
+    set_variable = aroai_building_type_217_collected_data set_variable = aroai_building_type_218_collected_data
+    set_variable = aroai_building_type_219_collected_data set_variable = aroai_building_type_220_collected_data
+    set_variable = aroai_building_type_221_collected_data set_variable = aroai_building_type_222_collected_data
+    set_variable = aroai_building_type_223_collected_data set_variable = aroai_building_type_224_collected_data
+    set_variable = aroai_building_type_225_collected_data set_variable = aroai_building_type_226_collected_data
+    set_variable = aroai_building_type_227_collected_data set_variable = aroai_building_type_228_collected_data
+    set_variable = aroai_building_type_229_collected_data set_variable = aroai_building_type_230_collected_data
+    set_variable = aroai_building_type_231_collected_data set_variable = aroai_building_type_232_collected_data
+    set_variable = aroai_building_type_233_collected_data set_variable = aroai_building_type_234_collected_data
+    set_variable = aroai_building_type_235_collected_data set_variable = aroai_building_type_236_collected_data
+    set_variable = aroai_building_type_237_collected_data set_variable = aroai_building_type_238_collected_data
+    set_variable = aroai_building_type_239_collected_data set_variable = aroai_building_type_240_collected_data
+    set_variable = aroai_building_type_241_collected_data set_variable = aroai_building_type_242_collected_data
+    set_variable = aroai_building_type_243_collected_data set_variable = aroai_building_type_244_collected_data
+    set_variable = aroai_building_type_245_collected_data set_variable = aroai_building_type_246_collected_data
+    set_variable = aroai_building_type_247_collected_data set_variable = aroai_building_type_248_collected_data
+    set_variable = aroai_building_type_249_collected_data set_variable = aroai_building_type_250_collected_data
+    set_variable = aroai_building_type_251_collected_data set_variable = aroai_building_type_252_collected_data
+    set_variable = aroai_building_type_253_collected_data set_variable = aroai_building_type_254_collected_data
+    set_variable = aroai_building_type_255_collected_data set_variable = aroai_building_type_256_collected_data
+    set_variable = aroai_building_type_257_collected_data set_variable = aroai_building_type_258_collected_data
+    set_variable = aroai_building_type_259_collected_data set_variable = aroai_building_type_260_collected_data
+    set_variable = aroai_building_type_261_collected_data set_variable = aroai_building_type_262_collected_data
+    set_variable = aroai_building_type_263_collected_data set_variable = aroai_building_type_264_collected_data
+    set_variable = aroai_building_type_265_collected_data set_variable = aroai_building_type_266_collected_data
+    set_variable = aroai_building_type_267_collected_data set_variable = aroai_building_type_268_collected_data
+    set_variable = aroai_building_type_269_collected_data set_variable = aroai_building_type_270_collected_data
+    set_variable = aroai_building_type_271_collected_data set_variable = aroai_building_type_272_collected_data
+    set_variable = aroai_building_type_273_collected_data set_variable = aroai_building_type_274_collected_data
+    set_variable = aroai_building_type_275_collected_data set_variable = aroai_building_type_276_collected_data
+    set_variable = aroai_building_type_277_collected_data set_variable = aroai_building_type_278_collected_data
+    set_variable = aroai_building_type_279_collected_data set_variable = aroai_building_type_280_collected_data
+    set_variable = aroai_building_type_281_collected_data set_variable = aroai_building_type_282_collected_data
+    set_variable = aroai_building_type_283_collected_data set_variable = aroai_building_type_284_collected_data
+    set_variable = aroai_building_type_285_collected_data set_variable = aroai_building_type_286_collected_data
+    set_variable = aroai_building_type_287_collected_data set_variable = aroai_building_type_288_collected_data
+    set_variable = aroai_building_type_289_collected_data set_variable = aroai_building_type_290_collected_data
+    set_variable = aroai_building_type_291_collected_data set_variable = aroai_building_type_292_collected_data
+    set_variable = aroai_building_type_293_collected_data set_variable = aroai_building_type_294_collected_data
+    set_variable = aroai_building_type_295_collected_data set_variable = aroai_building_type_296_collected_data
+    set_variable = aroai_building_type_297_collected_data set_variable = aroai_building_type_298_collected_data
+    set_variable = aroai_building_type_299_collected_data set_variable = aroai_building_type_300_collected_data
+    set_variable = aroai_building_type_301_collected_data set_variable = aroai_building_type_302_collected_data
+    set_variable = aroai_building_type_303_collected_data set_variable = aroai_building_type_304_collected_data
+    set_variable = aroai_building_type_305_collected_data set_variable = aroai_building_type_306_collected_data
+    set_variable = aroai_building_type_307_collected_data set_variable = aroai_building_type_308_collected_data
+    set_variable = aroai_building_type_309_collected_data set_variable = aroai_building_type_310_collected_data
+    set_variable = aroai_building_type_311_collected_data set_variable = aroai_building_type_312_collected_data
+    set_variable = aroai_building_type_313_collected_data set_variable = aroai_building_type_314_collected_data
+    set_variable = aroai_building_type_315_collected_data set_variable = aroai_building_type_316_collected_data
+    set_variable = aroai_building_type_317_collected_data set_variable = aroai_building_type_318_collected_data
+    set_variable = aroai_building_type_319_collected_data set_variable = aroai_building_type_320_collected_data
+    set_variable = aroai_building_type_321_collected_data set_variable = aroai_building_type_322_collected_data
+    set_variable = aroai_building_type_323_collected_data set_variable = aroai_building_type_324_collected_data
+    set_variable = aroai_building_type_325_collected_data set_variable = aroai_building_type_326_collected_data
+    set_variable = aroai_building_type_327_collected_data set_variable = aroai_building_type_328_collected_data
+    set_variable = aroai_building_type_329_collected_data set_variable = aroai_building_type_330_collected_data
+    set_variable = aroai_building_type_331_collected_data set_variable = aroai_building_type_332_collected_data
+    set_variable = aroai_building_type_333_collected_data set_variable = aroai_building_type_334_collected_data
+    set_variable = aroai_building_type_335_collected_data set_variable = aroai_building_type_336_collected_data
+    set_variable = aroai_building_type_337_collected_data set_variable = aroai_building_type_338_collected_data
+    set_variable = aroai_building_type_339_collected_data set_variable = aroai_building_type_340_collected_data
+    set_variable = aroai_building_type_341_collected_data set_variable = aroai_building_type_342_collected_data
+    set_variable = aroai_building_type_343_collected_data set_variable = aroai_building_type_344_collected_data
+    set_variable = aroai_building_type_345_collected_data set_variable = aroai_building_type_346_collected_data
+    set_variable = aroai_building_type_347_collected_data set_variable = aroai_building_type_348_collected_data
+    set_variable = aroai_building_type_349_collected_data set_variable = aroai_building_type_350_collected_data
+    set_variable = aroai_building_type_351_collected_data set_variable = aroai_building_type_352_collected_data
+    set_variable = aroai_building_type_353_collected_data set_variable = aroai_building_type_354_collected_data
+    set_variable = aroai_building_type_355_collected_data set_variable = aroai_building_type_356_collected_data
+    set_variable = aroai_building_type_357_collected_data set_variable = aroai_building_type_358_collected_data
+    set_variable = aroai_building_type_359_collected_data set_variable = aroai_building_type_360_collected_data
+    set_variable = aroai_building_type_361_collected_data set_variable = aroai_building_type_362_collected_data
+    set_variable = aroai_building_type_363_collected_data set_variable = aroai_building_type_364_collected_data
+    set_variable = aroai_building_type_365_collected_data set_variable = aroai_building_type_366_collected_data
+    set_variable = aroai_building_type_367_collected_data set_variable = aroai_building_type_368_collected_data
+    set_variable = aroai_building_type_369_collected_data set_variable = aroai_building_type_370_collected_data
+    set_variable = aroai_building_type_371_collected_data set_variable = aroai_building_type_372_collected_data
+    set_variable = aroai_building_type_373_collected_data set_variable = aroai_building_type_374_collected_data
+    set_variable = aroai_building_type_375_collected_data set_variable = aroai_building_type_376_collected_data
+    set_variable = aroai_building_type_377_collected_data set_variable = aroai_building_type_378_collected_data
+    set_variable = aroai_building_type_379_collected_data set_variable = aroai_building_type_380_collected_data
+    set_variable = aroai_building_type_381_collected_data set_variable = aroai_building_type_382_collected_data
+    set_variable = aroai_building_type_383_collected_data set_variable = aroai_building_type_384_collected_data
+    set_variable = aroai_building_type_385_collected_data set_variable = aroai_building_type_386_collected_data
+    set_variable = aroai_building_type_387_collected_data set_variable = aroai_building_type_388_collected_data
+    set_variable = aroai_building_type_389_collected_data set_variable = aroai_building_type_390_collected_data
+    set_variable = aroai_building_type_391_collected_data set_variable = aroai_building_type_392_collected_data
+    set_variable = aroai_building_type_393_collected_data set_variable = aroai_building_type_394_collected_data
+    set_variable = aroai_building_type_395_collected_data set_variable = aroai_building_type_396_collected_data
+    set_variable = aroai_building_type_397_collected_data set_variable = aroai_building_type_398_collected_data
+    set_variable = aroai_building_type_399_collected_data set_variable = aroai_building_type_400_collected_data
+    set_variable = aroai_building_type_401_collected_data set_variable = aroai_building_type_402_collected_data
+    set_variable = aroai_building_type_403_collected_data set_variable = aroai_building_type_404_collected_data
+    set_variable = aroai_building_type_405_collected_data set_variable = aroai_building_type_406_collected_data
+    set_variable = aroai_building_type_407_collected_data set_variable = aroai_building_type_408_collected_data
+    set_variable = aroai_building_type_409_collected_data set_variable = aroai_building_type_410_collected_data
+    set_variable = aroai_building_type_411_collected_data set_variable = aroai_building_type_412_collected_data
+    set_variable = aroai_building_type_413_collected_data set_variable = aroai_building_type_414_collected_data
+    set_variable = aroai_building_type_415_collected_data set_variable = aroai_building_type_416_collected_data
+    set_variable = aroai_building_type_417_collected_data set_variable = aroai_building_type_418_collected_data
+    set_variable = aroai_building_type_419_collected_data set_variable = aroai_building_type_420_collected_data
+    set_variable = aroai_building_type_421_collected_data set_variable = aroai_building_type_422_collected_data
+    set_variable = aroai_building_type_423_collected_data set_variable = aroai_building_type_424_collected_data
+    set_variable = aroai_building_type_425_collected_data set_variable = aroai_building_type_426_collected_data
+    set_variable = aroai_building_type_427_collected_data set_variable = aroai_building_type_428_collected_data
+    set_variable = aroai_building_type_429_collected_data set_variable = aroai_building_type_430_collected_data
+    set_variable = aroai_building_type_431_collected_data set_variable = aroai_building_type_432_collected_data
+    set_variable = aroai_building_type_433_collected_data set_variable = aroai_building_type_434_collected_data
+    set_variable = aroai_building_type_435_collected_data set_variable = aroai_building_type_436_collected_data
+    set_variable = aroai_building_type_437_collected_data set_variable = aroai_building_type_438_collected_data
+    set_variable = aroai_building_type_439_collected_data set_variable = aroai_building_type_440_collected_data
+    set_variable = aroai_building_type_441_collected_data set_variable = aroai_building_type_442_collected_data
+    set_variable = aroai_building_type_443_collected_data set_variable = aroai_building_type_444_collected_data
+    set_variable = aroai_building_type_445_collected_data set_variable = aroai_building_type_446_collected_data
+    set_variable = aroai_building_type_447_collected_data set_variable = aroai_building_type_448_collected_data
+    set_variable = aroai_building_type_449_collected_data set_variable = aroai_building_type_450_collected_data
+    set_variable = aroai_building_type_451_collected_data set_variable = aroai_building_type_452_collected_data
+    set_variable = aroai_building_type_453_collected_data set_variable = aroai_building_type_454_collected_data
+    set_variable = aroai_building_type_455_collected_data set_variable = aroai_building_type_456_collected_data
+    set_variable = aroai_building_type_457_collected_data set_variable = aroai_building_type_458_collected_data
+    set_variable = aroai_building_type_459_collected_data set_variable = aroai_building_type_460_collected_data
+    set_variable = aroai_building_type_461_collected_data set_variable = aroai_building_type_462_collected_data
+    set_variable = aroai_building_type_463_collected_data set_variable = aroai_building_type_464_collected_data
+    set_variable = aroai_building_type_465_collected_data set_variable = aroai_building_type_466_collected_data
+    set_variable = aroai_building_type_467_collected_data set_variable = aroai_building_type_468_collected_data
+    set_variable = aroai_building_type_469_collected_data set_variable = aroai_building_type_470_collected_data
+    set_variable = aroai_building_type_471_collected_data set_variable = aroai_building_type_472_collected_data
+    set_variable = aroai_building_type_473_collected_data set_variable = aroai_building_type_474_collected_data
+    set_variable = aroai_building_type_475_collected_data set_variable = aroai_building_type_476_collected_data
+    set_variable = aroai_building_type_477_collected_data set_variable = aroai_building_type_478_collected_data
+    set_variable = aroai_building_type_479_collected_data set_variable = aroai_building_type_480_collected_data
+    set_variable = aroai_building_type_481_collected_data set_variable = aroai_building_type_482_collected_data
+    set_variable = aroai_building_type_483_collected_data set_variable = aroai_building_type_484_collected_data
+    set_variable = aroai_building_type_485_collected_data set_variable = aroai_building_type_486_collected_data
+    set_variable = aroai_building_type_487_collected_data set_variable = aroai_building_type_488_collected_data
+    set_variable = aroai_building_type_489_collected_data set_variable = aroai_building_type_490_collected_data
+    set_variable = aroai_building_type_491_collected_data set_variable = aroai_building_type_492_collected_data
+    set_variable = aroai_building_type_493_collected_data set_variable = aroai_building_type_494_collected_data
+    set_variable = aroai_building_type_495_collected_data set_variable = aroai_building_type_496_collected_data
+    set_variable = aroai_building_type_497_collected_data set_variable = aroai_building_type_498_collected_data
+    set_variable = aroai_building_type_499_collected_data set_variable = aroai_building_type_500_collected_data
+}

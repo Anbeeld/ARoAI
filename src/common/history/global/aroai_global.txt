@@ -1,0 +1,4 @@
+﻿GLOBAL = {
+    aroai_set_date_of_next_iteration_for_all_countries = yes
+    aroai_check_agriculture_resources_in_state_regions = yes
+}

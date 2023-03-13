@@ -1,0 +1,83 @@
+﻿# --------------------
+# Synthetic oil plants
+# --------------------
+
+aroai_consider_building_synthetic_oil_plants = { # Paste building key in the name
+    has_technology_researched = aniline # Technology and other hard requirements
+    aroai_building_is_allowed = { # Don't change, just copy
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$ # Don't change, just copy
+        shortage = 1 # Set 0 if you want a building to get constructed even through shortages in a country
+        profitable = 1 # Set 0 if you want a building to get constructed even when its type is unprofitable in country
+    }
+}
+
+aroai_sanction_building_synthetic_oil_plants = { # Paste building key in the name
+    aroai_sanction_industry = {
+        key = building_synthetic_oil_plants # Paste building key here
+        id = $id$ # Don't change, just copy
+        conditions = 0 # 0 means both new building and expanding old ones, 1 is only expanding, 2 is only new
+        shortage = 1 # Same as in aroai_consider_building, but this is using local state data
+        profitable = 1 # Same as in aroai_consider_building, but this is using local state data
+    }
+}
+
+aroai_allocate_building_synthetic_oil_plants = { # Paste building key in the name
+    $aptitude$ = 1 # For industry buildings it's placeholder, but resource buildings require other code here, see below.
+}
+
+# Here's how it looks for oil rig, this is because resource (and agriculture) building have some additional allocation
+# rules, while industry building don't. See /src/common/scripted_triggers/aroai_static_data_triggers.txt for examples. 
+# aroai_allocate_building_oil_rig = {
+#     aroai_allocate_resource = {
+#         good = g:oil
+#         aptitude = $aptitude$
+#     }
+# }
+# You can actually describe completely custom rules here with adjusting allocate attribute in building table, but it's
+# rarely needed cause there are a lot of other allocation under the hood like incorpotated states being prioritized etc.
+
+# -----------------------
+# Synthetic rubber plants
+# -----------------------
+
+aroai_consider_building_synthetic_rubber_plants = {
+    has_technology_researched = plastics
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_synthetic_rubber_plants = {
+    aroai_sanction_industry = {
+        key = building_synthetic_rubber_plants
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_synthetic_rubber_plants = {
+    $aptitude$ = 1
+}
+
+# ------------------------------------------------------------------------------------
+# Triggers below were generated with a modding tool and should not be changed manually
+# ------------------------------------------------------------------------------------
+
+aroai_is_true_for_any_building_type_1 = {
+    OR = {
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_synthetic_oil_plants id = 201
+        class = 4 counter = 12 order = 6 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_synthetic_rubber_plants id = 202
+        class = 4 counter = 11 order = 7 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    }
+}

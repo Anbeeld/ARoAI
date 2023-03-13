@@ -1,0 +1,325 @@
+﻿aroai_in_default = {
+    scaled_debt >= 0.975
+    aroai_country_budget_surplus < 0
+}
+
+aroai_budget_health_is_equal_or_higher = {
+    switch = {
+        trigger = $level$
+        -3 = {
+            aroai_weeks_of_reserves < aroai_weeks_of_reserves_for_health_0
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_minus_3
+                scaled_debt < aroai_scaled_debt_for_health_minus_3
+            }
+        }
+        -2 = {
+            aroai_weeks_of_reserves < aroai_weeks_of_reserves_for_health_0
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_minus_2
+                scaled_debt < aroai_scaled_debt_for_health_minus_2
+            }
+        }
+        -1 = {
+            aroai_weeks_of_reserves < aroai_weeks_of_reserves_for_health_0
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_minus_1
+                scaled_debt < aroai_scaled_debt_for_health_minus_1
+            }
+        }
+        0 = {
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_0
+                aroai_weeks_of_reserves >= aroai_weeks_of_reserves_for_health_0
+            }
+        }
+        1 = {
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_1
+                aroai_weeks_of_reserves >= aroai_weeks_of_reserves_for_health_1
+            }
+        }
+        2 = {
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_2
+                aroai_weeks_of_reserves >= aroai_weeks_of_reserves_for_health_2
+            }
+        }
+        3 = {
+            OR = {
+                aroai_country_budget_surplus_percent >= aroai_country_budget_surplus_for_health_3
+                aroai_weeks_of_reserves >= aroai_weeks_of_reserves_for_health_3
+            }
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+aroai_government_wages_are_very_low = {
+    modifier:country_government_wages_mult < -0.25
+}
+
+aroai_government_wages_are_low = {
+    modifier:country_government_wages_mult < -0.10
+    modifier:country_government_wages_mult >= -0.25
+}
+
+aroai_government_wages_are_medium = {
+    modifier:country_government_wages_mult >= -0.10
+    modifier:country_government_wages_mult <= 0.10
+}
+
+aroai_government_wages_are_high = {
+    modifier:country_government_wages_mult > 0.10
+    modifier:country_government_wages_mult <= 0.25
+}
+
+aroai_government_wages_are_very_high = {
+    modifier:country_government_wages_mult > 0.25
+}
+
+aroai_military_wages_are_very_low = {
+    modifier:country_military_wages_mult < -0.25
+}
+
+aroai_military_wages_are_low = {
+    modifier:country_military_wages_mult < -0.10
+    modifier:country_military_wages_mult >= -0.25
+}
+
+aroai_military_wages_are_medium = {
+    modifier:country_military_wages_mult >= -0.10
+    modifier:country_military_wages_mult <= 0.10
+}
+
+aroai_military_wages_are_high = {
+    modifier:country_military_wages_mult > 0.10
+    modifier:country_military_wages_mult <= 0.25
+}
+
+aroai_military_wages_are_very_high = {
+    modifier:country_military_wages_mult > 0.25
+}
+
+aroai_can_cut_government_wages = {
+    AND = {
+        OR = {
+            NOT = {
+                exists = ig:ig_intelligentsia
+            }
+            AND = {
+                exists = ig:ig_intelligentsia
+                ig:ig_intelligentsia = {
+                    OR = {
+                        root = {
+                            NOT = {
+                                aroai_budget_health_is_equal_or_higher = {
+                                    level = -2
+                                }
+                            }
+                        }
+                        AND = {
+                            is_in_government = yes
+                            ig_approval > -3
+                        }
+                        AND = {
+                            is_in_government = no
+                            ig_approval > -8
+                        }
+                        is_marginal = yes
+                    }
+                }
+            }
+        }
+        OR = {
+            NOT = {
+                exists = ig:ig_petty_bourgeoisie
+            }
+            AND = {
+                exists = ig:ig_petty_bourgeoisie
+                ig:ig_petty_bourgeoisie = {
+                    OR = {
+                        root = {
+                            NOT = {
+                                aroai_budget_health_is_equal_or_higher = {
+                                    level = -2
+                                }
+                            }
+                        }
+                        AND = {
+                            is_in_government = yes
+                            ig_approval > -3
+                        }
+                        AND = {
+                            is_in_government = no
+                            ig_approval > -8
+                        }
+                        is_marginal = yes
+                    }
+                }
+            }
+        }
+    }
+}
+
+aroai_can_cut_military_wages = {
+    aroai_is_using_military_forces = no
+    OR = {
+        NOT = {
+            exists = ig:ig_armed_forces
+        }
+        AND = {
+            exists = ig:ig_armed_forces
+            ig:ig_armed_forces = {
+                OR = {
+                    root = {
+                        NOT = {
+                            aroai_budget_health_is_equal_or_higher = {
+                                level = -2
+                            }
+                        }
+                    }
+                    AND = {
+                        is_in_government = yes
+                        ig_approval > -3
+                    }
+                    AND = {
+                        is_in_government = no
+                        ig_approval > -8
+                    }
+                    is_marginal = yes
+                }
+            }
+        }
+    }
+}
+
+aroai_is_using_military_forces = {
+    OR = {
+        is_at_war = yes
+        is_diplomatic_play_committed_participant = yes
+        any_scope_general = {
+            is_mobilized = yes
+        }
+        any_scope_admiral = {
+            is_mobilized = yes
+        }
+    }
+}
+
+aroai_are_military_expenses_higher_than_usual = {
+    OR = {
+        has_variable = aroai_military_expenses_are_higher_than_usual
+        aroai_is_using_military_forces = yes
+    }
+}
+
+aroai_tax_level_equal_or_lower = {
+    trigger_if = {
+        limit = {
+            $value$ = 5
+        }
+        OR = {
+            tax_level = very_low
+            tax_level = low
+            tax_level = medium
+            tax_level = high
+            tax_level = very_high
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 4
+        }
+        OR = {
+            tax_level = very_low
+            tax_level = low
+            tax_level = medium
+            tax_level = high
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 3
+        }
+        OR = {
+            tax_level = very_low
+            tax_level = low
+            tax_level = medium
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 2
+        }
+        OR = {
+            tax_level = very_low
+            tax_level = low
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 1
+        }
+        tax_level = very_low
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_tax_level_equal_or_higher = {
+    trigger_if = {
+        limit = {
+            $value$ = 5
+        }
+        tax_level = very_high
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 4
+        }
+        OR = {
+            tax_level = high
+            tax_level = very_high
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 3
+        }
+        OR = {
+            tax_level = medium
+            tax_level = high
+            tax_level = very_high
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 2
+        }
+        OR = {
+            tax_level = low
+            tax_level = medium
+            tax_level = high
+            tax_level = very_high
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            $value$ = 1
+        }
+        OR = {
+            tax_level = very_low
+            tax_level = low
+            tax_level = medium
+            tax_level = high
+            tax_level = very_high
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}

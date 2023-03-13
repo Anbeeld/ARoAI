@@ -1,0 +1,118 @@
+﻿namespace = aroai_framework_events
+
+# Called by on_monthly_pulse_country, but scope that called it doesn't matter, as there's no dependency on root scope.
+aroai_framework_events.1 = {
+    type = country_event
+    hidden = yes
+
+    # We ensure this is called only once per day by checking global variable...
+    trigger = {
+        OR = {
+            NOT = {
+                has_global_variable = aroai_date_of_last_event_execution
+            }
+            NOT = {
+                global_var:aroai_date_of_last_event_execution = game_date
+            }
+        }
+    }
+
+    immediate = {
+        
+        # ...that contains date of the last execution of this event.
+        set_global_variable = {
+            name = aroai_date_of_last_event_execution
+            value = game_date
+        }
+
+        # Make sure this event is actually called every day, e.g. if there are too few countries worldwide
+        # for on_monthly_pulse_country to be distributed over every single day of the month.
+        random_country = {
+            trigger_event = {
+                id = aroai_framework_events.1
+                days = 1
+            }
+        }
+
+        # Once per game
+        aroai_set_date_of_next_iteration_for_all_countries = yes
+        aroai_count_barracks_and_conscription_centers_of_all_countries = yes
+
+        # Once per day
+        aroai_refresh_list_of_compatibility_patches = yes
+
+        # Once per month
+        aroai_apply_accelerated_construction_modifiers = yes
+        aroai_track_stalemate_wars_between_ai_countries = yes
+
+        # Once per year
+        aroai_check_agriculture_resources_in_state_regions = yes
+        
+        # Country-specific actions happen in cycle with each iteration being (aroai_weeks_in_iteration * 7) days long.
+        # Iteration start dates are distributed randomly and are not synchonized between different countries.
+        # Here's what iteration main sequence looks like:
+        # Day 1 = check research assitance, collect economy data.
+        # Day 2 = evaluate economy data.
+        # Days 3-(aroai_half_of_days_in_iteration_rounded_down) = construct new buildings one type per day.
+        # Days >aroai_half_of_days_in_iteration_rounded_down = unused.
+        # In addition, there are weekly loop iterations on day 1 and then every 7 days.
+        every_country = {
+
+            # If country is not allowed, it may have leftover variables, so we make sure these are cleared.
+            if = {
+                limit = {
+                    aroai_is_country_allowed = no
+                }
+                aroai_clear_country_cycle_variables = yes
+            }
+            else = {
+
+                # If country doesn't have an iteration date, we set a new one with the delay of iteration duration
+                # minus up to one week to prevent iteration overlay if previous one was interrupted in the beginning.
+                if = {
+                    limit = {
+                        NOT = {
+                            has_variable = aroai_date_of_next_iteration
+                        }
+                    }
+                    set_variable = {
+                        name = aroai_date_of_next_iteration
+                        value = {
+                            value = game_date
+                            add = {
+                                integer_range = {
+                                    min = {
+                                        value = aroai_days_in_the_iteration
+                                        subtract = 6
+                                    }
+                                    max = aroai_days_in_the_iteration
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                # It's time to start a new iteration.
+                if = {
+                    limit = {
+                        var:aroai_date_of_next_iteration <= game_date
+                    }
+
+                    # This is then used in script value aroai_day_of_ongoing_iteration (starts with 1, not 0).
+                    set_variable = {
+                        name = aroai_date_of_next_iteration
+                        value = {
+                            value = game_date
+                            add = aroai_days_in_the_iteration
+                        }
+                    }
+
+                    # Country-specific actions are wrapped with an event in order to overwrite the root scope.
+                    trigger_event = {
+                        id = aroai_preparation_events.1
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,3091 @@
+﻿####################
+# ECONOMY DATABASE #
+####################
+
+##########################################################
+## GOVERNMENT ADMINISTRATION
+##########################################################
+
+# ------------------------------------------------------
+# GOVERNMENT ADMINISTRATION
+# ------------------------------------------------------
+
+aroai_consider_building_government_administration = {
+    has_technology_researched = tech_bureaucracy
+    aroai_building_is_allowed = {
+        critical = 1
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 0
+        profitable = 0
+    }
+    OR = {
+        bureaucracy < aroai_bureaucracy_1
+        AND = {
+            trigger_if = {
+                limit = {
+                    aroai_are_military_expenses_higher_than_usual = no
+                }
+                OR = {
+                    aroai_budget_health_is_equal_or_higher = {
+                        level = -1
+                    }
+                    aroai_tax_level_equal_or_lower = {
+                        value = 3
+                    }
+                }
+            }
+            trigger_else = {
+                OR = {
+                    aroai_budget_health_is_equal_or_higher = {
+                        level = 0
+                    }
+                    aroai_tax_level_equal_or_lower = {
+                        value = 2
+                    }
+                }
+            }
+            aroai_building_government_administration_spending_value < aroai_building_government_administration_spending_target
+            aroai_building_government_administration_spending_expected < aroai_building_government_administration_spending_excess
+        }
+    }
+    bureaucracy < aroai_bureaucracy_ceiling
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_government_administration
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_government_administration = {
+    trigger_if = {
+        limit = {
+            $priority$ >= 1
+            $priority$ <= 10
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_government_administration_cooldown
+                }
+                NOR = {
+                    $priority$ > 1
+                    aroai_building_government_administration_spending_expected > aroai_building_government_administration_spending_target
+                }
+            }
+        }
+        switch = {
+            trigger = $priority$
+            1 = {
+                bureaucracy < aroai_bureaucracy_1
+            }
+            2 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_2
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_2
+                }
+            }
+            3 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_3
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_3
+                }
+            }
+            4 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_4
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_4
+                }
+            }
+            5 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_5
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_5
+                }
+            }
+            6 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_6
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_6
+                }
+            }
+            7 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_7
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_7
+                }
+            }
+            8 = {
+                OR = {
+                    bureaucracy < aroai_bureaucracy_8
+                    aroai_country_lost_taxes > aroai_country_lost_taxes_8
+                }
+            }
+            9 = {
+                bureaucracy < aroai_bureaucracy_9
+            }
+            10 = {
+                bureaucracy < aroai_bureaucracy_10
+            }
+            fallback = {
+                always = no
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_government_administration = {
+    aroai_sanction_government = {
+        key = building_government_administration
+        conditions = 0
+        shortage = 0
+        profitable = 0
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_government_administration = {
+    switch = {
+        trigger = $aptitude$
+        1 = {
+            is_incorporated = yes
+            aroai_tax_capacity_balance_percent < 1
+            save_temporary_scope_as = aroai_current_state
+            root = {
+                any_scope_state = {
+                    aroai_taxes_lost_due_to_tax_capacity > scope:aroai_current_state.aroai_taxes_lost_due_to_tax_capacity
+                    percent < 0.10
+                }
+            }
+        }
+        2 = {
+            is_incorporated = yes
+            aroai_tax_capacity_balance_percent < 1
+            save_temporary_scope_as = aroai_current_state
+            root = {
+                any_scope_state = {
+                    aroai_taxes_lost_due_to_tax_capacity > scope:aroai_current_state.aroai_taxes_lost_due_to_tax_capacity
+                    percent < 0.50
+                }
+            }
+        }
+        3 = {
+            is_incorporated = yes
+            aroai_tax_capacity_balance_percent < 1
+            save_temporary_scope_as = aroai_current_state
+            root = {
+                any_scope_state = {
+                    aroai_taxes_lost_due_to_tax_capacity > scope:aroai_current_state.aroai_taxes_lost_due_to_tax_capacity
+                    percent >= 0.50
+                }
+            }
+        }
+        4 = {
+            OR = {
+                is_incorporated = no
+                aroai_tax_capacity_balance_percent >= 1
+            }
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+### UNIVERSITY
+
+aroai_consider_building_university = {
+    has_technology_researched = academia
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 0
+    }
+    trigger_if = {
+        limit = {
+            aroai_innovation_current < aroai_innovation_target
+            aroai_building_university_total < aroai_building_university_target
+        }
+        trigger_if = {
+            limit = {
+                aroai_are_military_expenses_higher_than_usual = no
+            }
+            OR = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -1
+                }
+                aroai_tax_level_equal_or_lower = {
+                    value = 3
+                }
+            }
+        }
+        trigger_else = {
+            OR = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = 0
+                }
+                aroai_tax_level_equal_or_lower = {
+                    value = 2
+                }
+            }
+        }
+    }
+    trigger_else = {
+        OR = {
+            aroai_budget_health_is_equal_or_higher = {
+                level = 0
+            }
+            aroai_tax_level_equal_or_lower = {
+                value = 2
+            }
+        }
+    }
+    aroai_building_university_spending_value < aroai_building_university_spending_target
+    aroai_building_university_spending_expected < aroai_building_university_spending_excess
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_university
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_university = {
+    trigger_if = {
+        limit = {
+            $priority$ >= 5
+            $priority$ <= 12
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_university_cooldown
+                }
+                NOR = {
+                    $priority$ > 5
+                    aroai_building_university_spending_expected > aroai_building_university_spending_target
+                }
+            }
+        }
+        OR = {
+            $priority$ > 7
+            AND = {
+                aroai_innovation_current < aroai_innovation_8
+                aroai_building_university_total < aroai_building_university_8
+            }
+        }
+        switch = {
+            trigger = $priority$
+            5 = {
+                OR = {
+                    aroai_innovation_current < aroai_innovation_5
+                    aroai_building_university_total < aroai_building_university_5
+                }
+            }
+            6 = {
+                OR = {
+                    aroai_innovation_current < aroai_innovation_6
+                    aroai_building_university_total < aroai_building_university_6
+                }
+            }
+            7 = {
+                OR = {
+                    aroai_innovation_current < aroai_innovation_7
+                    aroai_building_university_total < aroai_building_university_7
+                }
+            }
+            8 = {
+                aroai_innovation_current < aroai_innovation_8
+                aroai_building_university_total < aroai_building_university_8
+            }
+            9 = {
+                aroai_innovation_current < aroai_innovation_9
+                aroai_building_university_total < aroai_building_university_9
+            }
+            10 = {
+                aroai_innovation_current < aroai_innovation_10
+                aroai_building_university_total < aroai_building_university_10
+            }
+            11 = {
+                aroai_innovation_current < aroai_innovation_11
+                aroai_building_university_total < aroai_building_university_10
+            }
+            12 = {
+                aroai_innovation_current < aroai_innovation_12
+                aroai_building_university_total < aroai_building_university_10
+            }
+            fallback = {
+                always = yes
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_university = {
+    aroai_sanction_government = {
+        key = building_university 
+        conditions = 0
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_university = {
+    $aptitude$ = 1
+}
+
+### CONSTRUCTION SECTOR
+
+aroai_consider_building_construction_sector = {
+    has_technology_researched = urbanization
+    aroai_building_is_allowed = {
+        critical = 3
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        NOT = {
+            has_variable = aroai_previous_usage_of_construction_points
+        }
+        var:aroai_previous_usage_of_construction_points >= 0.70
+    }
+    trigger_if = {
+        limit = {
+            aroai_investment_pool_expected > aroai_investment_pool_transfer
+        }
+        OR = {
+            aroai_budget_health_is_equal_or_higher = {
+                level = -1
+            }
+            aroai_tax_level_equal_or_lower = {
+                value = 3
+            }
+        }
+    }
+    trigger_else = {
+        OR = {
+            aroai_budget_health_is_equal_or_higher = {
+                level = 0
+            }
+            aroai_tax_level_equal_or_lower = {
+                value = 2
+            }
+        }
+    }
+    aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_target
+    aroai_building_construction_sector_spending_expected < aroai_building_construction_sector_spending_excess
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_construction_sector
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_construction_sector = {
+    trigger_if = {
+        limit = {
+            $priority$ >= 1
+            $priority$ <= 8
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_construction_sector_cooldown
+                }
+                NOR = {
+                    $priority$ > 5
+                    aroai_building_construction_sector_spending_expected > aroai_building_construction_sector_spending_target
+                }
+            }
+        }
+        switch = {
+            trigger = $priority$
+            1 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_1
+            }
+            2 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_2
+            }
+            3 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_3
+            }
+            4 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_4
+            }
+            5 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_5
+            }
+            6 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_6
+            }
+            7 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_7
+            }
+            8 = {
+                aroai_building_construction_sector_spending_value < aroai_building_construction_sector_spending_8
+            }
+            fallback = {
+                always = no
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_construction_sector = {
+    var:aroai_building_construction_sector_level < aroai_state_construction_sector_limit
+    aroai_sanction_government = {
+        key = building_construction_sector 
+        conditions = 0
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_construction_sector = {
+    $aptitude$ = 1
+}
+
+### RAILWAY
+
+aroai_consider_building_railway = {
+    has_technology_researched = railways
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    OR = {
+        aroai_budget_health_is_equal_or_higher = {
+            level = -2
+        }
+        aroai_tax_level_equal_or_lower = {
+            value = 4
+        }
+    }
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_railway
+            }
+        }
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_evaluate_building_railway = {
+    trigger_if = {
+        limit = {
+            OR = {
+                $priority$ = 1
+                $priority$ = 5
+            }
+        }
+        aroai_consider_building = {
+            id = 4
+            shortage = 1
+            profitable = 0
+        }
+    }
+    trigger_else_if = {
+        limit = {
+            OR = {
+                $priority$ = 9
+                $priority$ = 16
+            }
+        }
+        aroai_consider_building = {
+            id = 4
+            shortage = 1
+            profitable = 1
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+    switch = {
+        trigger = $priority$
+        1 = {
+            any_scope_state = {
+                aroai_sanction_infrastructure = {
+                    key = building_railway 
+                    conditions = 0
+                    shortage = 1
+                    profitable = 0
+                }
+                aroai_infrastructure_balance_percent < aroai_infrastructure_4
+            }
+        }
+        5 = {
+            any_scope_state = {
+                aroai_sanction_infrastructure = {
+                    key = building_railway 
+                    conditions = 0
+                    shortage = 1
+                    profitable = 0
+                }
+                aroai_infrastructure_balance_percent < aroai_infrastructure_5
+            }
+        }
+        9 = {
+            market.mg:transportation.aroai_price_level >= 5
+        }
+        16 = {
+            market.mg:transportation.aroai_price_level >= 9
+        }
+    }
+}
+
+aroai_sanction_building_railway = {
+    aroai_sanction_infrastructure = {
+        key = building_railway 
+        conditions = 0
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        aroai_infrastructure_balance_percent < aroai_infrastructure_5
+        root.aroai_building_type_$id$_collected_data_1 >= 9
+    }
+    OR = {
+        aroai_infrastructure_balance_percent < aroai_infrastructure_6
+        root.aroai_building_type_$id$_collected_data_1 >= 16
+    }
+}
+
+aroai_allocate_building_railway = {
+    switch = {
+        trigger = $aptitude$
+        1 = {
+            aroai_infrastructure_balance_percent < aroai_infrastructure_1
+        }
+        2 = {
+            aroai_infrastructure_balance_percent < aroai_infrastructure_2
+        }
+        3 = {
+            aroai_infrastructure_balance_percent < aroai_infrastructure_3
+        }
+        4 = {
+            aroai_infrastructure_balance_percent < aroai_infrastructure_4
+        }
+        5 = {
+            aroai_infrastructure_balance_percent < aroai_infrastructure_5
+        }
+        6 = {
+            aroai_infrastructure_balance_percent >= aroai_infrastructure_5
+            aroai_infrastructure_balance_percent < aroai_infrastructure_6
+        }
+        7 = {
+            aroai_infrastructure_balance_percent >= aroai_infrastructure_6
+            aroai_infrastructure_balance_percent < aroai_infrastructure_7
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+### PORT
+
+aroai_consider_building_port = {
+    has_technology_researched = navigation
+    aroai_building_is_allowed = {
+        critical = 5
+    }
+    any_scope_state = {
+        is_coastal = yes
+    }
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_port
+            }
+        }
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_evaluate_building_port = {
+    
+    trigger_if = {
+        limit = {
+            $priority$ >= 1
+            $priority$ <= 10
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_port_cooldown
+                }
+                $priority$ = 1
+            }
+        }
+
+        trigger_if = {
+            limit = {
+                $priority$ = 1
+            }
+            always = yes
+        }
+        trigger_else_if = {
+            limit = {
+                $priority$ >= 2
+                $priority$ <= 3
+            }
+            trigger_if = {
+                limit = {
+                    aroai_are_military_expenses_higher_than_usual = no
+                }
+                OR = {
+                    aroai_budget_health_is_equal_or_higher = {
+                        level = -1
+                    }
+                    aroai_tax_level_equal_or_lower = {
+                        value = 3
+                    }
+                }
+            }
+            trigger_else = {
+                OR = {
+                    aroai_budget_health_is_equal_or_higher = {
+                        level = 0
+                    }
+                    aroai_tax_level_equal_or_lower = {
+                        value = 2
+                    }
+                }
+            }
+            aroai_building_port_spending_value < aroai_building_port_spending_excess
+            aroai_building_port_spending_expected < aroai_building_port_spending_ceiling
+            aroai_convoys_current < aroai_convoys_excess
+        }
+        trigger_else_if = {
+            limit = {
+                $priority$ >= 4
+            }
+            OR = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = 0
+                }
+                aroai_tax_level_equal_or_lower = {
+                    value = 2
+                }
+            }
+            aroai_building_port_spending_value < aroai_building_port_spending_target
+            aroai_building_port_spending_expected < aroai_building_port_spending_excess
+            aroai_convoys_current < aroai_convoys_target
+        }
+        
+        trigger_if = {
+            limit = {
+                $priority$ = 1
+            }
+            aroai_consider_building = {
+                id = 5
+                shortage = 0
+                profitable = 0
+            }
+        }
+        trigger_else_if = {
+            limit = {
+                $priority$ >= 2
+            }
+            aroai_consider_building = {
+                id = 5
+                shortage = 1
+                profitable = 0
+            }
+        }
+        
+        switch = {
+            trigger = $priority$
+            1 = {
+                OR = {
+                    AND = {
+                        aroai_has_variable_list = {
+                            name = aroai_market_capital_coastline
+                        }
+                        aroai_overseas_connections_are_required = yes
+                        NOT = {
+                            any_in_list = {
+                                variable = aroai_market_capital_coastline
+                                aroai_has_building = {
+                                    key = building_port
+                                }
+                            }
+                        }
+                        any_in_list = {
+                            variable = aroai_market_capital_coastline
+                            aroai_sanction_building_port = {
+                                id = 5
+                            }
+                            aroai_sanction_infrastructure = {
+                                key = building_port
+                                conditions = 1
+                                shortage = 0
+                                profitable = 0
+                            }
+                        }
+                    }
+                    any_scope_state = {
+                        is_isolated_from_market = yes
+                        aroai_sanction_building_port = {
+                            id = 5
+                        }
+                        aroai_sanction_infrastructure = {
+                            key = building_port
+                            conditions = 1
+                            shortage = 0
+                            profitable = 0
+                        }
+                    }
+                }
+            }
+            2 = {
+                aroai_has_variable_list = {
+                    name = aroai_market_capital_coastline
+                }
+                aroai_overseas_connections_are_required = yes
+                any_in_list = {
+                    variable = aroai_market_capital_coastline
+                    aroai_has_building = {
+                        key = building_port
+                    }
+                    count < aroai_ports_on_market_capital_coastline
+                }
+                any_in_list = {
+                    variable = aroai_market_capital_coastline
+                    aroai_sanction_building_port = {
+                        id = 5
+                    }
+                    aroai_sanction_infrastructure = {
+                        key = building_port
+                        conditions = 1
+                        shortage = 1
+                        profitable = 0
+                    }
+                }
+            }
+            3 = {
+                any_country = {
+                    NOT = {
+                        this = root
+                    }
+                    market.owner = root
+                    any_scope_state = {
+                        is_coastal = yes
+                        infrastructure >= infrastructure_usage
+                        market_access < 1
+                        any_scope_building = {
+                            is_building_type = building_port
+                            level > 0
+                        }
+                    }
+                }
+            }
+            4 = {
+                any_scope_state = {
+                    aroai_infrastructure_balance_percent < aroai_infrastructure_5
+                    aroai_sanction_building_port = {
+                        id = 5
+                    }
+                    aroai_sanction_infrastructure = {
+                        key = building_port
+                        conditions = 0
+                        shortage = 1
+                        profitable = 0
+                    }
+                }
+            }
+            5 = {
+                aroai_convoys_current < aroai_convoys_5
+            }
+            6 = {
+                aroai_convoys_current < aroai_convoys_6
+            }
+            7 = {
+                aroai_convoys_current < aroai_convoys_7
+            }
+            8 = {
+                aroai_convoys_current < aroai_convoys_8
+            }
+            9 = {
+                aroai_convoys_current < aroai_convoys_9
+            }
+            10 = {
+                aroai_convoys_current < aroai_convoys_10
+            }
+            11 = {
+                aroai_convoys_current < aroai_convoys_11
+            }
+            12 = {
+                aroai_convoys_current < aroai_convoys_12
+            }
+            fallback = {
+                always = no
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_port = {
+    is_coastal = yes
+    var:aroai_building_port_level < aroai_state_port_limit
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_port = {
+    switch = {
+        trigger = $aptitude$
+        1 = {
+            root = {
+                aroai_building_type_5_collected_data_1 = 1
+                aroai_has_variable_list = {
+                    name = aroai_market_capital_coastline
+                }
+                aroai_overseas_connections_are_required = yes
+                NOT = {
+                    any_in_list = {
+                        variable = aroai_market_capital_coastline
+                        aroai_has_building = {
+                            key = building_port
+                        }
+                    }
+                }
+                is_target_in_variable_list = {
+                    name = aroai_market_capital_coastline
+                    target = prev
+                }
+            }
+            OR = {
+                this = root.market_capital
+                root.market_capital = {
+                    aroai_has_building = {
+                        key = building_port
+                    }
+                }
+                NOT = {
+                    root.market_capital.owner = root
+                }
+            }
+            aroai_sanction_infrastructure = {
+                key = building_port
+                conditions = 1
+                shortage = 0
+                profitable = 0
+            }
+        }
+        2 = {
+            root.aroai_building_type_5_collected_data_1 = 1
+            is_isolated_from_market = yes
+            aroai_sanction_infrastructure = {
+                key = building_port
+                conditions = 1
+                shortage = 0
+                profitable = 0
+            }
+        }
+        3 = {
+            root = {
+                aroai_building_type_5_collected_data_1 = 2
+                is_target_in_variable_list = {
+                    name = aroai_market_capital_coastline
+                    target = prev
+                }
+            }
+            OR = {
+                this = root.market_capital
+                root.market_capital = {
+                    aroai_has_building = {
+                        key = building_port
+                    }
+                }
+                NOT = {
+                    root.market_capital.owner = root
+                }
+            }
+            aroai_sanction_infrastructure = {
+                key = building_port
+                conditions = 1
+                shortage = 1
+                profitable = 0
+            }
+        }
+        4 = {
+            root.aroai_building_type_5_collected_data_1 >= 3
+            aroai_infrastructure_balance_percent < aroai_infrastructure_5
+            NOT = {
+                any_scope_building = {
+                    is_building_type = building_port
+                    level > 0
+                    has_active_production_method = pm_anchorage
+                }
+            }
+            aroai_sanction_infrastructure = {
+                key = building_port 
+                conditions = 0
+                shortage = 1
+                profitable = 0
+            }
+        }
+        5 = {
+            root.aroai_building_type_5_collected_data_1 >= 3
+            aroai_infrastructure_balance_percent >= aroai_infrastructure_5
+            NOT = {
+                any_scope_building = {
+                    is_building_type = building_port
+                    level > 0
+                    has_active_production_method = pm_anchorage
+                }
+            }
+            aroai_sanction_infrastructure = {
+                key = building_port 
+                conditions = 0
+                shortage = 1
+                profitable = 0
+            }
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+### BARRACKS
+
+aroai_consider_building_barracks = {
+    has_technology_researched = standing_army
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    OR = {
+        aroai_budget_health_is_equal_or_higher = {
+            level = -1
+        }
+        aroai_tax_level_equal_or_lower = {
+            value = 3
+        }
+    }
+    trigger_if = {
+        limit = {
+            var:aroai_building_barracks_total < aroai_battalion_paucity
+        }
+        aroai_consider_building = {
+            id = $id$
+            shortage = 0
+            profitable = 0
+        }
+    }
+    trigger_else = {
+        aroai_consider_building = {
+            id = $id$
+            shortage = 1
+            profitable = 0
+        }
+    }
+    OR = {
+        var:aroai_building_barracks_total < aroai_battalion_floor
+        AND = {
+            aroai_building_barracks_spending_value < aroai_building_barracks_spending_target
+            aroai_building_barracks_spending_expected < aroai_building_barracks_spending_excess
+        }
+    }
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_barracks
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_barracks = {
+    trigger_if = {
+        limit = {
+            $priority$ >= 2
+            $priority$ <= 10
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_barracks_cooldown
+                }
+                NOR = {
+                    $priority$ > 5
+                    aroai_building_barracks_spending_expected > aroai_building_barracks_spending_target
+                }
+            }
+        }
+        switch = {
+            trigger = $priority$
+            2 = {
+                var:aroai_building_barracks_total < aroai_battalion_1
+            }
+            3 = {
+                var:aroai_building_barracks_total < aroai_battalion_2
+            }
+            4 = {
+                var:aroai_building_barracks_total < aroai_battalion_3
+            }
+            5 = {
+                var:aroai_building_barracks_total < aroai_battalion_4
+            }
+            6 = {
+                var:aroai_building_barracks_total < aroai_battalion_5
+            }
+            7 = {
+                var:aroai_building_barracks_total < aroai_battalion_6
+            }
+            8 = {
+                var:aroai_building_barracks_total < aroai_battalion_7
+            }
+            9 = {
+                var:aroai_building_barracks_total < aroai_battalion_8
+            }
+            10 = {
+                var:aroai_building_barracks_total < aroai_battalion_9
+            }
+            fallback = {
+                always = no
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_barracks = {
+    var:aroai_building_barracks_level < aroai_state_barracks_limit
+    aroai_sanction_infrastructure = {
+        key = building_barracks
+        conditions = 0
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_barracks = {
+    switch = {
+        trigger = $aptitude$
+        1 = {
+            aroai_has_non_discriminated_homelanders = yes
+        }
+        2 = {
+            aroai_has_non_discriminated_homelanders = no
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+### NAVAL BASE
+
+aroai_consider_building_naval_base = {
+    has_technology_researched = admiralty
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    OR = {
+        aroai_budget_health_is_equal_or_higher = {
+            level = -1
+        }
+        aroai_tax_level_equal_or_lower = {
+            value = 3
+        }
+    }
+    trigger_if = {
+        limit = {
+            var:aroai_building_barracks_total < aroai_flotilla_paucity
+        }
+        aroai_consider_building = {
+            id = $id$
+            shortage = 0
+            profitable = 0
+        }
+    }
+    trigger_else = {
+        aroai_consider_building = {
+            id = $id$
+            shortage = 1
+            profitable = 0
+        }
+    }
+    any_scope_state = {
+        is_coastal = yes
+    }
+    OR = {
+        navy_size < aroai_flotilla_floor
+        AND = {
+            aroai_building_naval_base_spending_value < aroai_building_naval_base_spending_target
+            aroai_building_naval_base_spending_expected < aroai_building_naval_base_spending_excess
+        }
+    }
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+            NOT = {
+                has_variable = aroai_autobuild_naval_base
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_naval_base = {
+    trigger_if = {
+        limit = {
+            $priority$ >= 2
+            $priority$ <= 10
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_naval_base_cooldown
+                }
+                NOR = {
+                    $priority$ > 5
+                    aroai_building_naval_base_spending_expected > aroai_building_naval_base_spending_target
+                }
+            }
+        }
+        switch = {
+            trigger = $priority$
+            2 = {
+                navy_size < aroai_flotilla_1
+            }
+            3 = {
+                navy_size < aroai_flotilla_2
+            }
+            4 = {
+                navy_size < aroai_flotilla_3
+            }
+            5 = {
+                navy_size < aroai_flotilla_4
+            }
+            6 = {
+                navy_size < aroai_flotilla_5
+            }
+            7 = {
+                navy_size < aroai_flotilla_6
+            }
+            8 = {
+                navy_size < aroai_flotilla_7
+            }
+            9 = {
+                navy_size < aroai_flotilla_8
+            }
+            10 = {
+                navy_size < aroai_flotilla_9
+            }
+            fallback = {
+                always = no
+            }
+        }
+    }
+    trigger_else = {
+        always = no
+    }
+}
+
+aroai_sanction_building_naval_base = {
+    is_coastal = yes
+    var:aroai_building_naval_base_level < aroai_state_naval_base_limit
+    aroai_sanction_infrastructure = {
+        key = building_naval_base
+        conditions = 0
+        shortage = 1
+        profitable = 0
+    }
+    OR = {
+        always = yes
+        $id$ = 0
+    }
+}
+
+aroai_allocate_building_naval_base = {
+    switch = {
+        trigger = $aptitude$
+        1 = {
+            aroai_has_non_discriminated_homelanders = yes
+        }
+        2 = {
+            aroai_has_non_discriminated_homelanders = no
+        }
+        fallback = {
+            always = no
+        }
+    }
+}
+
+### LOGGING CAMP
+
+aroai_consider_building_logging_camp = {
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_logging_camp = {
+    aroai_sanction_resource = {
+        key = building_logging_camp
+        id = $id$
+        resource = bg_logging
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_logging_camp = {
+    aroai_allocate_resource = {
+        good = g:wood
+        aptitude = $aptitude$
+    }
+}
+
+### FISHING WHARF
+
+aroai_consider_building_fishing_wharf = {
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_fishing_wharf = {
+    aroai_sanction_resource = {
+        key = building_fishing_wharf
+        id = $id$
+        resource = bg_fishing
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_fishing_wharf = {
+    aroai_allocate_resource = {
+        good = g:fish 
+        aptitude = $aptitude$
+    }
+}
+
+### WHALING STATION
+
+aroai_consider_building_whaling_station = {
+    has_technology_researched = navigation
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_whaling_station = {
+    aroai_sanction_resource = {
+        key = building_whaling_station
+        id = $id$
+        resource = bg_whaling
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_whaling_station = {
+    aroai_allocate_resource = {
+        good = g:oil
+        aptitude = $aptitude$
+    }
+}
+
+### COAL MINE
+
+aroai_consider_building_coal_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_coal_mine = {
+    aroai_sanction_resource = {
+        key = building_coal_mine
+        id = $id$
+        resource = bg_coal_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_coal_mine = {
+    aroai_allocate_resource = {
+        good = g:coal
+        aptitude = $aptitude$
+    }
+}
+
+### IRON MINE
+
+aroai_consider_building_iron_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_iron_mine = {
+    aroai_sanction_resource = {
+        key = building_iron_mine
+        id = $id$
+        resource = bg_iron_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_iron_mine = {
+    aroai_allocate_resource = {
+        good = g:iron
+        aptitude = $aptitude$
+    }
+}
+
+### LEAD MINE
+
+aroai_consider_building_lead_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_lead_mine = {
+    aroai_sanction_resource = {
+        key = building_lead_mine
+        id = $id$
+        resource = bg_lead_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_lead_mine = {
+    aroai_allocate_resource = {
+        good = g:lead
+        aptitude = $aptitude$
+    }
+}
+
+### SULFUR MINE
+
+aroai_consider_building_sulfur_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_sulfur_mine = {
+    aroai_sanction_resource = {
+        key = building_sulfur_mine
+        id = $id$
+        resource = bg_sulfur_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_sulfur_mine = {
+    aroai_allocate_resource = {
+        good = g:sulfur
+        aptitude = $aptitude$
+    }
+}
+
+### GOLD MINE
+
+aroai_consider_building_gold_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_gold_mine = {
+    aroai_sanction_resource = {
+        key = building_gold_mine
+        id = $id$
+        resource = bg_gold_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_gold_mine = {
+    aroai_allocate_resource = {
+        good = g:gold
+        aptitude = $aptitude$
+    }
+}
+
+### RUBBER PLANTATION
+
+aroai_consider_building_rubber_plantation = {
+    has_technology_researched = rubber_mastication
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_rubber_plantation = {
+    aroai_sanction_resource = {
+        key = building_rubber_plantation
+        id = $id$
+        resource = bg_rubber
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_rubber_plantation = {
+    aroai_allocate_resource = {
+        good = g:rubber
+        aptitude = $aptitude$
+    }
+}
+
+### OIL RIG
+
+aroai_consider_building_oil_rig = {
+    has_technology_researched = pumpjacks
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_oil_rig = {
+    aroai_sanction_resource = {
+        key = building_oil_rig
+        id = $id$
+        resource = bg_oil_extraction
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_oil_rig = {
+    aroai_allocate_resource = {
+        good = g:oil
+        aptitude = $aptitude$
+    }
+}
+
+### RYE FARM
+
+aroai_consider_building_rye_farm = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_rye_farm = {
+    aroai_sanction_agriculture = {
+        key = building_rye_farm
+        id = $id$
+        resource = bg_rye_farms
+        cipher = 1
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_rye_farm = {
+    aroai_allocate_agriculture = {
+        good = g:grain
+        aptitude = $aptitude$
+    }
+}
+
+### WHEAT FARM
+
+aroai_consider_building_wheat_farm = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_wheat_farm = {
+    aroai_sanction_agriculture = {
+        key = building_wheat_farm
+        id = $id$
+        resource = bg_wheat_farms
+        cipher = 2
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_wheat_farm = {
+    aroai_allocate_agriculture = {
+        good = g:grain
+        aptitude = $aptitude$
+    }
+}
+
+### RICE FARM
+
+aroai_consider_building_rice_farm = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_rice_farm = {
+    aroai_sanction_agriculture = {
+        key = building_rice_farm
+        id = $id$
+        resource = bg_rice_farms
+        cipher = 3
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_rice_farm = {
+    aroai_allocate_agriculture = {
+        good = g:grain
+        aptitude = $aptitude$
+    }
+}
+
+### MAIZE FARM
+
+aroai_consider_building_maize_farm = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_maize_farm = {
+    aroai_sanction_agriculture = {
+        key = building_maize_farm
+        id = $id$
+        resource = bg_maize_farms
+        cipher = 4
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_maize_farm = {
+    aroai_allocate_agriculture = {
+        good = g:grain
+        aptitude = $aptitude$
+    }
+}
+
+### MILLET FARM
+
+aroai_consider_building_millet_farm = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_millet_farm = {
+    aroai_sanction_agriculture = {
+        key = building_millet_farm
+        id = $id$
+        resource = bg_millet_farms
+        cipher = 5
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_millet_farm = {
+    aroai_allocate_agriculture = {
+        good = g:grain
+        aptitude = $aptitude$
+    }
+}
+
+### LIVESTOCK RANCH
+
+aroai_consider_building_livestock_ranch = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_livestock_ranch = {
+    aroai_sanction_agriculture = {
+        key = building_livestock_ranch
+        id = $id$
+        resource = bg_livestock_ranches
+        cipher = 10
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_livestock_ranch = {
+    aroai_allocate_agriculture = {
+        good = g:fabric
+        aptitude = $aptitude$
+    }
+}
+
+### COTTON PLANTATION
+
+aroai_consider_building_cotton_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_cotton_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_cotton_plantation
+        id = $id$
+        resource = bg_cotton_plantations
+        cipher = 20
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_cotton_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:fabric
+        aptitude = $aptitude$
+    }
+}
+
+### DYE PLANTATION
+
+aroai_consider_building_dye_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_dye_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_dye_plantation
+        id = $id$
+        resource = bg_dye_plantations
+        cipher = 100
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_dye_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:dye
+        aptitude = $aptitude$
+    }
+}
+
+### SILK PLANTATION
+
+aroai_consider_building_silk_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_silk_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_silk_plantation
+        id = $id$
+        resource = bg_silk_plantations
+        cipher = 200
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_silk_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:silk
+        aptitude = $aptitude$
+    }
+}
+
+### BANANA PLANTATION
+
+aroai_consider_building_banana_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_banana_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_banana_plantation
+        id = $id$
+        resource = bg_banana_plantations
+        cipher = 1000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_banana_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:fruit
+        aptitude = $aptitude$
+    }
+}
+
+### SUGAR PLANTATION
+
+aroai_consider_building_sugar_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_sugar_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_sugar_plantation
+        id = $id$
+        resource = bg_sugar_plantations
+        cipher = 2000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_sugar_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:sugar
+        aptitude = $aptitude$
+    }
+}
+
+### TEA PLANTATION
+
+aroai_consider_building_tea_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_tea_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_tea_plantation
+        id = $id$
+        resource = bg_tea_plantations
+        cipher = 10000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_tea_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:tea
+        aptitude = $aptitude$
+    }
+}
+
+### COFFEE PLANTATION
+
+aroai_consider_building_coffee_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_coffee_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_coffee_plantation
+        id = $id$
+        resource = bg_coffee_plantations
+        cipher = 20000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_coffee_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:coffee
+        aptitude = $aptitude$
+    }
+}
+
+### TOBACCO PLANTATION
+
+aroai_consider_building_tobacco_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_tobacco_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_tobacco_plantation
+        id = $id$
+        resource = bg_tobacco_plantations
+        cipher = 100000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_tobacco_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:tobacco
+        aptitude = $aptitude$
+    }
+}
+
+### OPIUM PLANTATION
+
+aroai_consider_building_opium_plantation = {
+    has_technology_researched = enclosure
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+    NOT = {
+        is_banning_goods = g:opium
+    }
+}
+
+aroai_sanction_building_opium_plantation = {
+    aroai_sanction_agriculture = {
+        key = building_opium_plantation
+        id = $id$
+        resource = bg_opium_plantations
+        cipher = 200000
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_opium_plantation = {
+    aroai_allocate_agriculture = {
+        good = g:opium
+        aptitude = $aptitude$
+    }
+}
+
+### FOOD INDUSTRY
+
+aroai_consider_building_food_industry = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_food_industry = {
+    aroai_sanction_industry = {
+        key = building_food_industry
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_food_industry = {
+    $aptitude$ = 1
+}
+
+### ARTS ACADEMY
+
+aroai_consider_building_arts_academy = {
+    has_technology_researched = romanticism
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_arts_academy = {
+    aroai_sanction_industry = {
+        key = building_arts_academy
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_arts_academy = {
+    $aptitude$ = 1
+}
+
+### TEXTILE MILLS
+
+aroai_consider_building_textile_mills = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_textile_mills = {
+    aroai_sanction_industry = {
+        key = building_textile_mills
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_textile_mills = {
+    $aptitude$ = 1
+}
+
+### FURNITURE MANUFACTURIES
+
+aroai_consider_building_furniture_manufacturies = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_furniture_manufacturies = {
+    aroai_sanction_industry = {
+        key = building_furniture_manufacturies
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_furniture_manufacturies = {
+    $aptitude$ = 1
+}
+
+### GLASSWORKS
+
+aroai_consider_building_glassworks = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_glassworks = {
+    aroai_sanction_industry = {
+        key = building_glassworks
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_glassworks = {
+    $aptitude$ = 1
+}
+
+### TOOLING WORKSHOPS
+
+aroai_consider_building_tooling_workshops = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_tooling_workshops = {
+    aroai_sanction_industry = {
+        key = building_tooling_workshops
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_tooling_workshops = {
+    $aptitude$ = 1
+}
+
+### PAPER MILLS
+
+aroai_consider_building_paper_mills = {
+    has_technology_researched = manufacturies
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_paper_mills = {
+    aroai_sanction_industry = {
+        key = building_paper_mills
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_paper_mills = {
+    $aptitude$ = 1
+}
+
+### CHEMICAL PLANTS
+
+aroai_consider_building_chemical_plants = {
+    has_technology_researched = intensive_agriculture
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_chemical_plants = {
+    aroai_sanction_industry = {
+        key = building_chemical_plants
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_chemical_plants = {
+    $aptitude$ = 1
+}
+
+### SYNTHETICS PLANTS
+
+aroai_consider_building_synthetics_plants = {
+    has_technology_researched = aniline
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_synthetics_plants = {
+    aroai_sanction_industry = {
+        key = building_synthetics_plants
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_synthetics_plants = {
+    $aptitude$ = 1
+}
+
+### STEEL MILLS
+
+aroai_consider_building_steel_mills = {
+    has_technology_researched = steelworking
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_steel_mills = {
+    aroai_sanction_industry = {
+        key = building_steel_mills
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_steel_mills = {
+    $aptitude$ = 1
+}
+
+### MOTOR INDUSTRY
+
+aroai_consider_building_motor_industry = {
+    has_technology_researched = atmospheric_engine
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_motor_industry = {
+    aroai_sanction_industry = {
+        key = building_motor_industry
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_motor_industry = {
+    $aptitude$ = 1
+}
+
+### SHIPYARDS
+
+aroai_consider_building_shipyards = {
+    has_technology_researched = navigation
+    any_scope_state = {
+        is_coastal = yes
+    }
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_shipyards = {
+    is_coastal = yes
+    aroai_sanction_industry = {
+        key = building_shipyards
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_shipyards = {
+    $aptitude$ = 1
+}
+
+### POWER PLANT
+
+aroai_consider_building_power_plant = {
+    has_technology_researched = electrical_generation
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_power_plant = {
+    aroai_sanction_industry = {
+        key = building_power_plant
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_power_plant = {
+    $aptitude$ = 1
+}
+
+### ELECTRICS INDUSTRY
+
+aroai_consider_building_electrics_industry = {
+    has_technology_researched = telephone
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_electrics_industry = {
+    aroai_sanction_industry = {
+        key = building_electrics_industry
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_electrics_industry = {
+    $aptitude$ = 1
+}
+
+### ARMS INDUSTRY
+
+aroai_consider_building_arms_industry = {
+    has_technology_researched = gunsmithing
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_arms_industry = {
+    aroai_sanction_industry = {
+        key = building_arms_industry
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_arms_industry = {
+    $aptitude$ = 1
+}
+
+### MUNITION PLANTS
+
+aroai_consider_building_munition_plants = {
+    has_technology_researched = percussion_cap
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_munition_plants = {
+    aroai_sanction_industry = {
+        key = building_munition_plants
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_munition_plants = {
+    $aptitude$ = 1
+}
+
+### WAR MACHINE INDUSTRY
+
+aroai_consider_building_war_machine_industry = {
+    has_technology_researched = military_aviation
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_sanction_building_war_machine_industry = {
+    aroai_sanction_industry = {
+        key = building_war_machine_industry
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_war_machine_industry = {
+    $aptitude$ = 1
+}
+
+aroai_is_using_compatibility_patches = {
+    aroai_has_global_variable_list = {
+        name = aroai_compatibility_patches
+    }
+}
+
+# ------------------------------------------------------------------------------------
+# Triggers below were generated with a modding tool and should not be changed manually
+# ------------------------------------------------------------------------------------
+
+aroai_is_true_for_any_building_type = {
+    OR = {
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_government_administration id = 1
+        class = 1 counter = 1 order = 2 limit = 4 crucial = 10 workforce = 0 allocate = 4 branching = 0 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_university id = 2
+        class = 1 counter = 2 order = 9 limit = 3 crucial = 8 workforce = 0 allocate = 1 branching = 1 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_construction_sector id = 3
+        class = 2 counter = 3 order = 1 limit = 5 crucial = 5 workforce = 0 allocate = 1 branching = 1 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_railway id = 4
+        class = 2 counter = 4 order = 3 limit = 5 crucial = 99 workforce = 0 allocate = 7 branching = 0 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_port id = 5
+        class = 2 counter = 5 order = 3 limit = 3 crucial = 99 workforce = 0 allocate = 5 branching = 0 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_barracks id = 6
+        class = 3 counter = 6 order = 9 limit = 8 crucial = 8 workforce = 0 allocate = 2 branching = 0 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_naval_base id = 7
+        class = 3 counter = 7 order = 9 limit = 5 crucial = 8 workforce = 0 allocate = 2 branching = 0 scaling = 0 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_logging_camp id = 8
+        class = 4 counter = 8 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_fishing_wharf id = 9
+        class = 4 counter = 9 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_whaling_station id = 10
+        class = 4 counter = 10 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_rubber_plantation id = 11
+        class = 4 counter = 11 order = 6 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_oil_rig id = 12
+        class = 4 counter = 12 order = 4 limit = 5 crucial = 11 workforce = 0 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_coal_mine id = 13
+        class = 4 counter = 13 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_iron_mine id = 14
+        class = 4 counter = 14 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_lead_mine id = 15
+        class = 4 counter = 15 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_sulfur_mine id = 16
+        class = 4 counter = 16 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_gold_mine id = 17
+        class = 4 counter = 17 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_rye_farm id = 18
+        class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_wheat_farm id = 19
+        class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_rice_farm id = 20
+        class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_maize_farm id = 21
+        class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_millet_farm id = 22
+        class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_livestock_ranch id = 23
+        class = 5 counter = 23 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_cotton_plantation id = 24
+        class = 5 counter = 23 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_dye_plantation id = 25
+        class = 5 counter = 25 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_silk_plantation id = 26
+        class = 5 counter = 26 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_banana_plantation id = 27
+        class = 5 counter = 27 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_sugar_plantation id = 28
+        class = 5 counter = 28 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_tea_plantation id = 29
+        class = 5 counter = 29 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_coffee_plantation id = 30
+        class = 5 counter = 30 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_tobacco_plantation id = 31
+        class = 5 counter = 31 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_opium_plantation id = 32
+        class = 5 counter = 32 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_food_industry id = 33
+        class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_textile_mills id = 34
+        class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_furniture_manufacturies id = 35
+        class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_glassworks id = 36
+        class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_tooling_workshops id = 37
+        class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_paper_mills id = 38
+        class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_chemical_plants id = 39
+        class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_synthetics_plants id = 40
+        class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_steel_mills id = 41
+        class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_motor_industry id = 42
+        class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_shipyards id = 43
+        class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_power_plant id = 44
+        class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_electrics_industry id = 45
+        class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_arms_industry id = 46
+        class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_munition_plants id = 47
+        class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_war_machine_industry id = 48
+        class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        aroai_is_true_for_building_type = { trigger = $trigger$ key = building_arts_academy id = 49
+        class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        AND = {
+            aroai_is_using_compatibility_patches = yes
+            aroai_is_true_for_any_building_type_compatibility = { trigger = $trigger$ }
+        }
+    }
+}
+
+aroai_is_true_for_any_building_type_compatibility = {
+    OR = {
+        aroai_is_true_for_any_building_type_1 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_2 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_3 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_4 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_5 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_6 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_7 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_8 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_9 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_10 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_11 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_12 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_13 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_14 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_15 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_16 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_17 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_18 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_19 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_20 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_21 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_22 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_23 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_24 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_25 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_26 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_27 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_28 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_29 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_30 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_31 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_32 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_33 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_34 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_35 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_36 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_37 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_38 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_39 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_40 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_41 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_42 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_43 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_44 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_45 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_46 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_47 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_48 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_49 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_50 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_51 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_52 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_53 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_54 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_55 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_56 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_57 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_58 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_59 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_60 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_61 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_62 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_63 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_64 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_65 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_66 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_67 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_68 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_69 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_70 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_71 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_72 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_73 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_74 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_75 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_76 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_77 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_78 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_79 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_80 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_81 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_82 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_83 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_84 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_85 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_86 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_87 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_88 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_89 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_90 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_91 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_92 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_93 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_94 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_95 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_96 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_97 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_98 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_99 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_100 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_101 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_102 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_103 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_104 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_105 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_106 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_107 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_108 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_109 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_110 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_111 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_112 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_113 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_114 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_115 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_116 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_117 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_118 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_119 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_120 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_121 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_122 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_123 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_124 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_125 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_126 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_127 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_128 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_129 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_130 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_131 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_132 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_133 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_134 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_135 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_136 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_137 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_138 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_139 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_140 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_141 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_142 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_143 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_144 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_145 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_146 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_147 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_148 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_149 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_150 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_151 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_152 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_153 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_154 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_155 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_156 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_157 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_158 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_159 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_160 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_161 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_162 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_163 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_164 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_165 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_166 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_167 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_168 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_169 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_170 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_171 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_172 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_173 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_174 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_175 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_176 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_177 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_178 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_179 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_180 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_181 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_182 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_183 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_184 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_185 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_186 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_187 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_188 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_189 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_190 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_191 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_192 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_193 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_194 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_195 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_196 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_197 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_198 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_199 = { trigger = $trigger$ }
+        aroai_is_true_for_any_building_type_200 = { trigger = $trigger$ }
+    }
+}
+
+aroai_is_true_for_any_building_type_1 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_2 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_3 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_4 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_5 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_6 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_7 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_8 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_9 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_10 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_11 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_12 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_13 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_14 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_15 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_16 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_17 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_18 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_19 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_20 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_21 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_22 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_23 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_24 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_25 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_26 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_27 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_28 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_29 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_30 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_31 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_32 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_33 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_34 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_35 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_36 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_37 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_38 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_39 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_40 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_41 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_42 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_43 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_44 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_45 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_46 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_47 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_48 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_49 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_50 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_51 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_52 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_53 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_54 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_55 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_56 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_57 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_58 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_59 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_60 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_61 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_62 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_63 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_64 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_65 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_66 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_67 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_68 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_69 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_70 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_71 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_72 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_73 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_74 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_75 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_76 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_77 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_78 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_79 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_80 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_81 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_82 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_83 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_84 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_85 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_86 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_87 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_88 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_89 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_90 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_91 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_92 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_93 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_94 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_95 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_96 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_97 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_98 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_99 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_100 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_101 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_102 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_103 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_104 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_105 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_106 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_107 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_108 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_109 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_110 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_111 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_112 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_113 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_114 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_115 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_116 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_117 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_118 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_119 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_120 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_121 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_122 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_123 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_124 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_125 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_126 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_127 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_128 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_129 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_130 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_131 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_132 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_133 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_134 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_135 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_136 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_137 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_138 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_139 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_140 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_141 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_142 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_143 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_144 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_145 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_146 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_147 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_148 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_149 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_150 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_151 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_152 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_153 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_154 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_155 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_156 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_157 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_158 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_159 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_160 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_161 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_162 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_163 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_164 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_165 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_166 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_167 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_168 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_169 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_170 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_171 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_172 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_173 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_174 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_175 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_176 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_177 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_178 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_179 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_180 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_181 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_182 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_183 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_184 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_185 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_186 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_187 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_188 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_189 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_190 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_191 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_192 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_193 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_194 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_195 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_196 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_197 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_198 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_199 = { always = no $trigger$ = 0 }
+aroai_is_true_for_any_building_type_200 = { always = no $trigger$ = 0 }

@@ -1,0 +1,27 @@
+﻿NAI = {
+    GOVERNMENT_MONEY_SPENDING_ENABLED = no  	 # If this is set to no, the AI for government money spending will be disabled
+	# GOVERNMENT_AUTHORITY_SPENDING_ENABLED = no  # If this is set to no, the AI for authority spending will be disabled
+	TAX_LEVEL_CHANGES_ENABLED = no	 			 # If this is set to no, the AI will not change its tax levels (but might still use consumption taxes if GOVERNMENT_AUTHORITY_SPENDING_ENABLED = yes)
+	PRODUCTION_BUILDING_CONSTRUCTION_ENABLED = no	 # If this is set to no, the country-level AI will not construct any production buildings
+	# AUTONOMOUS_INVESTMENT_CONSTRUCTION_ENABLED = no # If this is set to no, the autonomous investment AI won't construct anything even if the game rule for it is enabled
+    
+	CONSTRUCTION_DEBT_RESUME = 6.66 # If constructions are paused, resume once debt is this low relative to ceiling
+	CONSTRUCTION_DEBT_PAUSE = 7.77 # If in this much relative debt to debt ceiling, pause all non-critical constructions 	
+	CONSTRUCTION_DEBT_RESUME_CRITICAL_CONSTRUCTION = 6.66 # If critical constructions are paused, resume once debt is this low relative to ceiling
+	CONSTRUCTION_DEBT_PAUSE_CRITICAL_CONSTRUCTION = 7.77 # If in this much relative debt to debt ceiling, pause all critical constructions 	
+    
+    # Below data is used to calculate how much weight the AI places on promoting an IG
+    PROMOTION_BASE_VALUE = 0
+    
+    # Below data is used to calculate how much weight the AI places on suppressing an IG
+    SUPPRESSION_BASE_VALUE = 0
+    
+    # Below data is used to calculate how much weight the AI places on consumption taxes 
+    #CONSUMPTION_TAX_INCOME_VALUE = 10 # Per percent of state expenses in taxable value (this is then multiplied by relative authority cost of the good)
+    #CONSUMPTION_TAX_STAPLE_MULT = 0.5 # Multiply desire to tax staple goods by this
+    #CONSUMPTION_TAX_LUXURY_MULT = 2.0 # Multiply desire to tax luxury goods by this
+    CONSUMPTION_TAX_LOW_INCOME_THRESHOLD = 3.0 # Income-to-expenses threshold below which consumption taxes are a must-have
+    CONSUMPTION_TAX_HIGH_INCOME_THRESHOLD = 5.0 # Income-to-expenses threshold at which consumption taxes should be removed (if removal would not put us below this)
+    CONSUMPTION_TAX_MAX_NUM_TAXED_GOODS_BASE = 6 # Base max number of goods AI wants to tax
+    #CONSUMPTION_TAX_MAX_NUM_TAXED_GOODS_PER_MISSING_TAX_TYPE = 2 # Added to max number of goods AI wants to tax for each other type of tax it does not collect
+}

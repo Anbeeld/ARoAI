@@ -1,0 +1,81 @@
+﻿aroai_is_country_allowed = {
+    is_country_alive = yes
+    NOT = {
+        is_country_type = decentralized
+    }
+}
+
+aroai_has_variable_list = {
+    has_variable_list = $name$
+    variable_list_size = {
+        name = $name$
+        value > 0
+    }
+}
+
+aroai_is_target_in_variable_list = {
+    has_variable_list = $name$
+    is_target_in_variable_list = {
+        name = $name$
+        target = $target$
+    }
+}
+
+aroai_is_target_in_global_variable_list = {
+    has_global_variable_list = $name$
+    is_target_in_global_variable_list = {
+        name = $name$
+        target = $target$
+    }
+}
+
+aroai_has_global_variable_list = {
+    has_global_variable_list = $name$
+    global_variable_list_size = {
+        name = $name$
+        value > 0
+    }
+}
+
+aroai_has_building = {
+    any_scope_building = {
+        is_building_type = $key$
+        OR = {
+            level > 0
+            is_under_construction = yes
+        }
+    }
+}
+
+aroai_has_active_building = {
+    any_scope_building = {
+        is_building_type = $key$
+        level > 0
+    }
+}
+
+aroai_is_true_for_building_type = {
+    switch = {
+        trigger = $trigger$
+        1 = {
+            aroai_modified_current_ongoing_constructions_element_1 = $id$
+            is_building_type = $key$
+        }
+        fallback = {
+            always = no
+        }
+    }
+    OR = {
+        always = yes
+        $id$ = 1
+        $class$ = 1
+        $counter$ = 1
+        $order$ = 1
+        $limit$ = 1
+        $crucial$ = 1
+        $workforce$ = 1
+        $allocate$ = 1
+        $branching$ = 1
+        $scaling$ = 1
+    }
+}

@@ -1,0 +1,35 @@
+ARoAI doesn't support modded buildings without a compatibility patch. Here's how to create one:
+
+0. You can't make any agriculture and most government buildings compatible with ARoAI for the moment due to various
+   limitations, but for resource and industry buildings it shouldn't be a problem.
+
+1. Get ID for your future patch here: https://github.com/Anbeeld/ARoAI/issues/4
+
+2. Get ID for all the buildings in the mod here: https://github.com/Anbeeld/ARoAI/issues/5
+
+3. Create a building table. The main building table may be found in /tools/buildings.js, while an example of modded
+   building table may be found in /tools/compatibility.js
+   The easiest way to do this is by finding a vanilla building that is the most similar to your modded one, copying it
+   and then making changes like different key, id and so on. Out of all the attributes you'll need to edit only 3 or 4
+   for most buildings. Meaning of every attribute is described in /tools/buildings.js
+
+4. Copy contents of /tools/compatibility.js file to where you'll execute this JavaScript code, which is anywhere from
+   browser console (F12) to whatever site you'll get by typing "run js code" in Google. Change compatibility patch ID
+   from 1 to yours and insert your building table where it says to do so. Now run the code and get the result.
+
+5. Create file structure same as in /docs/compatibility/example in your compatibility patch folder. It is highly
+   recommended to name your files like zzz_aroai_compatibility_X_triggers.txt, where X is your compatibility patch ID.
+
+6. Paste parts of JavaScript execution result separated by comments into effects and triggers respectively.
+
+7. Create evaluate scripted effect for every modded building. Check file in scripted_effects folder of example patch
+   to learn how to do it and /src/common/scripted_effects/aroai_static_data_effects.txt for more different examples.
+
+8. Create consider, sanction and allocate scripted triggers for every modded building. Check file in scripted_triggers
+   folder of example patch for to learn how to do it and /src/common/scripted_triggers/aroai_static_data_triggers.txt
+   for more different examples.
+
+9. Launch the game with the mod you are creating patch for, ARoAI and your new compatibility patch in this order.
+   ARoAI may actually go before other mods, but compatibility patches always being at the end is a strict requirement.
+   AI countries should build modded buildings through their government queue now. If they don't or if you are getting
+   some nasty stuff in error.log, curse me for not making this instruction detailed enough and retry every step of it.

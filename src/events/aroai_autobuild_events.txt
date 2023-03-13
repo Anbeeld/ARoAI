@@ -1,0 +1,237 @@
+﻿namespace = aroai_autobuild_events
+
+# Autobuild settings
+aroai_autobuild_events.1 = {
+    type = country_event
+    placement = root
+
+    title = aroai_autobuild_events.1.t
+    desc = aroai_autobuild_events.1.d
+    flavor = aroai_autobuild_events.1.f
+
+    duration = 3
+
+    event_image = {
+        video = "gfx/event_pictures/unspecific_gears_pistons.bk2"
+    }
+
+    on_created_soundeffect = "event:/SFX/UI/Alerts/event_appear"
+    on_opened_soundeffect = ""
+
+    icon = "gfx/interface/icons/event_icons/event_industry.dds"
+
+    trigger = {}
+
+    immediate = {
+        aroai_renew_variable = {
+            name = aroai_autobuild_settings
+            days = 93
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.1a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild
+            }
+        }
+        set_variable = aroai_autobuild
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.1b
+        trigger = {
+            has_variable = aroai_autobuild
+        }
+        remove_variable = aroai_autobuild
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.2a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_government_administration
+            }
+        }
+        set_variable = aroai_autobuild_government_administration
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.2b
+        trigger = {
+            has_variable = aroai_autobuild_government_administration
+        }
+        remove_variable = aroai_autobuild_government_administration
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.3a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_university
+            }
+        }
+        set_variable = aroai_autobuild_university
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.3b
+        trigger = {
+            has_variable = aroai_autobuild_university
+        }
+        remove_variable = aroai_autobuild_university
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.4a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_construction_sector
+            }
+        }
+        set_variable = aroai_autobuild_construction_sector
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.4b
+        trigger = {
+            has_variable = aroai_autobuild_construction_sector
+        }
+        remove_variable = aroai_autobuild_construction_sector
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.5a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_railway
+            }
+        }
+        set_variable = aroai_autobuild_railway
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.5b
+        trigger = {
+            has_variable = aroai_autobuild_railway
+        }
+        remove_variable = aroai_autobuild_railway
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.6a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_port
+            }
+        }
+        set_variable = aroai_autobuild_port
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.6b
+        trigger = {
+            has_variable = aroai_autobuild_port
+        }
+        remove_variable = aroai_autobuild_port
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.7a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_barracks
+            }
+        }
+        set_variable = aroai_autobuild_barracks
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.7b
+        trigger = {
+            has_variable = aroai_autobuild_barracks
+        }
+        remove_variable = aroai_autobuild_barracks
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.8a
+        trigger = {
+            NOT = {
+                has_variable = aroai_autobuild_naval_base
+            }
+        }
+        set_variable = aroai_autobuild_naval_base
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    option = {
+        name = aroai_autobuild_events.1.8b
+        trigger = {
+            has_variable = aroai_autobuild_naval_base
+        }
+        remove_variable = aroai_autobuild_naval_base
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    option = {
+        name = aroai_autobuild_events.1.x
+        default_option = yes
+        remove_variable = aroai_autobuild_settings
+    }
+}

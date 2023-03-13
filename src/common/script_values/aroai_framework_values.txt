@@ -1,0 +1,566 @@
+﻿aroai_csr_square = {
+    value = local_var:aroai_csr_square
+}
+
+aroai_weeks_in_iteration = 4
+
+aroai_weeks_in_iteration_minus_1 = {
+    value = aroai_weeks_in_iteration
+    subtract = 1
+    min = 1
+}
+
+aroai_days_in_the_iteration = {
+    value = aroai_weeks_in_iteration
+    multiply = 7
+    min = 14
+}
+
+aroai_days_in_the_iteration_plus_week = {
+    value = aroai_days_in_the_iteration
+    add = 7
+}
+
+aroai_days_in_building_cooldown = 70
+
+aroai_max_iterations_to_ignore_downsizing = 5
+
+aroai_days_to_keep_ia_variable = {
+    value = aroai_days_in_the_iteration
+    multiply = {
+        value = aroai_max_iterations_to_ignore_downsizing
+        add = 0.50
+    }
+    ceiling = yes
+}
+
+aroai_days_to_keep_short_variables = 3
+
+aroai_half_of_days_in_iteration_rounded_down = {
+    value = aroai_days_in_the_iteration
+    divide = 2
+    floor = yes
+}
+
+aroai_power_level_of_ai_countries = {
+    if = {
+        limit = {
+            is_player = no
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_game_rule = aroai_construction_of_player_subjects_same
+                    market.owner = {
+                        is_player = no
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_100
+                }
+                value = 1.00
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_90
+                }
+                value = 0.90
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_80
+                }
+                value = 0.80
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_70
+                }
+                value = 0.70
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_60
+                }
+                value = 0.60
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_50
+                }
+                value = 0.50
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_40
+                }
+                value = 0.40
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_30
+                }
+                value = 0.30
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_20
+                }
+                value = 0.20
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_10
+                }
+                value = 0.10
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_ai_countries_0
+                }
+                value = 0.00
+            }
+            else = {
+                value = 1.00
+            }
+        }
+        else = {
+            if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_100
+                }
+                value = 1.00
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_90
+                }
+                value = 0.90
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_80
+                }
+                value = 0.80
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_70
+                }
+                value = 0.70
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_60
+                }
+                value = 0.60
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_50
+                }
+                value = 0.50
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_40
+                }
+                value = 0.40
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_30
+                }
+                value = 0.30
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_20
+                }
+                value = 0.20
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_10
+                }
+                value = 0.10
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_power_level_of_player_subjects_0
+                }
+                value = 0.00
+            }
+            else = {
+                value = 1.00
+            }
+        }
+    }
+    else = {
+        value = 1.00
+    }
+}
+
+aroai_power_level_of_ai_china = {
+    if = {
+        limit = {
+            is_player = no
+            has_variable = aroai_chinese_population
+            total_population >= 50000000
+            var:aroai_chinese_population >= aroai_half_total_population
+        }
+        if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_100
+            }
+            value = 1.00
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_90
+            }
+            value = 0.90
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_80
+            }
+            value = 0.80
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_70
+            }
+            value = 0.70
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_60
+            }
+            value = 0.60
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_50
+            }
+            value = 0.50
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_40
+            }
+            value = 0.40
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_30
+            }
+            value = 0.30
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_20
+            }
+            value = 0.20
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_10
+            }
+            value = 0.10
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_china_0
+            }
+            value = 0.00
+        }
+        else = {
+            value = 1.00
+        }
+        if = {
+            limit = {
+                total_population < 100000000
+            }
+            subtract = 1.00
+            multiply = {
+                value = total_population
+                subtract = 50000000
+                divide = 50000000
+            }
+            add = 1.00
+        }
+        if = {
+            limit = {
+                is_non_customs_union_subject = yes
+            }
+            multiply = 1.25
+            max = 1.00
+        }
+    }
+    else = {
+        value = 1.00
+    }
+}
+
+aroai_power_level_of_ai_india = {
+    if = {
+        limit = {
+            is_player = no
+            has_variable = aroai_indian_population
+            total_population >= 50000000
+            var:aroai_indian_population >= aroai_half_total_population
+        }
+        if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_100
+            }
+            value = 1.00
+        }
+        if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_90
+            }
+            value = 0.90
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_80
+            }
+            value = 0.80
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_70
+            }
+            value = 0.70
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_60
+            }
+            value = 0.60
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_50
+            }
+            value = 0.50
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_40
+            }
+            value = 0.40
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_30
+            }
+            value = 0.30
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_20
+            }
+            value = 0.20
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_10
+            }
+            value = 0.10
+        }
+        else_if = {
+            limit = {
+                has_game_rule = aroai_power_level_of_ai_india_0
+            }
+            value = 0.00
+        }
+        if = {
+            limit = {
+                total_population < 100000000
+            }
+            subtract = 1.00
+            multiply = {
+                value = total_population
+                subtract = 50000000
+                divide = 50000000
+            }
+            add = 1.00
+        }
+        if = {
+            limit = {
+                is_non_customs_union_subject = yes
+            }
+            multiply = 1.25
+            max = 1.00
+        }
+    }
+    else = {
+        value = 1.00
+    }
+}
+
+aroai_construction_of_ai_countries = {
+    if = {
+        limit = {
+            is_player = no
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_game_rule = aroai_construction_of_player_subjects_same
+                    market.owner = {
+                        is_player = no
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_100
+                }
+                value = 1.00
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_90
+                }
+                value = 0.90
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_80
+                }
+                value = 0.80
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_70
+                }
+                value = 0.70
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_60
+                }
+                value = 0.60
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_50
+                }
+                value = 0.50
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_40
+                }
+                value = 0.40
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_30
+                }
+                value = 0.30
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_20
+                }
+                value = 0.20
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_10
+                }
+                value = 0.10
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_ai_countries_0
+                }
+                value = 0.00
+            }
+            else = {
+                value = 1.00
+            }
+        }
+        else = {
+            if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_100
+                }
+                value = 1.00
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_90
+                }
+                value = 0.90
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_80
+                }
+                value = 0.80
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_70
+                }
+                value = 0.70
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_60
+                }
+                value = 0.60
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_50
+                }
+                value = 0.50
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_40
+                }
+                value = 0.40
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_30
+                }
+                value = 0.30
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_20
+                }
+                value = 0.20
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_10
+                }
+                value = 0.10
+            }
+            else_if = {
+                limit = {
+                    has_game_rule = aroai_construction_of_player_subjects_0
+                }
+                value = 0.00
+            }
+            else = {
+                value = 1.00
+            }
+        }
+    }
+    else = {
+        value = 1.00
+    }
+}

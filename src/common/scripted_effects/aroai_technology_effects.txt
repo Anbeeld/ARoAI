@@ -1,0 +1,2270 @@
+﻿# There's no way to affect AI prioritization of technologies as of 1.2.2, so workaround system is used.
+# We set country innovation to zero through _mult modifier, then we take innovation it produces through _add modifier
+# and add this value to a tech of our choice.
+# TODO 1.2.3 introduced tech weights, you can probably remove this system and use weights instead if they work good.
+aroai_choose_technology_for_innovation_redirection = {
+    if = {
+        limit = {
+            is_player = no
+            NOT = {
+                has_game_rule = aroai_research_assistance_for_ai_disabled
+            }
+            modifier:country_weekly_innovation_add > 0
+        }
+
+        # Academia – Railroaded Only
+        if = {
+            limit = {
+                has_game_rule = aroai_research_assistance_for_ai_railroaded
+                NOT = {
+                    has_technology_researched = academia
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = rationalism
+                        }
+                        can_research = rationalism
+                    }
+                    can_research = academia
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = rationalism
+                    }
+                    can_research = rationalism
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = rationalism
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = academia
+                }
+            }
+        }
+        
+        # Railways – Railroaded Only
+        if = {
+            limit = {
+                has_game_rule = aroai_research_assistance_for_ai_railroaded
+                NOT = {
+                    has_technology_researched = railways
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = enclosure
+                        }
+                        can_research = enclosure
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = manufacturies
+                        }
+                        can_research = manufacturies
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = shaft_mining
+                        }
+                        can_research = shaft_mining
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = steelworking
+                        }
+                        can_research = steelworking
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = cotton_gin
+                        }
+                        can_research = cotton_gin
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = lathe
+                        }
+                        can_research = lathe
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = mechanical_tools
+                        }
+                        can_research = mechanical_tools
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = atmospheric_engine
+                        }
+                        can_research = atmospheric_engine
+                    }
+                    can_research = railways
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = enclosure
+                    }
+                    can_research = enclosure
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = enclosure
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = manufacturies
+                    }
+                    can_research = manufacturies
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = manufacturies
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = shaft_mining
+                    }
+                    can_research = shaft_mining
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = shaft_mining
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = steelworking
+                    }
+                    can_research = steelworking
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = steelworking
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = cotton_gin
+                    }
+                    can_research = cotton_gin
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = cotton_gin
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = lathe
+                    }
+                    can_research = lathe
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = lathe
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = mechanical_tools
+                    }
+                    can_research = mechanical_tools
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = mechanical_tools
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = atmospheric_engine
+                    }
+                    can_research = atmospheric_engine
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = atmospheric_engine
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = railways
+                }
+            }
+        }
+        
+        # Nationalism
+        else_if = {
+            limit = {
+                OR = {
+                    AND = {
+                        year >= 1840
+                        exists = c:USA
+                        this = c:USA
+                    }
+                    AND = {
+                        year >= 1846
+                        country_rank >= rank_value:minor_power
+                        OR = {
+                            country_has_primary_culture = cu:north_italian
+                            country_has_primary_culture = cu:south_italian
+                        }
+                    }
+                    AND = {
+                        year >= 1850
+                        country_rank >= rank_value:major_power
+                        OR = {
+                            country_has_primary_culture = cu:north_german
+                            country_has_primary_culture = cu:south_german
+                        }
+                    }
+                }
+                NOT = {
+                    has_technology_researched = mass_communication
+                }
+                can_research = mass_communication
+            }
+            aroai_perform_innovation_redirection = {
+                technology = mass_communication
+            }
+        }
+        else_if = {
+            limit = {
+                OR = {
+                    AND = {
+                        year >= 1842
+                        exists = c:USA
+                        this = c:USA
+                    }
+                    AND = {
+                        year >= 1848
+                        country_rank >= rank_value:minor_power
+                        OR = {
+                            country_has_primary_culture = cu:north_italian
+                            country_has_primary_culture = cu:south_italian
+                        }
+                    }
+                    AND = {
+                        year >= 1852
+                        country_rank >= rank_value:major_power
+                        OR = {
+                            country_has_primary_culture = cu:north_german
+                            country_has_primary_culture = cu:south_german
+                        }
+                    }
+                }
+                NOT = {
+                    has_technology_researched = nationalism
+                }
+                can_research = nationalism
+            }
+            aroai_perform_innovation_redirection = {
+                technology = nationalism
+            }
+        }
+        else_if = {
+            limit = {
+                year >= 1860
+                country_rank >= rank_value:major_power
+                OR = {
+                    country_has_primary_culture = cu:north_german
+                    country_has_primary_culture = cu:south_german
+                }
+                NOT = {
+                    has_technology_researched = pan-nationalism
+                }
+                can_research = pan-nationalism
+            }
+            aroai_perform_innovation_redirection = {
+                technology = pan-nationalism
+            }
+        }
+        
+        # Railways
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = railways
+                }
+                can_research = railways
+                calc_true_if = {
+                    has_technology_researched = crystal_glass
+                    has_technology_researched = intensive_agriculture
+                    has_technology_researched = fractional_distillation
+                    has_technology_researched = canneries
+                    has_technology_researched = watertube_boiler
+                    has_technology_researched = atmospheric_engine
+                    # has_technology_researched = railways
+                    has_technology_researched = chemical_bleaching
+                    has_technology_researched = nitroglycerin
+                    has_technology_researched = bessemer_process
+                    has_technology_researched = baking_powder
+                    has_technology_researched = mechanized_workshops
+                    has_technology_researched = mechanical_tools
+                    amount >= 7
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = railways
+            }
+        }
+        
+        # Nitroglycerin
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = nitroglycerin
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = intensive_agriculture
+                        }
+                        can_research = intensive_agriculture
+                    }
+                    can_research = nitroglycerin
+                }
+                calc_true_if = {
+                    has_technology_researched = crystal_glass
+                    # has_technology_researched = intensive_agriculture
+                    has_technology_researched = fractional_distillation
+                    has_technology_researched = canneries
+                    has_technology_researched = watertube_boiler
+                    has_technology_researched = atmospheric_engine
+                    has_technology_researched = railways
+                    has_technology_researched = chemical_bleaching
+                    # has_technology_researched = nitroglycerin
+                    has_technology_researched = bessemer_process
+                    has_technology_researched = baking_powder
+                    has_technology_researched = mechanized_workshops
+                    has_technology_researched = mechanical_tools
+                    amount >= 9
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = intensive_agriculture
+                    }
+                    can_research = intensive_agriculture
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = intensive_agriculture
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = nitroglycerin
+                }
+            }
+        }
+        
+        # Breech loading artillery
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = breech_loading_artillery
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = shell_gun
+                        }
+                        can_research = shell_gun
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = percussion_cap
+                        }
+                        can_research = percussion_cap
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = rifling
+                        }
+                        can_research = rifling
+                    }
+                    can_research = breech_loading_artillery
+                }
+                OR = {
+                    calc_true_if = {
+                        has_technology_researched = field_works
+                        has_technology_researched = logistics
+                        has_technology_researched = triage
+                        has_technology_researched = shell_gun
+                        has_technology_researched = percussion_cap
+                        has_technology_researched = rifling
+                        has_technology_researched = general_staff
+                        has_technology_researched = screw_frigate
+                        has_technology_researched = power_of_the_purse
+                        has_technology_researched = hydraulic_cranes
+                        amount >= 8
+                    }
+                    calc_true_if = {
+                        has_technology_researched = field_works
+                        has_technology_researched = logistics
+                        has_technology_researched = triage
+                        # has_technology_researched = shell_gun
+                        # has_technology_researched = percussion_cap
+                        # has_technology_researched = rifling
+                        has_technology_researched = general_staff
+                        has_technology_researched = screw_frigate
+                        has_technology_researched = power_of_the_purse
+                        has_technology_researched = hydraulic_cranes
+                        amount >= 7
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = shell_gun
+                    }
+                    can_research = shell_gun
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = shell_gun
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = percussion_cap
+                    }
+                    can_research = percussion_cap
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = percussion_cap
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = rifling
+                    }
+                    can_research = rifling
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = rifling
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = breech_loading_artillery
+                }
+            }
+        }
+        
+        # Ironclad
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = ironclad_tech
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = screw_frigate
+                        }
+                        can_research = screw_frigate
+                    }
+                    can_research = ironclad_tech
+                }
+                calc_true_if = {
+                    has_technology_researched = field_works
+                    has_technology_researched = logistics
+                    has_technology_researched = triage
+                    has_technology_researched = shell_gun
+                    has_technology_researched = percussion_cap
+                    has_technology_researched = rifling
+                    has_technology_researched = general_staff
+                    has_technology_researched = screw_frigate
+                    has_technology_researched = power_of_the_purse
+                    has_technology_researched = hydraulic_cranes
+                    amount >= 8
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = screw_frigate
+                    }
+                    can_research = screw_frigate
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = screw_frigate
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = ironclad_tech
+                }
+            }
+        }
+        
+        # Improved fertilizer
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = improved_fertilizer
+                }
+                can_research = improved_fertilizer
+                calc_true_if = {
+                    has_technology_researched = crystal_glass
+                    has_technology_researched = intensive_agriculture
+                    has_technology_researched = fractional_distillation
+                    has_technology_researched = canneries
+                    has_technology_researched = watertube_boiler
+                    has_technology_researched = atmospheric_engine
+                    has_technology_researched = railways
+                    has_technology_researched = chemical_bleaching
+                    has_technology_researched = nitroglycerin
+                    has_technology_researched = bessemer_process
+                    has_technology_researched = baking_powder
+                    has_technology_researched = mechanized_workshops
+                    has_technology_researched = mechanical_tools
+                    amount >= 12
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = improved_fertilizer
+            }
+        }
+        
+        # Steel frame buildings
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = steel_frame_buildings
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = modern_sewerage
+                        }
+                        can_research = modern_sewerage
+                    }
+                    can_research = steel_frame_buildings
+                }
+                calc_true_if = {
+                    has_technology_researched = egalitarianism
+                    has_technology_researched = pharmaceuticals
+                    has_technology_researched = modern_sewerage
+                    has_technology_researched = quinine
+                    has_technology_researched = organized_sports
+                    has_technology_researched = central_archives
+                    has_technology_researched = central_banking
+                    has_technology_researched = dialectics
+                    has_technology_researched = psychiatry
+                    has_technology_researched = realism
+                    has_technology_researched = nationalism
+                    has_technology_researched = labor_movement
+                    has_technology_researched = postal_savings
+                    amount >= 11
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = modern_sewerage
+                    }
+                    can_research = modern_sewerage
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = modern_sewerage
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = steel_frame_buildings
+                }
+            }
+        }
+        
+        # Mutual funds
+        # else_if = {
+        #     limit = {
+        #         NOT = {
+        #             has_technology_researched = mutual_funds
+        #         }
+        #         OR = {
+        #             AND = {
+        #                 NOT = {
+        #                     has_technology_researched = central_banking
+        #                 }
+        #                 can_research = central_banking
+        #             }
+        #             AND = {
+        #                 NOT = {
+        #                     has_technology_researched = postal_savings
+        #                 }
+        #                 can_research = postal_savings
+        #             }
+        #             can_research = mutual_funds
+        #         }
+        #         calc_true_if = {
+        #             has_technology_researched = human_rights
+        #             has_technology_researched = feminism
+        #             has_technology_researched = steel_frame_buildings
+        #             has_technology_researched = civilizing_mission
+        #             has_technology_researched = anarchism
+        #             has_technology_researched = socialism
+        #             has_technology_researched = pan-nationalism
+        #             # has_technology_researched = mutual_funds
+        #             has_technology_researched = camera
+        #             has_technology_researched = philosophical_pragmatism
+        #             has_technology_researched = identification_documents
+        #             amount >= 2
+        #         }
+        #     }
+        #     if = {
+        #         limit = {
+        #             NOT = {
+        #                 has_technology_researched = central_banking
+        #             }
+        #             can_research = central_banking
+        #         }
+        #         aroai_perform_innovation_redirection = {
+        #             technology = central_banking
+        #         }
+        #     }
+        #     else_if = {
+        #         limit = {
+        #             NOT = {
+        #                 has_technology_researched = postal_savings
+        #             }
+        #             can_research = postal_savings
+        #         }
+        #         aroai_perform_innovation_redirection = {
+        #             technology = postal_savings
+        #         }
+        #     }
+        #     else = {
+        #         aroai_perform_innovation_redirection = {
+        #             technology = mutual_funds
+        #         }
+        #     }
+        # }
+        
+        # Dynamite
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = dynamite
+                }
+                can_research = dynamite
+                calc_true_if = {
+                    has_technology_researched = crystal_glass
+                    has_technology_researched = intensive_agriculture
+                    has_technology_researched = fractional_distillation
+                    has_technology_researched = canneries
+                    has_technology_researched = watertube_boiler
+                    has_technology_researched = atmospheric_engine
+                    has_technology_researched = railways
+                    has_technology_researched = chemical_bleaching
+                    has_technology_researched = nitroglycerin
+                    has_technology_researched = bessemer_process
+                    has_technology_researched = baking_powder
+                    has_technology_researched = mechanized_workshops
+                    has_technology_researched = mechanical_tools
+                    amount >= 12
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = dynamite
+            }
+        }
+        
+        # Rubber Mastication
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = rubber_mastication
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = fractional_distillation
+                        }
+                        can_research = fractional_distillation
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = chemical_bleaching
+                        }
+                        can_research = chemical_bleaching
+                    }
+                    can_research = rubber_mastication
+                }
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    # has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 3
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = fractional_distillation
+                    }
+                    can_research = fractional_distillation
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = fractional_distillation
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = chemical_bleaching
+                    }
+                    can_research = chemical_bleaching
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = chemical_bleaching
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = rubber_mastication
+                }
+            }
+        }
+        
+        # Rotary valve engine
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = rotary_valve_engine
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = watertube_boiler
+                        }
+                        can_research = watertube_boiler
+                    }
+                    can_research = rotary_valve_engine
+                }
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    # has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 5
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = watertube_boiler
+                    }
+                    can_research = watertube_boiler
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = watertube_boiler
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = rotary_valve_engine
+                }
+            }
+        }
+        
+        # Monitor
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = monitor_tech
+                }
+                can_research = monitor_tech
+                calc_true_if = {
+                    has_technology_researched = modern_nursing
+                    has_technology_researched = enlistment_offices
+                    has_technology_researched = electric_telegraph
+                    has_technology_researched = military_statistics
+                    has_technology_researched = repeaters
+                    has_technology_researched = breech_loading_artillery
+                    has_technology_researched = handcranked_machine_gun
+                    has_technology_researched = self_propelled_torpedoes
+                    # has_technology_researched = monitor_tech
+                    has_technology_researched = ironclad_tech
+                    has_technology_researched = jeune_ecole
+                    has_technology_researched = floating_harbor
+                    has_technology_researched = gantry_cranes
+                    amount >= 9
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = monitor_tech
+            }
+        }
+        
+        # Pumpjacks
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = pumpjacks
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = steam_donkey
+                        }
+                        can_research = steam_donkey
+                    }
+                    can_research = pumpjacks
+                }
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    # has_technology_researched = steam_donkey
+                    # has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    # has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 7
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = steam_donkey
+                    }
+                    can_research = steam_donkey
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = steam_donkey
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = pumpjacks
+                }
+            }
+        }
+        
+        # Threshing machine
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = threshing_machine
+                }
+                can_research = threshing_machine
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    # has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 10
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = threshing_machine
+            }
+        }
+        
+        # Electrical Generation
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = electrical_generation
+                }
+                can_research = electrical_generation
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    # has_technology_researched = electrical_generation
+                    amount >= 11
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = electrical_generation
+            }
+        }
+        
+        # Electrical capacitors
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = electrical_capacitors
+                }
+                can_research = electrical_capacitors
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 12
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = electrical_capacitors
+            }
+        }
+        
+        # Steam turbine
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = steam_turbine
+                }
+                can_research = steam_turbine
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 12
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = steam_turbine
+            }
+        }
+        
+        # Electric railway
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = electric_railway
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = steel_railway_cars
+                        }
+                        can_research = steel_railway_cars
+                    }
+                    can_research = electric_railway
+                }
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 12
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = steel_railway_cars
+                    }
+                    can_research = steel_railway_cars
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = steel_railway_cars
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = electric_railway
+                }
+            }
+        }
+        
+        # Conveyors
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = conveyors
+                }
+                OR = {
+                    AND = {
+                        NOT = {
+                            has_technology_researched = shift_work
+                        }
+                        can_research = shift_work
+                    }
+                    AND = {
+                        NOT = {
+                            has_technology_researched = vulcanization
+                        }
+                        can_research = vulcanization
+                    }
+                    can_research = conveyors
+                }
+                calc_true_if = {
+                    has_technology_researched = improved_fertilizer
+                    has_technology_researched = steam_donkey
+                    has_technology_researched = dynamite
+                    has_technology_researched = rubber_mastication
+                    has_technology_researched = rotary_valve_engine
+                    has_technology_researched = reinforced_concrete    
+                    has_technology_researched = threshing_machine
+                    has_technology_researched = pumpjacks
+                    has_technology_researched = aniline
+                    has_technology_researched = open_hearth_process
+                    has_technology_researched = vulcanization
+                    has_technology_researched = vacuum_canning
+                    has_technology_researched = shift_work
+                    has_technology_researched = steel_railway_cars
+                    has_technology_researched = electrical_generation
+                    amount >= 12
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = shift_work
+                    }
+                    can_research = shift_work
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = shift_work
+                }
+            }
+            else_if = {
+                limit = {
+                    NOT = {
+                        has_technology_researched = vulcanization
+                    }
+                    can_research = vulcanization
+                }
+                aroai_perform_innovation_redirection = {
+                    technology = vulcanization
+                }
+            }
+            else = {
+                aroai_perform_innovation_redirection = {
+                    technology = conveyors
+                }
+            }
+        }
+        
+        # Trench works
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = trench_works
+                }
+                can_research = trench_works
+                calc_true_if = {
+                    has_technology_researched = modern_nursing
+                    has_technology_researched = enlistment_offices
+                    has_technology_researched = electric_telegraph
+                    has_technology_researched = military_statistics
+                    has_technology_researched = repeaters
+                    has_technology_researched = breech_loading_artillery
+                    has_technology_researched = handcranked_machine_gun
+                    has_technology_researched = self_propelled_torpedoes
+                    has_technology_researched = monitor_tech
+                    has_technology_researched = ironclad_tech
+                    has_technology_researched = jeune_ecole
+                    has_technology_researched = floating_harbor
+                    has_technology_researched = gantry_cranes
+                    amount >= 10
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = trench_works
+            }
+        }
+        
+        # Wargaming
+        else_if = {
+            limit = {
+                has_technology_researched = trench_works
+                
+                NOT = {
+                    has_technology_researched = wargaming
+                }
+                can_research = wargaming
+                calc_true_if = {
+                    has_technology_researched = modern_nursing
+                    has_technology_researched = enlistment_offices
+                    has_technology_researched = electric_telegraph
+                    has_technology_researched = military_statistics
+                    has_technology_researched = repeaters
+                    has_technology_researched = breech_loading_artillery
+                    has_technology_researched = handcranked_machine_gun
+                    has_technology_researched = self_propelled_torpedoes
+                    has_technology_researched = monitor_tech
+                    has_technology_researched = ironclad_tech
+                    has_technology_researched = jeune_ecole
+                    has_technology_researched = floating_harbor
+                    has_technology_researched = gantry_cranes
+                    amount >= 11
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = wargaming
+            }
+        }
+        
+        # Nitrogen fixation
+        else_if = {
+            limit = {
+                NOT = {
+                    has_technology_researched = nitrogen_fixation
+                }
+                can_research = nitrogen_fixation
+                calc_true_if = {
+                    has_technology_researched = mechanized_farming
+                    has_technology_researched = art_silk
+                    has_technology_researched = automatic_bottle_blowers
+                    has_technology_researched = conveyors
+                    has_technology_researched = pasteurization
+                    has_technology_researched = electric_railway
+                    has_technology_researched = combustion_engine
+                    has_technology_researched = pneumatic_tools
+                    # has_technology_researched = nitrogen_fixation
+                    has_technology_researched = electric_arc_process
+                    has_technology_researched = steam_turbine
+                    has_technology_researched = plastics
+                    has_technology_researched = electrical_capacitors
+                    has_technology_researched = radio
+                    has_technology_researched = telephone
+                    amount >= 5
+                }
+            }
+            aroai_perform_innovation_redirection = {
+                technology = nitrogen_fixation
+            }
+        }
+
+        # military era 4:
+        # trench_works
+        # war_propaganda
+        # wargaming
+        # defense_in_depth
+        # bolt_action_rifles
+        # automatic_machine_guns
+        # submarine
+        # destroyer
+        # dreadnought
+        # sea_lane_strategies
+        # landing_craft
+        # concrete_dockyards
+    }
+}
+
+aroai_perform_innovation_redirection = {
+    if = {
+        limit = {
+            NOT = {
+                is_researching_technology = $technology$
+            }
+        }
+        aroai_add_progress_to_technology = {
+            technology = $technology$
+        }
+        if = {
+            limit = {
+                has_technology_progress = {
+                    technology = $technology$
+                    progress >= 1
+                }
+            }
+            add_technology_researched = $technology$
+        }
+        aroai_renew_modifier = {
+            name = aroai_innovation_redirection
+            days = aroai_days_in_the_iteration_plus_week
+        }
+    }
+}
+
+aroai_add_progress_to_technology = {
+    switch = {
+        trigger = aroai_rounded_up_innovation
+        1 = { add_technology_progress = { technology = $technology$ progress = 4 } }
+        2 = { add_technology_progress = { technology = $technology$ progress = 8 } }
+        3 = { add_technology_progress = { technology = $technology$ progress = 12 } }
+        4 = { add_technology_progress = { technology = $technology$ progress = 16 } }
+        5 = { add_technology_progress = { technology = $technology$ progress = 20 } }
+        6 = { add_technology_progress = { technology = $technology$ progress = 24 } }
+        7 = { add_technology_progress = { technology = $technology$ progress = 28 } }
+        8 = { add_technology_progress = { technology = $technology$ progress = 32 } }
+        9 = { add_technology_progress = { technology = $technology$ progress = 36 } }
+        10 = { add_technology_progress = { technology = $technology$ progress = 40 } }
+        11 = { add_technology_progress = { technology = $technology$ progress = 44 } }
+        12 = { add_technology_progress = { technology = $technology$ progress = 48 } }
+        13 = { add_technology_progress = { technology = $technology$ progress = 52 } }
+        14 = { add_technology_progress = { technology = $technology$ progress = 56 } }
+        15 = { add_technology_progress = { technology = $technology$ progress = 60 } }
+        16 = { add_technology_progress = { technology = $technology$ progress = 64 } }
+        17 = { add_technology_progress = { technology = $technology$ progress = 68 } }
+        18 = { add_technology_progress = { technology = $technology$ progress = 72 } }
+        19 = { add_technology_progress = { technology = $technology$ progress = 76 } }
+        20 = { add_technology_progress = { technology = $technology$ progress = 80 } }
+        21 = { add_technology_progress = { technology = $technology$ progress = 84 } }
+        22 = { add_technology_progress = { technology = $technology$ progress = 88 } }
+        23 = { add_technology_progress = { technology = $technology$ progress = 92 } }
+        24 = { add_technology_progress = { technology = $technology$ progress = 96 } }
+        25 = { add_technology_progress = { technology = $technology$ progress = 100 } }
+        26 = { add_technology_progress = { technology = $technology$ progress = 104 } }
+        27 = { add_technology_progress = { technology = $technology$ progress = 108 } }
+        28 = { add_technology_progress = { technology = $technology$ progress = 112 } }
+        29 = { add_technology_progress = { technology = $technology$ progress = 116 } }
+        30 = { add_technology_progress = { technology = $technology$ progress = 120 } }
+        31 = { add_technology_progress = { technology = $technology$ progress = 124 } }
+        32 = { add_technology_progress = { technology = $technology$ progress = 128 } }
+        33 = { add_technology_progress = { technology = $technology$ progress = 132 } }
+        34 = { add_technology_progress = { technology = $technology$ progress = 136 } }
+        35 = { add_technology_progress = { technology = $technology$ progress = 140 } }
+        36 = { add_technology_progress = { technology = $technology$ progress = 144 } }
+        37 = { add_technology_progress = { technology = $technology$ progress = 148 } }
+        38 = { add_technology_progress = { technology = $technology$ progress = 152 } }
+        39 = { add_technology_progress = { technology = $technology$ progress = 156 } }
+        40 = { add_technology_progress = { technology = $technology$ progress = 160 } }
+        41 = { add_technology_progress = { technology = $technology$ progress = 164 } }
+        42 = { add_technology_progress = { technology = $technology$ progress = 168 } }
+        43 = { add_technology_progress = { technology = $technology$ progress = 172 } }
+        44 = { add_technology_progress = { technology = $technology$ progress = 176 } }
+        45 = { add_technology_progress = { technology = $technology$ progress = 180 } }
+        46 = { add_technology_progress = { technology = $technology$ progress = 184 } }
+        47 = { add_technology_progress = { technology = $technology$ progress = 188 } }
+        48 = { add_technology_progress = { technology = $technology$ progress = 192 } }
+        49 = { add_technology_progress = { technology = $technology$ progress = 196 } }
+        50 = { add_technology_progress = { technology = $technology$ progress = 200 } }
+        51 = { add_technology_progress = { technology = $technology$ progress = 204 } }
+        52 = { add_technology_progress = { technology = $technology$ progress = 208 } }
+        53 = { add_technology_progress = { technology = $technology$ progress = 212 } }
+        54 = { add_technology_progress = { technology = $technology$ progress = 216 } }
+        55 = { add_technology_progress = { technology = $technology$ progress = 220 } }
+        56 = { add_technology_progress = { technology = $technology$ progress = 224 } }
+        57 = { add_technology_progress = { technology = $technology$ progress = 228 } }
+        58 = { add_technology_progress = { technology = $technology$ progress = 232 } }
+        59 = { add_technology_progress = { technology = $technology$ progress = 236 } }
+        60 = { add_technology_progress = { technology = $technology$ progress = 240 } }
+        61 = { add_technology_progress = { technology = $technology$ progress = 244 } }
+        62 = { add_technology_progress = { technology = $technology$ progress = 248 } }
+        63 = { add_technology_progress = { technology = $technology$ progress = 252 } }
+        64 = { add_technology_progress = { technology = $technology$ progress = 256 } }
+        65 = { add_technology_progress = { technology = $technology$ progress = 260 } }
+        66 = { add_technology_progress = { technology = $technology$ progress = 264 } }
+        67 = { add_technology_progress = { technology = $technology$ progress = 268 } }
+        68 = { add_technology_progress = { technology = $technology$ progress = 272 } }
+        69 = { add_technology_progress = { technology = $technology$ progress = 276 } }
+        70 = { add_technology_progress = { technology = $technology$ progress = 280 } }
+        71 = { add_technology_progress = { technology = $technology$ progress = 284 } }
+        72 = { add_technology_progress = { technology = $technology$ progress = 288 } }
+        73 = { add_technology_progress = { technology = $technology$ progress = 292 } }
+        74 = { add_technology_progress = { technology = $technology$ progress = 296 } }
+        75 = { add_technology_progress = { technology = $technology$ progress = 300 } }
+        76 = { add_technology_progress = { technology = $technology$ progress = 304 } }
+        77 = { add_technology_progress = { technology = $technology$ progress = 308 } }
+        78 = { add_technology_progress = { technology = $technology$ progress = 312 } }
+        79 = { add_technology_progress = { technology = $technology$ progress = 316 } }
+        80 = { add_technology_progress = { technology = $technology$ progress = 320 } }
+        81 = { add_technology_progress = { technology = $technology$ progress = 324 } }
+        82 = { add_technology_progress = { technology = $technology$ progress = 328 } }
+        83 = { add_technology_progress = { technology = $technology$ progress = 332 } }
+        84 = { add_technology_progress = { technology = $technology$ progress = 336 } }
+        85 = { add_technology_progress = { technology = $technology$ progress = 340 } }
+        86 = { add_technology_progress = { technology = $technology$ progress = 344 } }
+        87 = { add_technology_progress = { technology = $technology$ progress = 348 } }
+        88 = { add_technology_progress = { technology = $technology$ progress = 352 } }
+        89 = { add_technology_progress = { technology = $technology$ progress = 356 } }
+        90 = { add_technology_progress = { technology = $technology$ progress = 360 } }
+        91 = { add_technology_progress = { technology = $technology$ progress = 364 } }
+        92 = { add_technology_progress = { technology = $technology$ progress = 368 } }
+        93 = { add_technology_progress = { technology = $technology$ progress = 372 } }
+        94 = { add_technology_progress = { technology = $technology$ progress = 376 } }
+        95 = { add_technology_progress = { technology = $technology$ progress = 380 } }
+        96 = { add_technology_progress = { technology = $technology$ progress = 384 } }
+        97 = { add_technology_progress = { technology = $technology$ progress = 388 } }
+        98 = { add_technology_progress = { technology = $technology$ progress = 392 } }
+        99 = { add_technology_progress = { technology = $technology$ progress = 396 } }
+        100 = { add_technology_progress = { technology = $technology$ progress = 400 } }
+        101 = { add_technology_progress = { technology = $technology$ progress = 404 } }
+        102 = { add_technology_progress = { technology = $technology$ progress = 408 } }
+        103 = { add_technology_progress = { technology = $technology$ progress = 412 } }
+        104 = { add_technology_progress = { technology = $technology$ progress = 416 } }
+        105 = { add_technology_progress = { technology = $technology$ progress = 420 } }
+        106 = { add_technology_progress = { technology = $technology$ progress = 424 } }
+        107 = { add_technology_progress = { technology = $technology$ progress = 428 } }
+        108 = { add_technology_progress = { technology = $technology$ progress = 432 } }
+        109 = { add_technology_progress = { technology = $technology$ progress = 436 } }
+        110 = { add_technology_progress = { technology = $technology$ progress = 440 } }
+        111 = { add_technology_progress = { technology = $technology$ progress = 444 } }
+        112 = { add_technology_progress = { technology = $technology$ progress = 448 } }
+        113 = { add_technology_progress = { technology = $technology$ progress = 452 } }
+        114 = { add_technology_progress = { technology = $technology$ progress = 456 } }
+        115 = { add_technology_progress = { technology = $technology$ progress = 460 } }
+        116 = { add_technology_progress = { technology = $technology$ progress = 464 } }
+        117 = { add_technology_progress = { technology = $technology$ progress = 468 } }
+        118 = { add_technology_progress = { technology = $technology$ progress = 472 } }
+        119 = { add_technology_progress = { technology = $technology$ progress = 476 } }
+        120 = { add_technology_progress = { technology = $technology$ progress = 480 } }
+        121 = { add_technology_progress = { technology = $technology$ progress = 484 } }
+        122 = { add_technology_progress = { technology = $technology$ progress = 488 } }
+        123 = { add_technology_progress = { technology = $technology$ progress = 492 } }
+        124 = { add_technology_progress = { technology = $technology$ progress = 496 } }
+        125 = { add_technology_progress = { technology = $technology$ progress = 500 } }
+        126 = { add_technology_progress = { technology = $technology$ progress = 504 } }
+        127 = { add_technology_progress = { technology = $technology$ progress = 508 } }
+        128 = { add_technology_progress = { technology = $technology$ progress = 512 } }
+        129 = { add_technology_progress = { technology = $technology$ progress = 516 } }
+        130 = { add_technology_progress = { technology = $technology$ progress = 520 } }
+        131 = { add_technology_progress = { technology = $technology$ progress = 524 } }
+        132 = { add_technology_progress = { technology = $technology$ progress = 528 } }
+        133 = { add_technology_progress = { technology = $technology$ progress = 532 } }
+        134 = { add_technology_progress = { technology = $technology$ progress = 536 } }
+        135 = { add_technology_progress = { technology = $technology$ progress = 540 } }
+        136 = { add_technology_progress = { technology = $technology$ progress = 544 } }
+        137 = { add_technology_progress = { technology = $technology$ progress = 548 } }
+        138 = { add_technology_progress = { technology = $technology$ progress = 552 } }
+        139 = { add_technology_progress = { technology = $technology$ progress = 556 } }
+        140 = { add_technology_progress = { technology = $technology$ progress = 560 } }
+        141 = { add_technology_progress = { technology = $technology$ progress = 564 } }
+        142 = { add_technology_progress = { technology = $technology$ progress = 568 } }
+        143 = { add_technology_progress = { technology = $technology$ progress = 572 } }
+        144 = { add_technology_progress = { technology = $technology$ progress = 576 } }
+        145 = { add_technology_progress = { technology = $technology$ progress = 580 } }
+        146 = { add_technology_progress = { technology = $technology$ progress = 584 } }
+        147 = { add_technology_progress = { technology = $technology$ progress = 588 } }
+        148 = { add_technology_progress = { technology = $technology$ progress = 592 } }
+        149 = { add_technology_progress = { technology = $technology$ progress = 596 } }
+        150 = { add_technology_progress = { technology = $technology$ progress = 600 } }
+        151 = { add_technology_progress = { technology = $technology$ progress = 604 } }
+        152 = { add_technology_progress = { technology = $technology$ progress = 608 } }
+        153 = { add_technology_progress = { technology = $technology$ progress = 612 } }
+        154 = { add_technology_progress = { technology = $technology$ progress = 616 } }
+        155 = { add_technology_progress = { technology = $technology$ progress = 620 } }
+        156 = { add_technology_progress = { technology = $technology$ progress = 624 } }
+        157 = { add_technology_progress = { technology = $technology$ progress = 628 } }
+        158 = { add_technology_progress = { technology = $technology$ progress = 632 } }
+        159 = { add_technology_progress = { technology = $technology$ progress = 636 } }
+        160 = { add_technology_progress = { technology = $technology$ progress = 640 } }
+        161 = { add_technology_progress = { technology = $technology$ progress = 644 } }
+        162 = { add_technology_progress = { technology = $technology$ progress = 648 } }
+        163 = { add_technology_progress = { technology = $technology$ progress = 652 } }
+        164 = { add_technology_progress = { technology = $technology$ progress = 656 } }
+        165 = { add_technology_progress = { technology = $technology$ progress = 660 } }
+        166 = { add_technology_progress = { technology = $technology$ progress = 664 } }
+        167 = { add_technology_progress = { technology = $technology$ progress = 668 } }
+        168 = { add_technology_progress = { technology = $technology$ progress = 672 } }
+        169 = { add_technology_progress = { technology = $technology$ progress = 676 } }
+        170 = { add_technology_progress = { technology = $technology$ progress = 680 } }
+        171 = { add_technology_progress = { technology = $technology$ progress = 684 } }
+        172 = { add_technology_progress = { technology = $technology$ progress = 688 } }
+        173 = { add_technology_progress = { technology = $technology$ progress = 692 } }
+        174 = { add_technology_progress = { technology = $technology$ progress = 696 } }
+        175 = { add_technology_progress = { technology = $technology$ progress = 700 } }
+        176 = { add_technology_progress = { technology = $technology$ progress = 704 } }
+        177 = { add_technology_progress = { technology = $technology$ progress = 708 } }
+        178 = { add_technology_progress = { technology = $technology$ progress = 712 } }
+        179 = { add_technology_progress = { technology = $technology$ progress = 716 } }
+        180 = { add_technology_progress = { technology = $technology$ progress = 720 } }
+        181 = { add_technology_progress = { technology = $technology$ progress = 724 } }
+        182 = { add_technology_progress = { technology = $technology$ progress = 728 } }
+        183 = { add_technology_progress = { technology = $technology$ progress = 732 } }
+        184 = { add_technology_progress = { technology = $technology$ progress = 736 } }
+        185 = { add_technology_progress = { technology = $technology$ progress = 740 } }
+        186 = { add_technology_progress = { technology = $technology$ progress = 744 } }
+        187 = { add_technology_progress = { technology = $technology$ progress = 748 } }
+        188 = { add_technology_progress = { technology = $technology$ progress = 752 } }
+        189 = { add_technology_progress = { technology = $technology$ progress = 756 } }
+        190 = { add_technology_progress = { technology = $technology$ progress = 760 } }
+        191 = { add_technology_progress = { technology = $technology$ progress = 764 } }
+        192 = { add_technology_progress = { technology = $technology$ progress = 768 } }
+        193 = { add_technology_progress = { technology = $technology$ progress = 772 } }
+        194 = { add_technology_progress = { technology = $technology$ progress = 776 } }
+        195 = { add_technology_progress = { technology = $technology$ progress = 780 } }
+        196 = { add_technology_progress = { technology = $technology$ progress = 784 } }
+        197 = { add_technology_progress = { technology = $technology$ progress = 788 } }
+        198 = { add_technology_progress = { technology = $technology$ progress = 792 } }
+        199 = { add_technology_progress = { technology = $technology$ progress = 796 } }
+        200 = { add_technology_progress = { technology = $technology$ progress = 800 } }
+        201 = { add_technology_progress = { technology = $technology$ progress = 804 } }
+        202 = { add_technology_progress = { technology = $technology$ progress = 808 } }
+        203 = { add_technology_progress = { technology = $technology$ progress = 812 } }
+        204 = { add_technology_progress = { technology = $technology$ progress = 816 } }
+        205 = { add_technology_progress = { technology = $technology$ progress = 820 } }
+        206 = { add_technology_progress = { technology = $technology$ progress = 824 } }
+        207 = { add_technology_progress = { technology = $technology$ progress = 828 } }
+        208 = { add_technology_progress = { technology = $technology$ progress = 832 } }
+        209 = { add_technology_progress = { technology = $technology$ progress = 836 } }
+        210 = { add_technology_progress = { technology = $technology$ progress = 840 } }
+        211 = { add_technology_progress = { technology = $technology$ progress = 844 } }
+        212 = { add_technology_progress = { technology = $technology$ progress = 848 } }
+        213 = { add_technology_progress = { technology = $technology$ progress = 852 } }
+        214 = { add_technology_progress = { technology = $technology$ progress = 856 } }
+        215 = { add_technology_progress = { technology = $technology$ progress = 860 } }
+        216 = { add_technology_progress = { technology = $technology$ progress = 864 } }
+        217 = { add_technology_progress = { technology = $technology$ progress = 868 } }
+        218 = { add_technology_progress = { technology = $technology$ progress = 872 } }
+        219 = { add_technology_progress = { technology = $technology$ progress = 876 } }
+        220 = { add_technology_progress = { technology = $technology$ progress = 880 } }
+        221 = { add_technology_progress = { technology = $technology$ progress = 884 } }
+        222 = { add_technology_progress = { technology = $technology$ progress = 888 } }
+        223 = { add_technology_progress = { technology = $technology$ progress = 892 } }
+        224 = { add_technology_progress = { technology = $technology$ progress = 896 } }
+        225 = { add_technology_progress = { technology = $technology$ progress = 900 } }
+        226 = { add_technology_progress = { technology = $technology$ progress = 904 } }
+        227 = { add_technology_progress = { technology = $technology$ progress = 908 } }
+        228 = { add_technology_progress = { technology = $technology$ progress = 912 } }
+        229 = { add_technology_progress = { technology = $technology$ progress = 916 } }
+        230 = { add_technology_progress = { technology = $technology$ progress = 920 } }
+        231 = { add_technology_progress = { technology = $technology$ progress = 924 } }
+        232 = { add_technology_progress = { technology = $technology$ progress = 928 } }
+        233 = { add_technology_progress = { technology = $technology$ progress = 932 } }
+        234 = { add_technology_progress = { technology = $technology$ progress = 936 } }
+        235 = { add_technology_progress = { technology = $technology$ progress = 940 } }
+        236 = { add_technology_progress = { technology = $technology$ progress = 944 } }
+        237 = { add_technology_progress = { technology = $technology$ progress = 948 } }
+        238 = { add_technology_progress = { technology = $technology$ progress = 952 } }
+        239 = { add_technology_progress = { technology = $technology$ progress = 956 } }
+        240 = { add_technology_progress = { technology = $technology$ progress = 960 } }
+        241 = { add_technology_progress = { technology = $technology$ progress = 964 } }
+        242 = { add_technology_progress = { technology = $technology$ progress = 968 } }
+        243 = { add_technology_progress = { technology = $technology$ progress = 972 } }
+        244 = { add_technology_progress = { technology = $technology$ progress = 976 } }
+        245 = { add_technology_progress = { technology = $technology$ progress = 980 } }
+        246 = { add_technology_progress = { technology = $technology$ progress = 984 } }
+        247 = { add_technology_progress = { technology = $technology$ progress = 988 } }
+        248 = { add_technology_progress = { technology = $technology$ progress = 992 } }
+        249 = { add_technology_progress = { technology = $technology$ progress = 996 } }
+        250 = { add_technology_progress = { technology = $technology$ progress = 1000 } }
+        251 = { add_technology_progress = { technology = $technology$ progress = 1004 } }
+        252 = { add_technology_progress = { technology = $technology$ progress = 1008 } }
+        253 = { add_technology_progress = { technology = $technology$ progress = 1012 } }
+        254 = { add_technology_progress = { technology = $technology$ progress = 1016 } }
+        255 = { add_technology_progress = { technology = $technology$ progress = 1020 } }
+        256 = { add_technology_progress = { technology = $technology$ progress = 1024 } }
+        257 = { add_technology_progress = { technology = $technology$ progress = 1028 } }
+        258 = { add_technology_progress = { technology = $technology$ progress = 1032 } }
+        259 = { add_technology_progress = { technology = $technology$ progress = 1036 } }
+        260 = { add_technology_progress = { technology = $technology$ progress = 1040 } }
+        261 = { add_technology_progress = { technology = $technology$ progress = 1044 } }
+        262 = { add_technology_progress = { technology = $technology$ progress = 1048 } }
+        263 = { add_technology_progress = { technology = $technology$ progress = 1052 } }
+        264 = { add_technology_progress = { technology = $technology$ progress = 1056 } }
+        265 = { add_technology_progress = { technology = $technology$ progress = 1060 } }
+        266 = { add_technology_progress = { technology = $technology$ progress = 1064 } }
+        267 = { add_technology_progress = { technology = $technology$ progress = 1068 } }
+        268 = { add_technology_progress = { technology = $technology$ progress = 1072 } }
+        269 = { add_technology_progress = { technology = $technology$ progress = 1076 } }
+        270 = { add_technology_progress = { technology = $technology$ progress = 1080 } }
+        271 = { add_technology_progress = { technology = $technology$ progress = 1084 } }
+        272 = { add_technology_progress = { technology = $technology$ progress = 1088 } }
+        273 = { add_technology_progress = { technology = $technology$ progress = 1092 } }
+        274 = { add_technology_progress = { technology = $technology$ progress = 1096 } }
+        275 = { add_technology_progress = { technology = $technology$ progress = 1100 } }
+        276 = { add_technology_progress = { technology = $technology$ progress = 1104 } }
+        277 = { add_technology_progress = { technology = $technology$ progress = 1108 } }
+        278 = { add_technology_progress = { technology = $technology$ progress = 1112 } }
+        279 = { add_technology_progress = { technology = $technology$ progress = 1116 } }
+        280 = { add_technology_progress = { technology = $technology$ progress = 1120 } }
+        281 = { add_technology_progress = { technology = $technology$ progress = 1124 } }
+        282 = { add_technology_progress = { technology = $technology$ progress = 1128 } }
+        283 = { add_technology_progress = { technology = $technology$ progress = 1132 } }
+        284 = { add_technology_progress = { technology = $technology$ progress = 1136 } }
+        285 = { add_technology_progress = { technology = $technology$ progress = 1140 } }
+        286 = { add_technology_progress = { technology = $technology$ progress = 1144 } }
+        287 = { add_technology_progress = { technology = $technology$ progress = 1148 } }
+        288 = { add_technology_progress = { technology = $technology$ progress = 1152 } }
+        289 = { add_technology_progress = { technology = $technology$ progress = 1156 } }
+        290 = { add_technology_progress = { technology = $technology$ progress = 1160 } }
+        291 = { add_technology_progress = { technology = $technology$ progress = 1164 } }
+        292 = { add_technology_progress = { technology = $technology$ progress = 1168 } }
+        293 = { add_technology_progress = { technology = $technology$ progress = 1172 } }
+        294 = { add_technology_progress = { technology = $technology$ progress = 1176 } }
+        295 = { add_technology_progress = { technology = $technology$ progress = 1180 } }
+        296 = { add_technology_progress = { technology = $technology$ progress = 1184 } }
+        297 = { add_technology_progress = { technology = $technology$ progress = 1188 } }
+        298 = { add_technology_progress = { technology = $technology$ progress = 1192 } }
+        299 = { add_technology_progress = { technology = $technology$ progress = 1196 } }
+        300 = { add_technology_progress = { technology = $technology$ progress = 1200 } }
+        301 = { add_technology_progress = { technology = $technology$ progress = 1204 } }
+        302 = { add_technology_progress = { technology = $technology$ progress = 1208 } }
+        303 = { add_technology_progress = { technology = $technology$ progress = 1212 } }
+        304 = { add_technology_progress = { technology = $technology$ progress = 1216 } }
+        305 = { add_technology_progress = { technology = $technology$ progress = 1220 } }
+        306 = { add_technology_progress = { technology = $technology$ progress = 1224 } }
+        307 = { add_technology_progress = { technology = $technology$ progress = 1228 } }
+        308 = { add_technology_progress = { technology = $technology$ progress = 1232 } }
+        309 = { add_technology_progress = { technology = $technology$ progress = 1236 } }
+        310 = { add_technology_progress = { technology = $technology$ progress = 1240 } }
+        311 = { add_technology_progress = { technology = $technology$ progress = 1244 } }
+        312 = { add_technology_progress = { technology = $technology$ progress = 1248 } }
+        313 = { add_technology_progress = { technology = $technology$ progress = 1252 } }
+        314 = { add_technology_progress = { technology = $technology$ progress = 1256 } }
+        315 = { add_technology_progress = { technology = $technology$ progress = 1260 } }
+        316 = { add_technology_progress = { technology = $technology$ progress = 1264 } }
+        317 = { add_technology_progress = { technology = $technology$ progress = 1268 } }
+        318 = { add_technology_progress = { technology = $technology$ progress = 1272 } }
+        319 = { add_technology_progress = { technology = $technology$ progress = 1276 } }
+        320 = { add_technology_progress = { technology = $technology$ progress = 1280 } }
+        321 = { add_technology_progress = { technology = $technology$ progress = 1284 } }
+        322 = { add_technology_progress = { technology = $technology$ progress = 1288 } }
+        323 = { add_technology_progress = { technology = $technology$ progress = 1292 } }
+        324 = { add_technology_progress = { technology = $technology$ progress = 1296 } }
+        325 = { add_technology_progress = { technology = $technology$ progress = 1300 } }
+        326 = { add_technology_progress = { technology = $technology$ progress = 1304 } }
+        327 = { add_technology_progress = { technology = $technology$ progress = 1308 } }
+        328 = { add_technology_progress = { technology = $technology$ progress = 1312 } }
+        329 = { add_technology_progress = { technology = $technology$ progress = 1316 } }
+        330 = { add_technology_progress = { technology = $technology$ progress = 1320 } }
+        331 = { add_technology_progress = { technology = $technology$ progress = 1324 } }
+        332 = { add_technology_progress = { technology = $technology$ progress = 1328 } }
+        333 = { add_technology_progress = { technology = $technology$ progress = 1332 } }
+        334 = { add_technology_progress = { technology = $technology$ progress = 1336 } }
+        335 = { add_technology_progress = { technology = $technology$ progress = 1340 } }
+        336 = { add_technology_progress = { technology = $technology$ progress = 1344 } }
+        337 = { add_technology_progress = { technology = $technology$ progress = 1348 } }
+        338 = { add_technology_progress = { technology = $technology$ progress = 1352 } }
+        339 = { add_technology_progress = { technology = $technology$ progress = 1356 } }
+        340 = { add_technology_progress = { technology = $technology$ progress = 1360 } }
+        341 = { add_technology_progress = { technology = $technology$ progress = 1364 } }
+        342 = { add_technology_progress = { technology = $technology$ progress = 1368 } }
+        343 = { add_technology_progress = { technology = $technology$ progress = 1372 } }
+        344 = { add_technology_progress = { technology = $technology$ progress = 1376 } }
+        345 = { add_technology_progress = { technology = $technology$ progress = 1380 } }
+        346 = { add_technology_progress = { technology = $technology$ progress = 1384 } }
+        347 = { add_technology_progress = { technology = $technology$ progress = 1388 } }
+        348 = { add_technology_progress = { technology = $technology$ progress = 1392 } }
+        349 = { add_technology_progress = { technology = $technology$ progress = 1396 } }
+        350 = { add_technology_progress = { technology = $technology$ progress = 1400 } }
+        351 = { add_technology_progress = { technology = $technology$ progress = 1404 } }
+        352 = { add_technology_progress = { technology = $technology$ progress = 1408 } }
+        353 = { add_technology_progress = { technology = $technology$ progress = 1412 } }
+        354 = { add_technology_progress = { technology = $technology$ progress = 1416 } }
+        355 = { add_technology_progress = { technology = $technology$ progress = 1420 } }
+        356 = { add_technology_progress = { technology = $technology$ progress = 1424 } }
+        357 = { add_technology_progress = { technology = $technology$ progress = 1428 } }
+        358 = { add_technology_progress = { technology = $technology$ progress = 1432 } }
+        359 = { add_technology_progress = { technology = $technology$ progress = 1436 } }
+        360 = { add_technology_progress = { technology = $technology$ progress = 1440 } }
+        361 = { add_technology_progress = { technology = $technology$ progress = 1444 } }
+        362 = { add_technology_progress = { technology = $technology$ progress = 1448 } }
+        363 = { add_technology_progress = { technology = $technology$ progress = 1452 } }
+        364 = { add_technology_progress = { technology = $technology$ progress = 1456 } }
+        365 = { add_technology_progress = { technology = $technology$ progress = 1460 } }
+        366 = { add_technology_progress = { technology = $technology$ progress = 1464 } }
+        367 = { add_technology_progress = { technology = $technology$ progress = 1468 } }
+        368 = { add_technology_progress = { technology = $technology$ progress = 1472 } }
+        369 = { add_technology_progress = { technology = $technology$ progress = 1476 } }
+        370 = { add_technology_progress = { technology = $technology$ progress = 1480 } }
+        371 = { add_technology_progress = { technology = $technology$ progress = 1484 } }
+        372 = { add_technology_progress = { technology = $technology$ progress = 1488 } }
+        373 = { add_technology_progress = { technology = $technology$ progress = 1492 } }
+        374 = { add_technology_progress = { technology = $technology$ progress = 1496 } }
+        375 = { add_technology_progress = { technology = $technology$ progress = 1500 } }
+        376 = { add_technology_progress = { technology = $technology$ progress = 1504 } }
+        377 = { add_technology_progress = { technology = $technology$ progress = 1508 } }
+        378 = { add_technology_progress = { technology = $technology$ progress = 1512 } }
+        379 = { add_technology_progress = { technology = $technology$ progress = 1516 } }
+        380 = { add_technology_progress = { technology = $technology$ progress = 1520 } }
+        381 = { add_technology_progress = { technology = $technology$ progress = 1524 } }
+        382 = { add_technology_progress = { technology = $technology$ progress = 1528 } }
+        383 = { add_technology_progress = { technology = $technology$ progress = 1532 } }
+        384 = { add_technology_progress = { technology = $technology$ progress = 1536 } }
+        385 = { add_technology_progress = { technology = $technology$ progress = 1540 } }
+        386 = { add_technology_progress = { technology = $technology$ progress = 1544 } }
+        387 = { add_technology_progress = { technology = $technology$ progress = 1548 } }
+        388 = { add_technology_progress = { technology = $technology$ progress = 1552 } }
+        389 = { add_technology_progress = { technology = $technology$ progress = 1556 } }
+        390 = { add_technology_progress = { technology = $technology$ progress = 1560 } }
+        391 = { add_technology_progress = { technology = $technology$ progress = 1564 } }
+        392 = { add_technology_progress = { technology = $technology$ progress = 1568 } }
+        393 = { add_technology_progress = { technology = $technology$ progress = 1572 } }
+        394 = { add_technology_progress = { technology = $technology$ progress = 1576 } }
+        395 = { add_technology_progress = { technology = $technology$ progress = 1580 } }
+        396 = { add_technology_progress = { technology = $technology$ progress = 1584 } }
+        397 = { add_technology_progress = { technology = $technology$ progress = 1588 } }
+        398 = { add_technology_progress = { technology = $technology$ progress = 1592 } }
+        399 = { add_technology_progress = { technology = $technology$ progress = 1596 } }
+        400 = { add_technology_progress = { technology = $technology$ progress = 1600 } }
+        401 = { add_technology_progress = { technology = $technology$ progress = 1604 } }
+        402 = { add_technology_progress = { technology = $technology$ progress = 1608 } }
+        403 = { add_technology_progress = { technology = $technology$ progress = 1612 } }
+        404 = { add_technology_progress = { technology = $technology$ progress = 1616 } }
+        405 = { add_technology_progress = { technology = $technology$ progress = 1620 } }
+        406 = { add_technology_progress = { technology = $technology$ progress = 1624 } }
+        407 = { add_technology_progress = { technology = $technology$ progress = 1628 } }
+        408 = { add_technology_progress = { technology = $technology$ progress = 1632 } }
+        409 = { add_technology_progress = { technology = $technology$ progress = 1636 } }
+        410 = { add_technology_progress = { technology = $technology$ progress = 1640 } }
+        411 = { add_technology_progress = { technology = $technology$ progress = 1644 } }
+        412 = { add_technology_progress = { technology = $technology$ progress = 1648 } }
+        413 = { add_technology_progress = { technology = $technology$ progress = 1652 } }
+        414 = { add_technology_progress = { technology = $technology$ progress = 1656 } }
+        415 = { add_technology_progress = { technology = $technology$ progress = 1660 } }
+        416 = { add_technology_progress = { technology = $technology$ progress = 1664 } }
+        417 = { add_technology_progress = { technology = $technology$ progress = 1668 } }
+        418 = { add_technology_progress = { technology = $technology$ progress = 1672 } }
+        419 = { add_technology_progress = { technology = $technology$ progress = 1676 } }
+        420 = { add_technology_progress = { technology = $technology$ progress = 1680 } }
+        421 = { add_technology_progress = { technology = $technology$ progress = 1684 } }
+        422 = { add_technology_progress = { technology = $technology$ progress = 1688 } }
+        423 = { add_technology_progress = { technology = $technology$ progress = 1692 } }
+        424 = { add_technology_progress = { technology = $technology$ progress = 1696 } }
+        425 = { add_technology_progress = { technology = $technology$ progress = 1700 } }
+        426 = { add_technology_progress = { technology = $technology$ progress = 1704 } }
+        427 = { add_technology_progress = { technology = $technology$ progress = 1708 } }
+        428 = { add_technology_progress = { technology = $technology$ progress = 1712 } }
+        429 = { add_technology_progress = { technology = $technology$ progress = 1716 } }
+        430 = { add_technology_progress = { technology = $technology$ progress = 1720 } }
+        431 = { add_technology_progress = { technology = $technology$ progress = 1724 } }
+        432 = { add_technology_progress = { technology = $technology$ progress = 1728 } }
+        433 = { add_technology_progress = { technology = $technology$ progress = 1732 } }
+        434 = { add_technology_progress = { technology = $technology$ progress = 1736 } }
+        435 = { add_technology_progress = { technology = $technology$ progress = 1740 } }
+        436 = { add_technology_progress = { technology = $technology$ progress = 1744 } }
+        437 = { add_technology_progress = { technology = $technology$ progress = 1748 } }
+        438 = { add_technology_progress = { technology = $technology$ progress = 1752 } }
+        439 = { add_technology_progress = { technology = $technology$ progress = 1756 } }
+        440 = { add_technology_progress = { technology = $technology$ progress = 1760 } }
+        441 = { add_technology_progress = { technology = $technology$ progress = 1764 } }
+        442 = { add_technology_progress = { technology = $technology$ progress = 1768 } }
+        443 = { add_technology_progress = { technology = $technology$ progress = 1772 } }
+        444 = { add_technology_progress = { technology = $technology$ progress = 1776 } }
+        445 = { add_technology_progress = { technology = $technology$ progress = 1780 } }
+        446 = { add_technology_progress = { technology = $technology$ progress = 1784 } }
+        447 = { add_technology_progress = { technology = $technology$ progress = 1788 } }
+        448 = { add_technology_progress = { technology = $technology$ progress = 1792 } }
+        449 = { add_technology_progress = { technology = $technology$ progress = 1796 } }
+        450 = { add_technology_progress = { technology = $technology$ progress = 1800 } }
+        451 = { add_technology_progress = { technology = $technology$ progress = 1804 } }
+        452 = { add_technology_progress = { technology = $technology$ progress = 1808 } }
+        453 = { add_technology_progress = { technology = $technology$ progress = 1812 } }
+        454 = { add_technology_progress = { technology = $technology$ progress = 1816 } }
+        455 = { add_technology_progress = { technology = $technology$ progress = 1820 } }
+        456 = { add_technology_progress = { technology = $technology$ progress = 1824 } }
+        457 = { add_technology_progress = { technology = $technology$ progress = 1828 } }
+        458 = { add_technology_progress = { technology = $technology$ progress = 1832 } }
+        459 = { add_technology_progress = { technology = $technology$ progress = 1836 } }
+        460 = { add_technology_progress = { technology = $technology$ progress = 1840 } }
+        461 = { add_technology_progress = { technology = $technology$ progress = 1844 } }
+        462 = { add_technology_progress = { technology = $technology$ progress = 1848 } }
+        463 = { add_technology_progress = { technology = $technology$ progress = 1852 } }
+        464 = { add_technology_progress = { technology = $technology$ progress = 1856 } }
+        465 = { add_technology_progress = { technology = $technology$ progress = 1860 } }
+        466 = { add_technology_progress = { technology = $technology$ progress = 1864 } }
+        467 = { add_technology_progress = { technology = $technology$ progress = 1868 } }
+        468 = { add_technology_progress = { technology = $technology$ progress = 1872 } }
+        469 = { add_technology_progress = { technology = $technology$ progress = 1876 } }
+        470 = { add_technology_progress = { technology = $technology$ progress = 1880 } }
+        471 = { add_technology_progress = { technology = $technology$ progress = 1884 } }
+        472 = { add_technology_progress = { technology = $technology$ progress = 1888 } }
+        473 = { add_technology_progress = { technology = $technology$ progress = 1892 } }
+        474 = { add_technology_progress = { technology = $technology$ progress = 1896 } }
+        475 = { add_technology_progress = { technology = $technology$ progress = 1900 } }
+        476 = { add_technology_progress = { technology = $technology$ progress = 1904 } }
+        477 = { add_technology_progress = { technology = $technology$ progress = 1908 } }
+        478 = { add_technology_progress = { technology = $technology$ progress = 1912 } }
+        479 = { add_technology_progress = { technology = $technology$ progress = 1916 } }
+        480 = { add_technology_progress = { technology = $technology$ progress = 1920 } }
+        481 = { add_technology_progress = { technology = $technology$ progress = 1924 } }
+        482 = { add_technology_progress = { technology = $technology$ progress = 1928 } }
+        483 = { add_technology_progress = { technology = $technology$ progress = 1932 } }
+        484 = { add_technology_progress = { technology = $technology$ progress = 1936 } }
+        485 = { add_technology_progress = { technology = $technology$ progress = 1940 } }
+        486 = { add_technology_progress = { technology = $technology$ progress = 1944 } }
+        487 = { add_technology_progress = { technology = $technology$ progress = 1948 } }
+        488 = { add_technology_progress = { technology = $technology$ progress = 1952 } }
+        489 = { add_technology_progress = { technology = $technology$ progress = 1956 } }
+        490 = { add_technology_progress = { technology = $technology$ progress = 1960 } }
+        491 = { add_technology_progress = { technology = $technology$ progress = 1964 } }
+        492 = { add_technology_progress = { technology = $technology$ progress = 1968 } }
+        493 = { add_technology_progress = { technology = $technology$ progress = 1972 } }
+        494 = { add_technology_progress = { technology = $technology$ progress = 1976 } }
+        495 = { add_technology_progress = { technology = $technology$ progress = 1980 } }
+        496 = { add_technology_progress = { technology = $technology$ progress = 1984 } }
+        497 = { add_technology_progress = { technology = $technology$ progress = 1988 } }
+        498 = { add_technology_progress = { technology = $technology$ progress = 1992 } }
+        499 = { add_technology_progress = { technology = $technology$ progress = 1996 } }
+        500 = { add_technology_progress = { technology = $technology$ progress = 2000 } }
+        501 = { add_technology_progress = { technology = $technology$ progress = 2004 } }
+        502 = { add_technology_progress = { technology = $technology$ progress = 2008 } }
+        503 = { add_technology_progress = { technology = $technology$ progress = 2012 } }
+        504 = { add_technology_progress = { technology = $technology$ progress = 2016 } }
+        505 = { add_technology_progress = { technology = $technology$ progress = 2020 } }
+        506 = { add_technology_progress = { technology = $technology$ progress = 2024 } }
+        507 = { add_technology_progress = { technology = $technology$ progress = 2028 } }
+        508 = { add_technology_progress = { technology = $technology$ progress = 2032 } }
+        509 = { add_technology_progress = { technology = $technology$ progress = 2036 } }
+        510 = { add_technology_progress = { technology = $technology$ progress = 2040 } }
+        511 = { add_technology_progress = { technology = $technology$ progress = 2044 } }
+        512 = { add_technology_progress = { technology = $technology$ progress = 2048 } }
+        513 = { add_technology_progress = { technology = $technology$ progress = 2052 } }
+        514 = { add_technology_progress = { technology = $technology$ progress = 2056 } }
+        515 = { add_technology_progress = { technology = $technology$ progress = 2060 } }
+        516 = { add_technology_progress = { technology = $technology$ progress = 2064 } }
+        517 = { add_technology_progress = { technology = $technology$ progress = 2068 } }
+        518 = { add_technology_progress = { technology = $technology$ progress = 2072 } }
+        519 = { add_technology_progress = { technology = $technology$ progress = 2076 } }
+        520 = { add_technology_progress = { technology = $technology$ progress = 2080 } }
+        521 = { add_technology_progress = { technology = $technology$ progress = 2084 } }
+        522 = { add_technology_progress = { technology = $technology$ progress = 2088 } }
+        523 = { add_technology_progress = { technology = $technology$ progress = 2092 } }
+        524 = { add_technology_progress = { technology = $technology$ progress = 2096 } }
+        525 = { add_technology_progress = { technology = $technology$ progress = 2100 } }
+        526 = { add_technology_progress = { technology = $technology$ progress = 2104 } }
+        527 = { add_technology_progress = { technology = $technology$ progress = 2108 } }
+        528 = { add_technology_progress = { technology = $technology$ progress = 2112 } }
+        529 = { add_technology_progress = { technology = $technology$ progress = 2116 } }
+        530 = { add_technology_progress = { technology = $technology$ progress = 2120 } }
+        531 = { add_technology_progress = { technology = $technology$ progress = 2124 } }
+        532 = { add_technology_progress = { technology = $technology$ progress = 2128 } }
+        533 = { add_technology_progress = { technology = $technology$ progress = 2132 } }
+        534 = { add_technology_progress = { technology = $technology$ progress = 2136 } }
+        535 = { add_technology_progress = { technology = $technology$ progress = 2140 } }
+        536 = { add_technology_progress = { technology = $technology$ progress = 2144 } }
+        537 = { add_technology_progress = { technology = $technology$ progress = 2148 } }
+        538 = { add_technology_progress = { technology = $technology$ progress = 2152 } }
+        539 = { add_technology_progress = { technology = $technology$ progress = 2156 } }
+        540 = { add_technology_progress = { technology = $technology$ progress = 2160 } }
+        541 = { add_technology_progress = { technology = $technology$ progress = 2164 } }
+        542 = { add_technology_progress = { technology = $technology$ progress = 2168 } }
+        543 = { add_technology_progress = { technology = $technology$ progress = 2172 } }
+        544 = { add_technology_progress = { technology = $technology$ progress = 2176 } }
+        545 = { add_technology_progress = { technology = $technology$ progress = 2180 } }
+        546 = { add_technology_progress = { technology = $technology$ progress = 2184 } }
+        547 = { add_technology_progress = { technology = $technology$ progress = 2188 } }
+        548 = { add_technology_progress = { technology = $technology$ progress = 2192 } }
+        549 = { add_technology_progress = { technology = $technology$ progress = 2196 } }
+        550 = { add_technology_progress = { technology = $technology$ progress = 2200 } }
+        551 = { add_technology_progress = { technology = $technology$ progress = 2204 } }
+        552 = { add_technology_progress = { technology = $technology$ progress = 2208 } }
+        553 = { add_technology_progress = { technology = $technology$ progress = 2212 } }
+        554 = { add_technology_progress = { technology = $technology$ progress = 2216 } }
+        555 = { add_technology_progress = { technology = $technology$ progress = 2220 } }
+        556 = { add_technology_progress = { technology = $technology$ progress = 2224 } }
+        557 = { add_technology_progress = { technology = $technology$ progress = 2228 } }
+        558 = { add_technology_progress = { technology = $technology$ progress = 2232 } }
+        559 = { add_technology_progress = { technology = $technology$ progress = 2236 } }
+        560 = { add_technology_progress = { technology = $technology$ progress = 2240 } }
+        561 = { add_technology_progress = { technology = $technology$ progress = 2244 } }
+        562 = { add_technology_progress = { technology = $technology$ progress = 2248 } }
+        563 = { add_technology_progress = { technology = $technology$ progress = 2252 } }
+        564 = { add_technology_progress = { technology = $technology$ progress = 2256 } }
+        565 = { add_technology_progress = { technology = $technology$ progress = 2260 } }
+        566 = { add_technology_progress = { technology = $technology$ progress = 2264 } }
+        567 = { add_technology_progress = { technology = $technology$ progress = 2268 } }
+        568 = { add_technology_progress = { technology = $technology$ progress = 2272 } }
+        569 = { add_technology_progress = { technology = $technology$ progress = 2276 } }
+        570 = { add_technology_progress = { technology = $technology$ progress = 2280 } }
+        571 = { add_technology_progress = { technology = $technology$ progress = 2284 } }
+        572 = { add_technology_progress = { technology = $technology$ progress = 2288 } }
+        573 = { add_technology_progress = { technology = $technology$ progress = 2292 } }
+        574 = { add_technology_progress = { technology = $technology$ progress = 2296 } }
+        575 = { add_technology_progress = { technology = $technology$ progress = 2300 } }
+        576 = { add_technology_progress = { technology = $technology$ progress = 2304 } }
+        577 = { add_technology_progress = { technology = $technology$ progress = 2308 } }
+        578 = { add_technology_progress = { technology = $technology$ progress = 2312 } }
+        579 = { add_technology_progress = { technology = $technology$ progress = 2316 } }
+        580 = { add_technology_progress = { technology = $technology$ progress = 2320 } }
+        581 = { add_technology_progress = { technology = $technology$ progress = 2324 } }
+        582 = { add_technology_progress = { technology = $technology$ progress = 2328 } }
+        583 = { add_technology_progress = { technology = $technology$ progress = 2332 } }
+        584 = { add_technology_progress = { technology = $technology$ progress = 2336 } }
+        585 = { add_technology_progress = { technology = $technology$ progress = 2340 } }
+        586 = { add_technology_progress = { technology = $technology$ progress = 2344 } }
+        587 = { add_technology_progress = { technology = $technology$ progress = 2348 } }
+        588 = { add_technology_progress = { technology = $technology$ progress = 2352 } }
+        589 = { add_technology_progress = { technology = $technology$ progress = 2356 } }
+        590 = { add_technology_progress = { technology = $technology$ progress = 2360 } }
+        591 = { add_technology_progress = { technology = $technology$ progress = 2364 } }
+        592 = { add_technology_progress = { technology = $technology$ progress = 2368 } }
+        593 = { add_technology_progress = { technology = $technology$ progress = 2372 } }
+        594 = { add_technology_progress = { technology = $technology$ progress = 2376 } }
+        595 = { add_technology_progress = { technology = $technology$ progress = 2380 } }
+        596 = { add_technology_progress = { technology = $technology$ progress = 2384 } }
+        597 = { add_technology_progress = { technology = $technology$ progress = 2388 } }
+        598 = { add_technology_progress = { technology = $technology$ progress = 2392 } }
+        599 = { add_technology_progress = { technology = $technology$ progress = 2396 } }
+        600 = { add_technology_progress = { technology = $technology$ progress = 2400 } }
+        601 = { add_technology_progress = { technology = $technology$ progress = 2404 } }
+        602 = { add_technology_progress = { technology = $technology$ progress = 2408 } }
+        603 = { add_technology_progress = { technology = $technology$ progress = 2412 } }
+        604 = { add_technology_progress = { technology = $technology$ progress = 2416 } }
+        605 = { add_technology_progress = { technology = $technology$ progress = 2420 } }
+        606 = { add_technology_progress = { technology = $technology$ progress = 2424 } }
+        607 = { add_technology_progress = { technology = $technology$ progress = 2428 } }
+        608 = { add_technology_progress = { technology = $technology$ progress = 2432 } }
+        609 = { add_technology_progress = { technology = $technology$ progress = 2436 } }
+        610 = { add_technology_progress = { technology = $technology$ progress = 2440 } }
+        611 = { add_technology_progress = { technology = $technology$ progress = 2444 } }
+        612 = { add_technology_progress = { technology = $technology$ progress = 2448 } }
+        613 = { add_technology_progress = { technology = $technology$ progress = 2452 } }
+        614 = { add_technology_progress = { technology = $technology$ progress = 2456 } }
+        615 = { add_technology_progress = { technology = $technology$ progress = 2460 } }
+        616 = { add_technology_progress = { technology = $technology$ progress = 2464 } }
+        617 = { add_technology_progress = { technology = $technology$ progress = 2468 } }
+        618 = { add_technology_progress = { technology = $technology$ progress = 2472 } }
+        619 = { add_technology_progress = { technology = $technology$ progress = 2476 } }
+        620 = { add_technology_progress = { technology = $technology$ progress = 2480 } }
+        621 = { add_technology_progress = { technology = $technology$ progress = 2484 } }
+        622 = { add_technology_progress = { technology = $technology$ progress = 2488 } }
+        623 = { add_technology_progress = { technology = $technology$ progress = 2492 } }
+        624 = { add_technology_progress = { technology = $technology$ progress = 2496 } }
+        625 = { add_technology_progress = { technology = $technology$ progress = 2500 } }
+        626 = { add_technology_progress = { technology = $technology$ progress = 2504 } }
+        627 = { add_technology_progress = { technology = $technology$ progress = 2508 } }
+        628 = { add_technology_progress = { technology = $technology$ progress = 2512 } }
+        629 = { add_technology_progress = { technology = $technology$ progress = 2516 } }
+        630 = { add_technology_progress = { technology = $technology$ progress = 2520 } }
+        631 = { add_technology_progress = { technology = $technology$ progress = 2524 } }
+        632 = { add_technology_progress = { technology = $technology$ progress = 2528 } }
+        633 = { add_technology_progress = { technology = $technology$ progress = 2532 } }
+        634 = { add_technology_progress = { technology = $technology$ progress = 2536 } }
+        635 = { add_technology_progress = { technology = $technology$ progress = 2540 } }
+        636 = { add_technology_progress = { technology = $technology$ progress = 2544 } }
+        637 = { add_technology_progress = { technology = $technology$ progress = 2548 } }
+        638 = { add_technology_progress = { technology = $technology$ progress = 2552 } }
+        639 = { add_technology_progress = { technology = $technology$ progress = 2556 } }
+        640 = { add_technology_progress = { technology = $technology$ progress = 2560 } }
+        641 = { add_technology_progress = { technology = $technology$ progress = 2564 } }
+        642 = { add_technology_progress = { technology = $technology$ progress = 2568 } }
+        643 = { add_technology_progress = { technology = $technology$ progress = 2572 } }
+        644 = { add_technology_progress = { technology = $technology$ progress = 2576 } }
+        645 = { add_technology_progress = { technology = $technology$ progress = 2580 } }
+        646 = { add_technology_progress = { technology = $technology$ progress = 2584 } }
+        647 = { add_technology_progress = { technology = $technology$ progress = 2588 } }
+        648 = { add_technology_progress = { technology = $technology$ progress = 2592 } }
+        649 = { add_technology_progress = { technology = $technology$ progress = 2596 } }
+        650 = { add_technology_progress = { technology = $technology$ progress = 2600 } }
+        651 = { add_technology_progress = { technology = $technology$ progress = 2604 } }
+        652 = { add_technology_progress = { technology = $technology$ progress = 2608 } }
+        653 = { add_technology_progress = { technology = $technology$ progress = 2612 } }
+        654 = { add_technology_progress = { technology = $technology$ progress = 2616 } }
+        655 = { add_technology_progress = { technology = $technology$ progress = 2620 } }
+        656 = { add_technology_progress = { technology = $technology$ progress = 2624 } }
+        657 = { add_technology_progress = { technology = $technology$ progress = 2628 } }
+        658 = { add_technology_progress = { technology = $technology$ progress = 2632 } }
+        659 = { add_technology_progress = { technology = $technology$ progress = 2636 } }
+        660 = { add_technology_progress = { technology = $technology$ progress = 2640 } }
+        661 = { add_technology_progress = { technology = $technology$ progress = 2644 } }
+        662 = { add_technology_progress = { technology = $technology$ progress = 2648 } }
+        663 = { add_technology_progress = { technology = $technology$ progress = 2652 } }
+        664 = { add_technology_progress = { technology = $technology$ progress = 2656 } }
+        665 = { add_technology_progress = { technology = $technology$ progress = 2660 } }
+        666 = { add_technology_progress = { technology = $technology$ progress = 2664 } }
+        667 = { add_technology_progress = { technology = $technology$ progress = 2668 } }
+        668 = { add_technology_progress = { technology = $technology$ progress = 2672 } }
+        669 = { add_technology_progress = { technology = $technology$ progress = 2676 } }
+        670 = { add_technology_progress = { technology = $technology$ progress = 2680 } }
+        671 = { add_technology_progress = { technology = $technology$ progress = 2684 } }
+        672 = { add_technology_progress = { technology = $technology$ progress = 2688 } }
+        673 = { add_technology_progress = { technology = $technology$ progress = 2692 } }
+        674 = { add_technology_progress = { technology = $technology$ progress = 2696 } }
+        675 = { add_technology_progress = { technology = $technology$ progress = 2700 } }
+        676 = { add_technology_progress = { technology = $technology$ progress = 2704 } }
+        677 = { add_technology_progress = { technology = $technology$ progress = 2708 } }
+        678 = { add_technology_progress = { technology = $technology$ progress = 2712 } }
+        679 = { add_technology_progress = { technology = $technology$ progress = 2716 } }
+        680 = { add_technology_progress = { technology = $technology$ progress = 2720 } }
+        681 = { add_technology_progress = { technology = $technology$ progress = 2724 } }
+        682 = { add_technology_progress = { technology = $technology$ progress = 2728 } }
+        683 = { add_technology_progress = { technology = $technology$ progress = 2732 } }
+        684 = { add_technology_progress = { technology = $technology$ progress = 2736 } }
+        685 = { add_technology_progress = { technology = $technology$ progress = 2740 } }
+        686 = { add_technology_progress = { technology = $technology$ progress = 2744 } }
+        687 = { add_technology_progress = { technology = $technology$ progress = 2748 } }
+        688 = { add_technology_progress = { technology = $technology$ progress = 2752 } }
+        689 = { add_technology_progress = { technology = $technology$ progress = 2756 } }
+        690 = { add_technology_progress = { technology = $technology$ progress = 2760 } }
+        691 = { add_technology_progress = { technology = $technology$ progress = 2764 } }
+        692 = { add_technology_progress = { technology = $technology$ progress = 2768 } }
+        693 = { add_technology_progress = { technology = $technology$ progress = 2772 } }
+        694 = { add_technology_progress = { technology = $technology$ progress = 2776 } }
+        695 = { add_technology_progress = { technology = $technology$ progress = 2780 } }
+        696 = { add_technology_progress = { technology = $technology$ progress = 2784 } }
+        697 = { add_technology_progress = { technology = $technology$ progress = 2788 } }
+        698 = { add_technology_progress = { technology = $technology$ progress = 2792 } }
+        699 = { add_technology_progress = { technology = $technology$ progress = 2796 } }
+        700 = { add_technology_progress = { technology = $technology$ progress = 2800 } }
+        701 = { add_technology_progress = { technology = $technology$ progress = 2804 } }
+        702 = { add_technology_progress = { technology = $technology$ progress = 2808 } }
+        703 = { add_technology_progress = { technology = $technology$ progress = 2812 } }
+        704 = { add_technology_progress = { technology = $technology$ progress = 2816 } }
+        705 = { add_technology_progress = { technology = $technology$ progress = 2820 } }
+        706 = { add_technology_progress = { technology = $technology$ progress = 2824 } }
+        707 = { add_technology_progress = { technology = $technology$ progress = 2828 } }
+        708 = { add_technology_progress = { technology = $technology$ progress = 2832 } }
+        709 = { add_technology_progress = { technology = $technology$ progress = 2836 } }
+        710 = { add_technology_progress = { technology = $technology$ progress = 2840 } }
+        711 = { add_technology_progress = { technology = $technology$ progress = 2844 } }
+        712 = { add_technology_progress = { technology = $technology$ progress = 2848 } }
+        713 = { add_technology_progress = { technology = $technology$ progress = 2852 } }
+        714 = { add_technology_progress = { technology = $technology$ progress = 2856 } }
+        715 = { add_technology_progress = { technology = $technology$ progress = 2860 } }
+        716 = { add_technology_progress = { technology = $technology$ progress = 2864 } }
+        717 = { add_technology_progress = { technology = $technology$ progress = 2868 } }
+        718 = { add_technology_progress = { technology = $technology$ progress = 2872 } }
+        719 = { add_technology_progress = { technology = $technology$ progress = 2876 } }
+        720 = { add_technology_progress = { technology = $technology$ progress = 2880 } }
+        721 = { add_technology_progress = { technology = $technology$ progress = 2884 } }
+        722 = { add_technology_progress = { technology = $technology$ progress = 2888 } }
+        723 = { add_technology_progress = { technology = $technology$ progress = 2892 } }
+        724 = { add_technology_progress = { technology = $technology$ progress = 2896 } }
+        725 = { add_technology_progress = { technology = $technology$ progress = 2900 } }
+        726 = { add_technology_progress = { technology = $technology$ progress = 2904 } }
+        727 = { add_technology_progress = { technology = $technology$ progress = 2908 } }
+        728 = { add_technology_progress = { technology = $technology$ progress = 2912 } }
+        729 = { add_technology_progress = { technology = $technology$ progress = 2916 } }
+        730 = { add_technology_progress = { technology = $technology$ progress = 2920 } }
+        731 = { add_technology_progress = { technology = $technology$ progress = 2924 } }
+        732 = { add_technology_progress = { technology = $technology$ progress = 2928 } }
+        733 = { add_technology_progress = { technology = $technology$ progress = 2932 } }
+        734 = { add_technology_progress = { technology = $technology$ progress = 2936 } }
+        735 = { add_technology_progress = { technology = $technology$ progress = 2940 } }
+        736 = { add_technology_progress = { technology = $technology$ progress = 2944 } }
+        737 = { add_technology_progress = { technology = $technology$ progress = 2948 } }
+        738 = { add_technology_progress = { technology = $technology$ progress = 2952 } }
+        739 = { add_technology_progress = { technology = $technology$ progress = 2956 } }
+        740 = { add_technology_progress = { technology = $technology$ progress = 2960 } }
+        741 = { add_technology_progress = { technology = $technology$ progress = 2964 } }
+        742 = { add_technology_progress = { technology = $technology$ progress = 2968 } }
+        743 = { add_technology_progress = { technology = $technology$ progress = 2972 } }
+        744 = { add_technology_progress = { technology = $technology$ progress = 2976 } }
+        745 = { add_technology_progress = { technology = $technology$ progress = 2980 } }
+        746 = { add_technology_progress = { technology = $technology$ progress = 2984 } }
+        747 = { add_technology_progress = { technology = $technology$ progress = 2988 } }
+        748 = { add_technology_progress = { technology = $technology$ progress = 2992 } }
+        749 = { add_technology_progress = { technology = $technology$ progress = 2996 } }
+        750 = { add_technology_progress = { technology = $technology$ progress = 3000 } }
+        751 = { add_technology_progress = { technology = $technology$ progress = 3004 } }
+        752 = { add_technology_progress = { technology = $technology$ progress = 3008 } }
+        753 = { add_technology_progress = { technology = $technology$ progress = 3012 } }
+        754 = { add_technology_progress = { technology = $technology$ progress = 3016 } }
+        755 = { add_technology_progress = { technology = $technology$ progress = 3020 } }
+        756 = { add_technology_progress = { technology = $technology$ progress = 3024 } }
+        757 = { add_technology_progress = { technology = $technology$ progress = 3028 } }
+        758 = { add_technology_progress = { technology = $technology$ progress = 3032 } }
+        759 = { add_technology_progress = { technology = $technology$ progress = 3036 } }
+        760 = { add_technology_progress = { technology = $technology$ progress = 3040 } }
+        761 = { add_technology_progress = { technology = $technology$ progress = 3044 } }
+        762 = { add_technology_progress = { technology = $technology$ progress = 3048 } }
+        763 = { add_technology_progress = { technology = $technology$ progress = 3052 } }
+        764 = { add_technology_progress = { technology = $technology$ progress = 3056 } }
+        765 = { add_technology_progress = { technology = $technology$ progress = 3060 } }
+        766 = { add_technology_progress = { technology = $technology$ progress = 3064 } }
+        767 = { add_technology_progress = { technology = $technology$ progress = 3068 } }
+        768 = { add_technology_progress = { technology = $technology$ progress = 3072 } }
+        769 = { add_technology_progress = { technology = $technology$ progress = 3076 } }
+        770 = { add_technology_progress = { technology = $technology$ progress = 3080 } }
+        771 = { add_technology_progress = { technology = $technology$ progress = 3084 } }
+        772 = { add_technology_progress = { technology = $technology$ progress = 3088 } }
+        773 = { add_technology_progress = { technology = $technology$ progress = 3092 } }
+        774 = { add_technology_progress = { technology = $technology$ progress = 3096 } }
+        775 = { add_technology_progress = { technology = $technology$ progress = 3100 } }
+        776 = { add_technology_progress = { technology = $technology$ progress = 3104 } }
+        777 = { add_technology_progress = { technology = $technology$ progress = 3108 } }
+        778 = { add_technology_progress = { technology = $technology$ progress = 3112 } }
+        779 = { add_technology_progress = { technology = $technology$ progress = 3116 } }
+        780 = { add_technology_progress = { technology = $technology$ progress = 3120 } }
+        781 = { add_technology_progress = { technology = $technology$ progress = 3124 } }
+        782 = { add_technology_progress = { technology = $technology$ progress = 3128 } }
+        783 = { add_technology_progress = { technology = $technology$ progress = 3132 } }
+        784 = { add_technology_progress = { technology = $technology$ progress = 3136 } }
+        785 = { add_technology_progress = { technology = $technology$ progress = 3140 } }
+        786 = { add_technology_progress = { technology = $technology$ progress = 3144 } }
+        787 = { add_technology_progress = { technology = $technology$ progress = 3148 } }
+        788 = { add_technology_progress = { technology = $technology$ progress = 3152 } }
+        789 = { add_technology_progress = { technology = $technology$ progress = 3156 } }
+        790 = { add_technology_progress = { technology = $technology$ progress = 3160 } }
+        791 = { add_technology_progress = { technology = $technology$ progress = 3164 } }
+        792 = { add_technology_progress = { technology = $technology$ progress = 3168 } }
+        793 = { add_technology_progress = { technology = $technology$ progress = 3172 } }
+        794 = { add_technology_progress = { technology = $technology$ progress = 3176 } }
+        795 = { add_technology_progress = { technology = $technology$ progress = 3180 } }
+        796 = { add_technology_progress = { technology = $technology$ progress = 3184 } }
+        797 = { add_technology_progress = { technology = $technology$ progress = 3188 } }
+        798 = { add_technology_progress = { technology = $technology$ progress = 3192 } }
+        799 = { add_technology_progress = { technology = $technology$ progress = 3196 } }
+        800 = { add_technology_progress = { technology = $technology$ progress = 3200 } }
+        801 = { add_technology_progress = { technology = $technology$ progress = 3204 } }
+        802 = { add_technology_progress = { technology = $technology$ progress = 3208 } }
+        803 = { add_technology_progress = { technology = $technology$ progress = 3212 } }
+        804 = { add_technology_progress = { technology = $technology$ progress = 3216 } }
+        805 = { add_technology_progress = { technology = $technology$ progress = 3220 } }
+        806 = { add_technology_progress = { technology = $technology$ progress = 3224 } }
+        807 = { add_technology_progress = { technology = $technology$ progress = 3228 } }
+        808 = { add_technology_progress = { technology = $technology$ progress = 3232 } }
+        809 = { add_technology_progress = { technology = $technology$ progress = 3236 } }
+        810 = { add_technology_progress = { technology = $technology$ progress = 3240 } }
+        811 = { add_technology_progress = { technology = $technology$ progress = 3244 } }
+        812 = { add_technology_progress = { technology = $technology$ progress = 3248 } }
+        813 = { add_technology_progress = { technology = $technology$ progress = 3252 } }
+        814 = { add_technology_progress = { technology = $technology$ progress = 3256 } }
+        815 = { add_technology_progress = { technology = $technology$ progress = 3260 } }
+        816 = { add_technology_progress = { technology = $technology$ progress = 3264 } }
+        817 = { add_technology_progress = { technology = $technology$ progress = 3268 } }
+        818 = { add_technology_progress = { technology = $technology$ progress = 3272 } }
+        819 = { add_technology_progress = { technology = $technology$ progress = 3276 } }
+        820 = { add_technology_progress = { technology = $technology$ progress = 3280 } }
+        821 = { add_technology_progress = { technology = $technology$ progress = 3284 } }
+        822 = { add_technology_progress = { technology = $technology$ progress = 3288 } }
+        823 = { add_technology_progress = { technology = $technology$ progress = 3292 } }
+        824 = { add_technology_progress = { technology = $technology$ progress = 3296 } }
+        825 = { add_technology_progress = { technology = $technology$ progress = 3300 } }
+        826 = { add_technology_progress = { technology = $technology$ progress = 3304 } }
+        827 = { add_technology_progress = { technology = $technology$ progress = 3308 } }
+        828 = { add_technology_progress = { technology = $technology$ progress = 3312 } }
+        829 = { add_technology_progress = { technology = $technology$ progress = 3316 } }
+        830 = { add_technology_progress = { technology = $technology$ progress = 3320 } }
+        831 = { add_technology_progress = { technology = $technology$ progress = 3324 } }
+        832 = { add_technology_progress = { technology = $technology$ progress = 3328 } }
+        833 = { add_technology_progress = { technology = $technology$ progress = 3332 } }
+        834 = { add_technology_progress = { technology = $technology$ progress = 3336 } }
+        835 = { add_technology_progress = { technology = $technology$ progress = 3340 } }
+        836 = { add_technology_progress = { technology = $technology$ progress = 3344 } }
+        837 = { add_technology_progress = { technology = $technology$ progress = 3348 } }
+        838 = { add_technology_progress = { technology = $technology$ progress = 3352 } }
+        839 = { add_technology_progress = { technology = $technology$ progress = 3356 } }
+        840 = { add_technology_progress = { technology = $technology$ progress = 3360 } }
+        841 = { add_technology_progress = { technology = $technology$ progress = 3364 } }
+        842 = { add_technology_progress = { technology = $technology$ progress = 3368 } }
+        843 = { add_technology_progress = { technology = $technology$ progress = 3372 } }
+        844 = { add_technology_progress = { technology = $technology$ progress = 3376 } }
+        845 = { add_technology_progress = { technology = $technology$ progress = 3380 } }
+        846 = { add_technology_progress = { technology = $technology$ progress = 3384 } }
+        847 = { add_technology_progress = { technology = $technology$ progress = 3388 } }
+        848 = { add_technology_progress = { technology = $technology$ progress = 3392 } }
+        849 = { add_technology_progress = { technology = $technology$ progress = 3396 } }
+        850 = { add_technology_progress = { technology = $technology$ progress = 3400 } }
+        851 = { add_technology_progress = { technology = $technology$ progress = 3404 } }
+        852 = { add_technology_progress = { technology = $technology$ progress = 3408 } }
+        853 = { add_technology_progress = { technology = $technology$ progress = 3412 } }
+        854 = { add_technology_progress = { technology = $technology$ progress = 3416 } }
+        855 = { add_technology_progress = { technology = $technology$ progress = 3420 } }
+        856 = { add_technology_progress = { technology = $technology$ progress = 3424 } }
+        857 = { add_technology_progress = { technology = $technology$ progress = 3428 } }
+        858 = { add_technology_progress = { technology = $technology$ progress = 3432 } }
+        859 = { add_technology_progress = { technology = $technology$ progress = 3436 } }
+        860 = { add_technology_progress = { technology = $technology$ progress = 3440 } }
+        861 = { add_technology_progress = { technology = $technology$ progress = 3444 } }
+        862 = { add_technology_progress = { technology = $technology$ progress = 3448 } }
+        863 = { add_technology_progress = { technology = $technology$ progress = 3452 } }
+        864 = { add_technology_progress = { technology = $technology$ progress = 3456 } }
+        865 = { add_technology_progress = { technology = $technology$ progress = 3460 } }
+        866 = { add_technology_progress = { technology = $technology$ progress = 3464 } }
+        867 = { add_technology_progress = { technology = $technology$ progress = 3468 } }
+        868 = { add_technology_progress = { technology = $technology$ progress = 3472 } }
+        869 = { add_technology_progress = { technology = $technology$ progress = 3476 } }
+        870 = { add_technology_progress = { technology = $technology$ progress = 3480 } }
+        871 = { add_technology_progress = { technology = $technology$ progress = 3484 } }
+        872 = { add_technology_progress = { technology = $technology$ progress = 3488 } }
+        873 = { add_technology_progress = { technology = $technology$ progress = 3492 } }
+        874 = { add_technology_progress = { technology = $technology$ progress = 3496 } }
+        875 = { add_technology_progress = { technology = $technology$ progress = 3500 } }
+        876 = { add_technology_progress = { technology = $technology$ progress = 3504 } }
+        877 = { add_technology_progress = { technology = $technology$ progress = 3508 } }
+        878 = { add_technology_progress = { technology = $technology$ progress = 3512 } }
+        879 = { add_technology_progress = { technology = $technology$ progress = 3516 } }
+        880 = { add_technology_progress = { technology = $technology$ progress = 3520 } }
+        881 = { add_technology_progress = { technology = $technology$ progress = 3524 } }
+        882 = { add_technology_progress = { technology = $technology$ progress = 3528 } }
+        883 = { add_technology_progress = { technology = $technology$ progress = 3532 } }
+        884 = { add_technology_progress = { technology = $technology$ progress = 3536 } }
+        885 = { add_technology_progress = { technology = $technology$ progress = 3540 } }
+        886 = { add_technology_progress = { technology = $technology$ progress = 3544 } }
+        887 = { add_technology_progress = { technology = $technology$ progress = 3548 } }
+        888 = { add_technology_progress = { technology = $technology$ progress = 3552 } }
+        889 = { add_technology_progress = { technology = $technology$ progress = 3556 } }
+        890 = { add_technology_progress = { technology = $technology$ progress = 3560 } }
+        891 = { add_technology_progress = { technology = $technology$ progress = 3564 } }
+        892 = { add_technology_progress = { technology = $technology$ progress = 3568 } }
+        893 = { add_technology_progress = { technology = $technology$ progress = 3572 } }
+        894 = { add_technology_progress = { technology = $technology$ progress = 3576 } }
+        895 = { add_technology_progress = { technology = $technology$ progress = 3580 } }
+        896 = { add_technology_progress = { technology = $technology$ progress = 3584 } }
+        897 = { add_technology_progress = { technology = $technology$ progress = 3588 } }
+        898 = { add_technology_progress = { technology = $technology$ progress = 3592 } }
+        899 = { add_technology_progress = { technology = $technology$ progress = 3596 } }
+        900 = { add_technology_progress = { technology = $technology$ progress = 3600 } }
+        901 = { add_technology_progress = { technology = $technology$ progress = 3604 } }
+        902 = { add_technology_progress = { technology = $technology$ progress = 3608 } }
+        903 = { add_technology_progress = { technology = $technology$ progress = 3612 } }
+        904 = { add_technology_progress = { technology = $technology$ progress = 3616 } }
+        905 = { add_technology_progress = { technology = $technology$ progress = 3620 } }
+        906 = { add_technology_progress = { technology = $technology$ progress = 3624 } }
+        907 = { add_technology_progress = { technology = $technology$ progress = 3628 } }
+        908 = { add_technology_progress = { technology = $technology$ progress = 3632 } }
+        909 = { add_technology_progress = { technology = $technology$ progress = 3636 } }
+        910 = { add_technology_progress = { technology = $technology$ progress = 3640 } }
+        911 = { add_technology_progress = { technology = $technology$ progress = 3644 } }
+        912 = { add_technology_progress = { technology = $technology$ progress = 3648 } }
+        913 = { add_technology_progress = { technology = $technology$ progress = 3652 } }
+        914 = { add_technology_progress = { technology = $technology$ progress = 3656 } }
+        915 = { add_technology_progress = { technology = $technology$ progress = 3660 } }
+        916 = { add_technology_progress = { technology = $technology$ progress = 3664 } }
+        917 = { add_technology_progress = { technology = $technology$ progress = 3668 } }
+        918 = { add_technology_progress = { technology = $technology$ progress = 3672 } }
+        919 = { add_technology_progress = { technology = $technology$ progress = 3676 } }
+        920 = { add_technology_progress = { technology = $technology$ progress = 3680 } }
+        921 = { add_technology_progress = { technology = $technology$ progress = 3684 } }
+        922 = { add_technology_progress = { technology = $technology$ progress = 3688 } }
+        923 = { add_technology_progress = { technology = $technology$ progress = 3692 } }
+        924 = { add_technology_progress = { technology = $technology$ progress = 3696 } }
+        925 = { add_technology_progress = { technology = $technology$ progress = 3700 } }
+        926 = { add_technology_progress = { technology = $technology$ progress = 3704 } }
+        927 = { add_technology_progress = { technology = $technology$ progress = 3708 } }
+        928 = { add_technology_progress = { technology = $technology$ progress = 3712 } }
+        929 = { add_technology_progress = { technology = $technology$ progress = 3716 } }
+        930 = { add_technology_progress = { technology = $technology$ progress = 3720 } }
+        931 = { add_technology_progress = { technology = $technology$ progress = 3724 } }
+        932 = { add_technology_progress = { technology = $technology$ progress = 3728 } }
+        933 = { add_technology_progress = { technology = $technology$ progress = 3732 } }
+        934 = { add_technology_progress = { technology = $technology$ progress = 3736 } }
+        935 = { add_technology_progress = { technology = $technology$ progress = 3740 } }
+        936 = { add_technology_progress = { technology = $technology$ progress = 3744 } }
+        937 = { add_technology_progress = { technology = $technology$ progress = 3748 } }
+        938 = { add_technology_progress = { technology = $technology$ progress = 3752 } }
+        939 = { add_technology_progress = { technology = $technology$ progress = 3756 } }
+        940 = { add_technology_progress = { technology = $technology$ progress = 3760 } }
+        941 = { add_technology_progress = { technology = $technology$ progress = 3764 } }
+        942 = { add_technology_progress = { technology = $technology$ progress = 3768 } }
+        943 = { add_technology_progress = { technology = $technology$ progress = 3772 } }
+        944 = { add_technology_progress = { technology = $technology$ progress = 3776 } }
+        945 = { add_technology_progress = { technology = $technology$ progress = 3780 } }
+        946 = { add_technology_progress = { technology = $technology$ progress = 3784 } }
+        947 = { add_technology_progress = { technology = $technology$ progress = 3788 } }
+        948 = { add_technology_progress = { technology = $technology$ progress = 3792 } }
+        949 = { add_technology_progress = { technology = $technology$ progress = 3796 } }
+        950 = { add_technology_progress = { technology = $technology$ progress = 3800 } }
+        951 = { add_technology_progress = { technology = $technology$ progress = 3804 } }
+        952 = { add_technology_progress = { technology = $technology$ progress = 3808 } }
+        953 = { add_technology_progress = { technology = $technology$ progress = 3812 } }
+        954 = { add_technology_progress = { technology = $technology$ progress = 3816 } }
+        955 = { add_technology_progress = { technology = $technology$ progress = 3820 } }
+        956 = { add_technology_progress = { technology = $technology$ progress = 3824 } }
+        957 = { add_technology_progress = { technology = $technology$ progress = 3828 } }
+        958 = { add_technology_progress = { technology = $technology$ progress = 3832 } }
+        959 = { add_technology_progress = { technology = $technology$ progress = 3836 } }
+        960 = { add_technology_progress = { technology = $technology$ progress = 3840 } }
+        961 = { add_technology_progress = { technology = $technology$ progress = 3844 } }
+        962 = { add_technology_progress = { technology = $technology$ progress = 3848 } }
+        963 = { add_technology_progress = { technology = $technology$ progress = 3852 } }
+        964 = { add_technology_progress = { technology = $technology$ progress = 3856 } }
+        965 = { add_technology_progress = { technology = $technology$ progress = 3860 } }
+        966 = { add_technology_progress = { technology = $technology$ progress = 3864 } }
+        967 = { add_technology_progress = { technology = $technology$ progress = 3868 } }
+        968 = { add_technology_progress = { technology = $technology$ progress = 3872 } }
+        969 = { add_technology_progress = { technology = $technology$ progress = 3876 } }
+        970 = { add_technology_progress = { technology = $technology$ progress = 3880 } }
+        971 = { add_technology_progress = { technology = $technology$ progress = 3884 } }
+        972 = { add_technology_progress = { technology = $technology$ progress = 3888 } }
+        973 = { add_technology_progress = { technology = $technology$ progress = 3892 } }
+        974 = { add_technology_progress = { technology = $technology$ progress = 3896 } }
+        975 = { add_technology_progress = { technology = $technology$ progress = 3900 } }
+        976 = { add_technology_progress = { technology = $technology$ progress = 3904 } }
+        977 = { add_technology_progress = { technology = $technology$ progress = 3908 } }
+        978 = { add_technology_progress = { technology = $technology$ progress = 3912 } }
+        979 = { add_technology_progress = { technology = $technology$ progress = 3916 } }
+        980 = { add_technology_progress = { technology = $technology$ progress = 3920 } }
+        981 = { add_technology_progress = { technology = $technology$ progress = 3924 } }
+        982 = { add_technology_progress = { technology = $technology$ progress = 3928 } }
+        983 = { add_technology_progress = { technology = $technology$ progress = 3932 } }
+        984 = { add_technology_progress = { technology = $technology$ progress = 3936 } }
+        985 = { add_technology_progress = { technology = $technology$ progress = 3940 } }
+        986 = { add_technology_progress = { technology = $technology$ progress = 3944 } }
+        987 = { add_technology_progress = { technology = $technology$ progress = 3948 } }
+        988 = { add_technology_progress = { technology = $technology$ progress = 3952 } }
+        989 = { add_technology_progress = { technology = $technology$ progress = 3956 } }
+        990 = { add_technology_progress = { technology = $technology$ progress = 3960 } }
+        991 = { add_technology_progress = { technology = $technology$ progress = 3964 } }
+        992 = { add_technology_progress = { technology = $technology$ progress = 3968 } }
+        993 = { add_technology_progress = { technology = $technology$ progress = 3972 } }
+        994 = { add_technology_progress = { technology = $technology$ progress = 3976 } }
+        995 = { add_technology_progress = { technology = $technology$ progress = 3980 } }
+        996 = { add_technology_progress = { technology = $technology$ progress = 3984 } }
+        997 = { add_technology_progress = { technology = $technology$ progress = 3988 } }
+        998 = { add_technology_progress = { technology = $technology$ progress = 3992 } }
+        999 = { add_technology_progress = { technology = $technology$ progress = 3996 } }
+        fallback = { add_technology_progress = { technology = $technology$ progress = 4000 } }
+    }
+}

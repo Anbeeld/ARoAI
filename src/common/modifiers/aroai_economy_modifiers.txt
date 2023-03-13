@@ -1,0 +1,49 @@
+﻿aroai_10_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.10
+}
+
+aroai_20_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.20
+}
+
+aroai_30_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.30
+}
+
+aroai_40_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.40
+}
+
+aroai_50_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.50
+}
+
+aroai_60_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.60
+}
+
+aroai_70_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.70
+}
+
+aroai_80_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.80
+}
+
+aroai_90_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 0.90
+}
+
+aroai_100_percent_accelerated_construction = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
+    state_construction_mult = 1.00
+}

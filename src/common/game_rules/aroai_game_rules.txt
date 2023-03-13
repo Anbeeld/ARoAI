@@ -1,0 +1,136 @@
+﻿aroai_power_level_of_ai_countries = {
+    default = aroai_power_level_of_ai_countries_100
+    aroai_power_level_of_ai_countries_0 = {}
+    aroai_power_level_of_ai_countries_10 = {}
+    aroai_power_level_of_ai_countries_20 = {}
+    aroai_power_level_of_ai_countries_30 = {}
+    aroai_power_level_of_ai_countries_40 = {}
+    aroai_power_level_of_ai_countries_50 = {}
+    aroai_power_level_of_ai_countries_60 = {}
+    aroai_power_level_of_ai_countries_70 = {}
+    aroai_power_level_of_ai_countries_80 = {}
+    aroai_power_level_of_ai_countries_90 = {}
+    aroai_power_level_of_ai_countries_100 = {}
+}
+
+aroai_power_level_of_player_subjects = {
+    default = aroai_power_level_of_player_subjects_same
+    aroai_power_level_of_player_subjects_0 = {}
+    aroai_power_level_of_player_subjects_10 = {}
+    aroai_power_level_of_player_subjects_20 = {}
+    aroai_power_level_of_player_subjects_30 = {}
+    aroai_power_level_of_player_subjects_40 = {}
+    aroai_power_level_of_player_subjects_50 = {}
+    aroai_power_level_of_player_subjects_60 = {}
+    aroai_power_level_of_player_subjects_70 = {}
+    aroai_power_level_of_player_subjects_80 = {}
+    aroai_power_level_of_player_subjects_90 = {}
+    aroai_power_level_of_player_subjects_100 = {}
+    aroai_power_level_of_player_subjects_same = {}
+}
+
+aroai_power_level_of_ai_china = {
+    default = aroai_power_level_of_ai_china_100
+    aroai_power_level_of_ai_china_0 = {}
+    aroai_power_level_of_ai_china_10 = {}
+    aroai_power_level_of_ai_china_20 = {}
+    aroai_power_level_of_ai_china_30 = {}
+    aroai_power_level_of_ai_china_40 = {}
+    aroai_power_level_of_ai_china_50 = {}
+    aroai_power_level_of_ai_china_60 = {}
+    aroai_power_level_of_ai_china_70 = {}
+    aroai_power_level_of_ai_china_80 = {}
+    aroai_power_level_of_ai_china_90 = {}
+    aroai_power_level_of_ai_china_100 = {}
+}
+
+aroai_power_level_of_ai_india = {
+    default = aroai_power_level_of_ai_india_100
+    aroai_power_level_of_ai_india_0 = {}
+    aroai_power_level_of_ai_india_10 = {}
+    aroai_power_level_of_ai_india_20 = {}
+    aroai_power_level_of_ai_india_30 = {}
+    aroai_power_level_of_ai_india_40 = {}
+    aroai_power_level_of_ai_india_50 = {}
+    aroai_power_level_of_ai_india_60 = {}
+    aroai_power_level_of_ai_india_70 = {}
+    aroai_power_level_of_ai_india_80 = {}
+    aroai_power_level_of_ai_india_90 = {}
+    aroai_power_level_of_ai_india_100 = {}
+}
+
+aroai_construction_of_ai_countries = {
+    default = aroai_construction_of_ai_countries_100
+    aroai_construction_of_ai_countries_0 = {}
+    aroai_construction_of_ai_countries_10 = {}
+    aroai_construction_of_ai_countries_20 = {}
+    aroai_construction_of_ai_countries_30 = {}
+    aroai_construction_of_ai_countries_40 = {}
+    aroai_construction_of_ai_countries_50 = {}
+    aroai_construction_of_ai_countries_60 = {}
+    aroai_construction_of_ai_countries_70 = {}
+    aroai_construction_of_ai_countries_80 = {}
+    aroai_construction_of_ai_countries_90 = {}
+    aroai_construction_of_ai_countries_100 = {}
+    aroai_construction_of_ai_countries_110 = {}
+    aroai_construction_of_ai_countries_120 = {}
+    aroai_construction_of_ai_countries_130 = {}
+    aroai_construction_of_ai_countries_140 = {}
+    aroai_construction_of_ai_countries_150 = {}
+    aroai_construction_of_ai_countries_160 = {}
+    aroai_construction_of_ai_countries_170 = {}
+    aroai_construction_of_ai_countries_180 = {}
+    aroai_construction_of_ai_countries_190 = {}
+    aroai_construction_of_ai_countries_200 = {}
+}
+
+aroai_construction_of_player_subjects = {
+    default = aroai_construction_of_player_subjects_same
+    aroai_construction_of_player_subjects_0 = {}
+    aroai_construction_of_player_subjects_10 = {}
+    aroai_construction_of_player_subjects_20 = {}
+    aroai_construction_of_player_subjects_30 = {}
+    aroai_construction_of_player_subjects_40 = {}
+    aroai_construction_of_player_subjects_50 = {}
+    aroai_construction_of_player_subjects_60 = {}
+    aroai_construction_of_player_subjects_70 = {}
+    aroai_construction_of_player_subjects_80 = {}
+    aroai_construction_of_player_subjects_90 = {}
+    aroai_construction_of_player_subjects_100 = {}
+    aroai_construction_of_player_subjects_same = {}
+    aroai_construction_of_player_subjects_110 = {}
+    aroai_construction_of_player_subjects_120 = {}
+    aroai_construction_of_player_subjects_130 = {}
+    aroai_construction_of_player_subjects_140 = {}
+    aroai_construction_of_player_subjects_150 = {}
+    aroai_construction_of_player_subjects_160 = {}
+    aroai_construction_of_player_subjects_170 = {}
+    aroai_construction_of_player_subjects_180 = {}
+    aroai_construction_of_player_subjects_190 = {}
+    aroai_construction_of_player_subjects_200 = {}
+}
+
+aroai_building_priorities = {
+    default = aroai_building_priorities_roleplay
+    aroai_building_priorities_roleplay = {}
+    aroai_building_priorities_uniform = {}
+}
+
+aroai_research_assistance_for_ai = {
+    default = aroai_research_assistance_for_ai_default
+    aroai_research_assistance_for_ai_default = {}
+    aroai_research_assistance_for_ai_railroaded = {}
+    aroai_research_assistance_for_ai_disabled = {}
+}
+
+aroai_autobuild_for_players = {
+    default = aroai_autobuild_for_players_allowed
+    aroai_autobuild_for_players_allowed = {}
+    aroai_autobuild_for_players_prohibited = {}
+}
+
+aroai_stalemate_war_prevention = {
+    default = aroai_stalemate_war_prevention_enabled
+    aroai_stalemate_war_prevention_enabled = {}
+    aroai_stalemate_war_prevention_disabled = {}
+}

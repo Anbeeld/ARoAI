@@ -1,0 +1,567 @@
+﻿# Perform evaluation and write result to variables.
+# Then check states for allocation.
+aroai_check_priority_of_building = {
+    if = {
+        limit = {
+            aroai_consider_$key$ = {
+                id = $id$
+            }
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$counter$_collected_data
+                }
+                aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_1
+            }
+        }
+        aroai_evaluate_$key$ = {
+            id = $id$
+            crucial = $crucial$
+        }
+        if = {
+            limit = {
+                $class$ >= 4
+            }
+            if = {
+                limit = {
+                    has_local_variable = aroai_saved_priority
+                    has_local_variable = aroai_saved_level
+                    has_local_variable = aroai_saved_productivity
+                }
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_half_of_average_between_level_and_productivity <= $crucial$
+                            AND = {
+                                aroai_average_between_level_and_productivity <= $crucial$
+                                aroai_building_type_$id$_collected_data_2 >= 10
+                            }
+                            aroai_building_type_$id$_collected_data_2 >= 20
+                        }
+                    }
+                    set_local_variable = aroai_allowed_by_profit
+                }
+                if = {
+                    limit = {
+                        has_variable = aroai_building_type_$id$_collected_data
+                    }
+                    set_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = {
+                            value = aroai_building_type_$id$_collected_data_3
+                            multiply = 100
+                            add = {
+                                value = aroai_building_type_$id$_collected_data_5
+                                multiply = 10000000
+                            }
+                            add = {
+                                value = local_var:aroai_saved_priority
+                                divide = 100
+                            }
+                            add = local_var:aroai_saved_level
+                        }
+                    }
+                }
+                else = {
+                    set_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = {
+                            value = local_var:aroai_saved_priority
+                            divide = 100
+                            add = local_var:aroai_saved_level
+                            add = 999900
+                        }
+                    }
+                }
+                if = {
+                    limit = {
+                        aroai_building_type_$id$_collected_data_3 = 9999
+                    }
+                    if = {
+                        limit = {
+                            has_local_variable = aroai_allowed_by_profit
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            add = 1000000
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        subtract = 999900
+                    }
+                }
+                else = {
+
+                    # This is hand-made, not generated.
+                    # Keep in mind that productivity is stored as x10, so multiply = 8.4 means 0.84 means 84%.
+                    switch = {
+                        trigger = local_var:aroai_saved_productivity
+                        1 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 4.2 floor = yes } } }
+                        2 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 5.4 floor = yes } } }
+                        3 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 6.2 floor = yes } } }
+                        4 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 6.8 floor = yes } } }
+                        5 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 7.4 floor = yes } } }
+                        6 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 7.9 floor = yes } } }
+                        7 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 8.4 floor = yes } } }
+                        8 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 8.8 floor = yes } } }
+                        9 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 9.2 floor = yes } } }
+                        10 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 9.6 floor = yes } } }
+                        11 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 10.0 floor = yes } } }
+                        12 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 10.3 floor = yes } } }
+                        13 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 10.6 floor = yes } } }
+                        14 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 10.9 floor = yes } } }
+                        15 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 11.2 floor = yes } } }
+                        16 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 11.5 floor = yes } } }
+                        17 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 11.7 floor = yes } } }
+                        18 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 11.9 floor = yes } } }
+                        19 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.1 floor = yes } } }
+                        20 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.3 floor = yes } } }
+                        21 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.5 floor = yes } } }
+                        22 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.6 floor = yes } } }
+                        23 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.7 floor = yes } } }
+                        24 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.8 floor = yes } } }
+                        25 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 12.9 floor = yes } } }
+                        26 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.0 floor = yes } } }
+                        27 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.1 floor = yes } } }
+                        28 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.2 floor = yes } } }
+                        29 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.3 floor = yes } } }
+                        30 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.4 floor = yes } } }
+                        31 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.5 floor = yes } } }
+                        32 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.6 floor = yes } } }
+                        33 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.7 floor = yes } } }
+                        34 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.8 floor = yes } } }
+                        35 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 13.9 floor = yes } } }
+                        36 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.0 floor = yes } } }
+                        37 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.1 floor = yes } } }
+                        38 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.2 floor = yes } } }
+                        39 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.3 floor = yes } } }
+                        40 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.4 floor = yes } } }
+                        41 = { set_local_variable = { name = aroai_saved_productivity
+                        value = { value = aroai_median_building_productivity multiply = 14.5 floor = yes } } }
+                    }
+                    if = {
+                        limit = {
+                            aroai_half_of_average_between_level_and_productivity <= $crucial$
+                        }
+                        change_local_variable = {
+                            name = aroai_saved_productivity
+                            divide = 1.20
+                        }
+                    }
+                    else_if = {
+                        limit = {
+                            aroai_average_between_level_and_productivity <= $crucial$
+                        }
+                        change_local_variable = {
+                            name = aroai_saved_productivity
+                            divide = 1.10
+                        }
+                    }
+                    
+                    if = {
+                        limit = {
+                            has_local_variable = aroai_allowed_by_profit
+                            aroai_building_type_$id$_collected_data_3 >= local_var:aroai_saved_productivity
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            add = 1000000
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        subtract = {
+                            value = aroai_building_type_$id$_collected_data_3
+                            multiply = 100
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        add = {
+                            value = local_var:aroai_saved_productivity
+                            max = 9998
+                            multiply = 100
+                        }
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                set_variable = {
+                    name = aroai_building_type_$id$_collected_data
+                    value = {
+                        value = aroai_building_type_$id$_collected_data_5
+                        multiply = 10000000
+                    }
+                }
+            }
+            
+            remove_local_variable = aroai_saved_priority
+            remove_local_variable = aroai_saved_level
+            remove_local_variable = aroai_saved_productivity
+            remove_local_variable = aroai_allowed_by_profit
+        }
+    }
+    else_if = {
+        limit = {
+            has_variable = aroai_building_type_$id$_collected_data
+        }
+        set_variable = {
+            name = aroai_building_type_$id$_collected_data
+            value = {
+                value = aroai_building_type_$id$_collected_data_5
+                multiply = 10000000
+            }
+        }
+    }
+    if = {
+        limit = {
+            OR = {
+                $id$ = 1
+                $id$ = 3
+                $id$ = 5
+            }
+            NOT = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+        }
+        set_variable = {
+            name = aroai_building_type_$id$_collected_data
+            value = 0
+        }
+    }
+    
+    # Allocation
+    if = {
+        limit = {
+            has_variable = aroai_building_type_$id$_collected_data
+            aroai_building_type_$id$_collected_data_1 > 0
+        }
+        if = {
+            limit = {
+                aroai_check_if_counter_is_within_limit = {
+                    id = $id$
+                    counter = $counter$
+                    limit = $limit$
+                }
+            }
+            every_scope_state = {
+                limit = {
+                    has_variable = aroai_available_workforce
+                    state_region = {
+                        has_variable = aroai_available_agriculture_resources
+                    }
+                }
+                if = {
+                    limit = {
+                        aroai_sanction_$key$ = {
+                            id = $id$
+                        }
+                        root = {
+                            OR = {
+                                AND = {
+                                    aroai_has_variable_list = {
+                                        name = aroai_suitable_states
+                                    }
+                                    is_target_in_variable_list = {
+                                        name = aroai_suitable_states
+                                        target = prev
+                                    }
+                                }
+                                aroai_building_type_$id$_collected_data_2 <= $crucial$
+                            }
+                        }
+                    }
+                    if = { limit = { $allocate$ >= 1 aroai_allocate_$key$ = { aptitude = 1 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_1 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 2 aroai_allocate_$key$ = { aptitude = 2 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_2 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 3 aroai_allocate_$key$ = { aptitude = 3 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_3 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 4 aroai_allocate_$key$ = { aptitude = 4 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_4 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 5 aroai_allocate_$key$ = { aptitude = 5 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_5 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 6 aroai_allocate_$key$ = { aptitude = 6 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_6 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 7 aroai_allocate_$key$ = { aptitude = 7 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_7 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 8 aroai_allocate_$key$ = { aptitude = 8 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_8 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 9 aroai_allocate_$key$ = { aptitude = 9 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_9 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 10 aroai_allocate_$key$ = { aptitude = 10 } }
+                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_10 target = prev } } } 
+                }
+            }
+            
+            if = {
+                limit = {
+                    NOR = {
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_1
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_2
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_3
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_4
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_5
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_6
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_7
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_8
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_9
+                        }
+                        aroai_has_variable_list = {
+                            name = aroai_building_type_$id$_allocation_10
+                        }
+                    }
+                }
+                change_variable = {
+                    name = aroai_building_type_$id$_collected_data
+                    subtract = {
+                        value = aroai_building_type_$id$_collected_data_1
+                        divide = 100
+                    }
+                }
+            }
+        }
+        else = {
+            change_variable = {
+                name = aroai_building_type_$id$_collected_data
+                subtract = {
+                    value = aroai_building_type_$id$_collected_data_1
+                    divide = 100
+                }
+            }
+        }
+    }
+}
+
+# For government buildings
+aroai_evaluate_with_custom_trigger = {
+    set_local_variable = {
+        name = aroai_current_priority
+        value = 1
+    }
+    while = {
+        limit = {
+            NOT = {
+                has_local_variable = aroai_break_evaluation
+            }
+            aroai_current_priority <= 12
+        }
+        if = {
+            limit = {
+                OR = {
+                    $crucial$ >= aroai_current_priority
+                    aroai_has_variable_list = {
+                        name = aroai_suitable_states
+                    }
+                }
+                switch = {
+                    trigger = $id$
+                    1 = {
+                        aroai_evaluate_building_government_administration = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    2 = {
+                        aroai_evaluate_building_university = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    3 = {
+                        aroai_evaluate_building_construction_sector = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    4 = {
+                        aroai_evaluate_building_railway = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    5 = {
+                        aroai_evaluate_building_port = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    6 = {
+                        aroai_evaluate_building_barracks = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                    7 = {
+                        aroai_evaluate_building_naval_base = {
+                            priority = aroai_current_priority
+                        }
+                    }
+                }
+            }
+            set_variable = {
+                name = aroai_building_type_$id$_collected_data
+                value = {
+                    value = aroai_current_priority
+                    add = {
+                        value = aroai_current_priority
+                        divide = 100
+                    }
+                    add = 1000000
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        add = {
+                            value = aroai_building_type_$id$_collected_data_5
+                            multiply = 10000000
+                        }
+                    }
+                }
+            }
+            set_local_variable = aroai_break_evaluation
+        }
+        change_local_variable = {
+            name = aroai_current_priority
+            add = 1
+        }
+    }
+    if = {
+        limit = {
+            NOT = {
+                has_local_variable = aroai_break_evaluation
+            }
+            has_variable = aroai_building_type_$id$_collected_data
+        }
+        set_variable = {
+            name = aroai_building_type_$id$_collected_data
+            value = 0
+        }
+    }
+    remove_local_variable = aroai_current_priority
+    remove_local_variable = aroai_break_evaluation
+}
+
+# For production buildings
+aroai_evaluate_production_building = {
+    market = {
+        $good$ = {
+            set_local_variable = {
+                name = aroai_evaluated_level
+                value = aroai_price_level
+            }
+        }
+    }
+    
+    if = {
+        limit = {
+            local_var:aroai_evaluated_level > 0
+            local_var:aroai_evaluated_level < 99
+            OR = {
+                always = yes
+                $id$ = 0
+            }
+        }
+    
+        set_local_variable = {
+            name = aroai_evaluated_priority
+            value = {
+                value = local_var:aroai_evaluated_level
+                add = $weight$
+            }
+        }
+        
+        if = {
+            limit = {
+                OR = {
+                    local_var:aroai_evaluated_level <= $crucial$
+                    aroai_has_variable_list = {
+                        name = aroai_suitable_states
+                    }
+                }
+                OR = {
+                    NOT = {
+                        has_local_variable = aroai_saved_priority
+                    }
+                    local_var:aroai_saved_priority > aroai_evaluated_priority
+                }
+            }
+            set_local_variable = {
+                name = aroai_saved_priority
+                value = local_var:aroai_evaluated_priority
+            }
+            set_local_variable = {
+                name = aroai_saved_level
+                value = local_var:aroai_evaluated_level
+            }
+            set_local_variable = {
+                name = aroai_saved_productivity
+                value = {
+                    value = local_var:aroai_evaluated_level
+                    add = $offset$
+                }
+            }
+        }
+        
+        remove_local_variable = aroai_evaluated_priority
+    
+    }
+    remove_local_variable = aroai_evaluated_level
+}

@@ -1,8 +1,9 @@
-1) Download the archive with the latest version or one of the previous ones
-2) Unpack it so you have a folder named "Anbeeld's Revision of AI" with mod's contents inside
-3) Go to "Documents > Paradox Interactive > Victoria 3 > mod" or create such a folder if it doesn't exist
-4) Place your "Anbeeld's Revision of AI" folder here
-5) Open launcher and add the mod to your playset or create a new playset with it if you don't have one
+Manual installation:
+1) Download the archive with the latest version: https://github.com/Anbeeld/ARoAI/releases
+2) Unpack it so you have a folder named "Anbeeld's Revision of AI" with mod's contents inside.
+3) Go to "Documents > Paradox Interactive > Victoria 3 > mod" or create such a folder if it doesn't exist.
+4) Place your "Anbeeld's Revision of AI" folder here.
+5) Open launcher and add the mod to your playset or create a new playset with it if you don't have one.
 
 Support my work: https://www.buymeacoffee.com/anbeeld
 

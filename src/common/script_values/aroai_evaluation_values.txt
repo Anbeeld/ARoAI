@@ -1,0 +1,2574 @@
+﻿aroai_price_level = {
+    if = {
+        limit = {
+            market_goods_buy_orders <= 0
+        }
+        value = 99
+    }
+    else = {
+        if = {
+            limit = {
+                market_goods_sell_orders <= 0
+            }
+            value = 1
+        }
+        else = {
+            value = 22
+            subtract = {
+                if = {
+                    limit = {
+                        market_goods_buy_orders > market_goods_sell_orders
+                    }
+                    value = market_goods_buy_orders
+                    divide = market_goods_sell_orders
+                    divide = {
+                        value = define:NEconomy|BUY_SELL_DIFF_AT_MAX_FACTOR
+                        subtract = 1
+                        min = 1
+                    }
+                    multiply = 10
+                    ceiling = yes
+                    min = 11
+                    max = 21
+                }
+                else = {
+                    value = 20
+                    subtract = {
+                        value = market_goods_sell_orders
+                        divide = market_goods_buy_orders
+                        divide = {
+                            value = define:NEconomy|BUY_SELL_DIFF_AT_MAX_FACTOR
+                            subtract = 1
+                            min = 1
+                        }
+                        multiply = 10
+                        floor = yes
+                        min = 10
+                        max = 20
+                    }
+                }
+            }
+        }
+    }
+}
+
+aroai_resource_weight_1 = {
+    value = 1
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_2 = {
+    value = 2
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_3 = {
+    value = 3
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_4 = {
+    value = 4
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_5 = {
+    value = 5
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_6 = {
+    value = 6
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_7 = {
+    value = 7
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_8 = {
+    value = 8
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_9 = {
+    value = 9
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_10 = {
+    value = 10
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_1 = {
+    value = 1
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_2 = {
+    value = 2
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_3 = {
+    value = 3
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_4 = {
+    value = 4
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_5 = {
+    value = 5
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_6 = {
+    value = 6
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_7 = {
+    value = 7
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_8 = {
+    value = 8
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_9 = {
+    value = 9
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_10 = {
+    value = 10
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_11 = {
+    value = 11
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_1 = {
+    value = 1
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_2 = {
+    value = 2
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_3 = {
+    value = 3
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_4 = {
+    value = 4
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_5 = {
+    value = 5
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_6 = {
+    value = 6
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_7 = {
+    value = 7
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_8 = {
+    value = 8
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_9 = {
+    value = 9
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_floor_when_using_military_forces = 6
+
+### SCALING OF TARGETS WITH GDP PER CAPITA
+
+aroai_target_minus_half_unincorporated_gdp_per_capita_scaling = {
+    value = var:aroai_square_root_of_minus_half_unincorporated_gdp_per_capita
+    multiply = 3
+    divide = 4
+    add = {
+        value = 1
+        divide = 4
+    }
+}
+
+aroai_target_multiplier_with_high_government_spending = {
+    value = 1
+    subtract = {
+        value = {
+            value = aroai_building_government_administration_spending_value
+            divide = aroai_country_active_income
+        }
+        divide = {
+            value = aroai_building_government_administration_spending_share
+            multiply = 1.20
+        }
+        subtract = 1
+        min = 0
+        max = 0.75
+    }
+}
+
+aroai_target_multiplier_with_investment_pool = {
+    value = 1.00
+    add = {
+        value = 1.20
+        multiply = {
+            value = aroai_investment_pool_expected
+            divide = aroai_country_active_income
+            divide = 0.30
+            min = 0
+            max = 1
+        }
+    }
+}
+
+# Bureaucracy target
+
+aroai_building_government_administration_spending_share = {
+    value = 0.20
+    multiply = aroai_target_multiplier_with_investment_pool
+    add = {
+        value = 0.05
+        multiply = {
+            value = aroai_country_lost_taxes
+            divide = 0.125
+            min = 0
+            max = 1
+        }
+    }
+    if = {
+        limit = {
+            is_player = yes
+        }
+        if = {
+            limit = {
+                tax_level = high
+            }
+            divide = aroai_high_tax_level_factor
+        }
+        else_if = {
+            limit = {
+                tax_level = very_high
+            }
+            divide = aroai_very_high_tax_level_factor
+        }
+    }
+}
+
+aroai_building_government_administration_spending_target = {
+    value = aroai_country_active_income
+    multiply = aroai_building_government_administration_spending_share
+}
+
+aroai_building_government_administration_spending_excess = {
+    value = aroai_building_government_administration_spending_target
+    multiply = 1.20
+}
+
+aroai_building_government_administration_spending_ceiling = {
+    value = aroai_building_government_administration_spending_target
+    multiply = 1.40
+}
+
+aroai_building_government_administration_spending_value = {
+    if = {
+        limit = {
+            has_variable = aroai_building_government_administration_spending
+            var:aroai_building_government_administration_spending > 0
+        }
+        value = var:aroai_building_government_administration_spending
+        floor = yes
+        divide = {
+            value = var:aroai_building_government_administration_spending
+            subtract = {
+                value = var:aroai_building_government_administration_spending
+                floor = yes 
+            }
+            multiply = 100
+        }
+    }
+    else = {
+        value = aroai_country_active_income
+        multiply = aroai_building_government_administration_spending_share
+        multiply = 1.10
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_government_administration_spending_expected = {
+    value = aroai_building_government_administration_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_government_administration_spending_value > 0
+                has_variable = aroai_building_government_administration_total
+                var:aroai_building_government_administration_total > 0
+            }
+            value = aroai_building_government_administration_spending_value
+            divide = var:aroai_building_government_administration_total
+        }
+        else = {
+            value = 1000
+        }
+        multiply = aroai_construction_limit_4_6
+    }
+}
+
+aroai_bureaucracy_1 = {
+    value = 0
+}
+
+aroai_bureaucracy_2 = {
+    value = aroai_bureaucracy_target
+    value = 0.142
+}
+
+aroai_bureaucracy_3 = {
+    value = aroai_bureaucracy_target
+    multiply = 0.285
+}
+
+aroai_bureaucracy_4 = {
+    value = aroai_bureaucracy_target
+    multiply = 0.428
+}
+
+aroai_bureaucracy_5 = {
+    value = aroai_bureaucracy_target
+    multiply = 0.571
+}
+
+aroai_bureaucracy_6 = {
+    value = aroai_bureaucracy_target
+    multiply = 0.714
+}
+
+aroai_bureaucracy_7 = {
+    value = aroai_bureaucracy_target
+    multiply = 0.857
+}
+
+aroai_bureaucracy_8 = {
+    value = aroai_bureaucracy_target
+    multiply = 1.00
+}
+
+aroai_bureaucracy_9 = {
+    value = aroai_bureaucracy_target
+    multiply = 1.05
+}
+
+aroai_bureaucracy_10 = {
+    value = aroai_bureaucracy_target
+    multiply = 1.10
+}
+
+aroai_country_lost_taxes_2 = {
+    value = 0.750
+}
+
+aroai_country_lost_taxes_3 = {
+    value = 0.625
+}
+
+aroai_country_lost_taxes_4 = {
+    value = 0.500
+}
+
+aroai_country_lost_taxes_5 = {
+    value = 0.375
+}
+
+aroai_country_lost_taxes_6 = {
+    value = 0.250
+}
+
+aroai_country_lost_taxes_7 = {
+    value = 0.125
+}
+
+aroai_country_lost_taxes_8 = {
+    value = 0
+}
+
+aroai_bureaucracy_target = {
+    value = var:aroai_surplus_bureaucracy_target
+    add = 5
+    max = {
+        value = aroai_bureaucracy_usage
+        multiply = 0.20
+    }
+}
+
+aroai_bureaucracy_produced = {
+    value = modifier:country_bureaucracy_add
+    multiply = {
+        value = modifier:country_bureaucracy_mult
+        add = 1
+    }
+}
+
+aroai_bureaucracy_usage = {
+    value = aroai_bureaucracy_produced
+    subtract = bureaucracy
+}
+
+aroai_bureaucracy_load = {
+    value = aroai_bureaucracy_produced
+    divide = aroai_bureaucracy_usage
+}
+
+aroai_bureaucracy_excess = {
+    value = aroai_bureaucracy_target
+    multiply = 1.20
+    min = {
+        value = aroai_bureaucracy_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = central_planning
+                }
+                value = 100
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = central_archives
+                }
+                value = 65
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = centralization
+                }
+                value = 50
+            }
+            else = {
+                value = 35
+            }
+        }
+        multiply = 1.20
+    }
+    max = 1000000
+}
+
+aroai_bureaucracy_ceiling = {
+    value = aroai_bureaucracy_target
+    multiply = 1.40
+    min = {
+        value = aroai_bureaucracy_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = central_planning
+                }
+                value = 100
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = central_archives
+                }
+                value = 65
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = centralization
+                }
+                value = 50
+            }
+            else = {
+                value = 35
+            }
+        }
+        multiply = 1.40
+    }
+    max = 1000000
+}
+
+# Innovation target
+
+aroai_innovation_5 = {
+    value = aroai_innovation_target
+    divide = 1.90
+}
+
+aroai_innovation_6 = {
+    value = aroai_innovation_target
+    divide = 1.60
+}
+
+aroai_innovation_7 = {
+    value = aroai_innovation_target
+    divide = 1.30
+}
+
+aroai_innovation_8 = {
+    value = aroai_innovation_target
+}
+
+aroai_innovation_9 = {
+    value = aroai_innovation_target
+    multiply = 1.05
+}
+
+aroai_innovation_10 = {
+    value = aroai_innovation_target
+    multiply = 1.10
+}
+
+aroai_innovation_11 = {
+    value = aroai_innovation_target
+    multiply = 1.15
+}
+
+aroai_innovation_12 = {
+    value = aroai_innovation_target
+    multiply = 1.20
+}
+
+aroai_innovation_target = {
+    value = modifier:country_weekly_innovation_max_add
+}
+
+aroai_innovation_paucity = {
+    value = aroai_innovation_target
+    multiply = 0.80
+}
+
+aroai_innovation_floor = {
+    value = aroai_innovation_target
+    multiply = 0.60
+}
+
+aroai_innovation_excess = {
+    value = aroai_innovation_target
+    multiply = 1.1666
+    multiply = 1.20
+    min = {
+        value = aroai_innovation_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = analytical_philosophy
+                }
+                value = 4
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = dialectics
+                }
+                value = 3
+            }
+            else = {
+                value = 2
+            }
+            multiply = 1.20
+        }
+    }
+}
+
+aroai_innovation_ceiling = {
+    value = aroai_innovation_target
+    multiply = 1.1428
+    multiply = 1.40
+    min = {
+        value = aroai_innovation_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = analytical_philosophy
+                }
+                value = 4
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = dialectics
+                }
+                value = 3
+            }
+            else = {
+                value = 2
+            }
+            multiply = 1.40
+        }
+    }
+}
+
+aroai_innovation_current = {
+    value = modifier:country_weekly_innovation_add
+    # multiply = {
+        # value = modifier:country_weekly_innovation_mult
+        # add = 1
+    # }
+}
+
+# University target
+
+aroai_building_university_spending_share = {
+    value = 0.10
+    multiply = aroai_target_multiplier_with_high_government_spending
+    multiply = aroai_target_multiplier_with_investment_pool
+    add = {
+        value = 0.025
+        multiply = {
+            value = 1.10
+            subtract = {
+                value = aroai_innovation_current
+                divide = aroai_innovation_target
+            }
+            multiply = 10
+            min = 0
+            max = 1
+        }
+    }
+    if = {
+        limit = {
+            is_player = yes
+        }
+        if = {
+            limit = {
+                tax_level = high
+            }
+            divide = aroai_high_tax_level_factor
+        }
+        else_if = {
+            limit = {
+                tax_level = very_high
+            }
+            divide = aroai_very_high_tax_level_factor
+        }
+    }
+}
+
+aroai_building_university_spending_target = {
+    value = aroai_country_active_income
+    multiply = aroai_building_university_spending_share
+}
+
+aroai_building_university_spending_paucity = {
+    value = aroai_building_university_spending_target
+    multiply = 0.80
+}
+
+aroai_building_university_spending_floor = {
+    value = aroai_building_university_spending_target
+    multiply = 0.60
+}
+
+aroai_building_university_spending_excess = {
+    value = aroai_building_university_spending_target
+    multiply = 1.20
+}
+
+aroai_building_university_spending_ceiling = {
+    value = aroai_building_university_spending_target
+    multiply = 1.40
+}
+
+aroai_building_university_spending_value = {
+    if = {
+        limit = {
+            has_variable = aroai_building_university_spending
+            var:aroai_building_university_spending > 0
+        }
+        value = var:aroai_building_university_spending
+        floor = yes
+        divide = {
+            value = var:aroai_building_university_spending
+            subtract = {
+                value = var:aroai_building_university_spending
+                floor = yes 
+            }
+            multiply = 100
+        }
+    }
+    else = {
+        value = aroai_country_active_income
+        multiply = aroai_building_university_spending_share
+        multiply = 1.10
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_university_spending_expected = {
+    value = aroai_building_university_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_university_spending_value > 0
+                has_variable = aroai_building_university_total
+                var:aroai_building_university_total > 0
+            }
+            value = aroai_building_university_spending_value
+            divide = var:aroai_building_university_total
+        }
+        else = {
+            value = 1000
+        }
+        multiply = aroai_construction_limit_3_6
+    }
+}
+
+aroai_building_university_5 = {
+    value = aroai_building_university_target
+    divide = 2.80
+}
+
+aroai_building_university_6 = {
+    value = aroai_building_university_target
+    divide = 2.20
+}
+
+aroai_building_university_7 = {
+    value = aroai_building_university_target
+    divide = 1.60
+}
+
+aroai_building_university_8 = {
+    value = aroai_building_university_target
+}
+
+aroai_building_university_9 = {
+    value = aroai_building_university_target
+    multiply = 1.05
+}
+
+aroai_building_university_10 = {
+    value = aroai_building_university_target
+    multiply = 1.10
+}
+
+aroai_building_university_target = {
+    value = aroai_minus_half_unincorporated_population
+    divide = 400000
+    subtract = 1
+    multiply = aroai_target_minus_half_unincorporated_gdp_per_capita_scaling
+}
+
+aroai_building_university_paucity = {
+    value = aroai_building_university_target
+    multiply = 0.80
+}
+
+aroai_building_university_floor = {
+    value = aroai_building_university_target
+    multiply = 0.60
+}
+
+aroai_building_university_excess = {
+    value = aroai_building_university_target
+    multiply = 1.20
+    min = {
+        value = aroai_building_university_target
+        add = 1
+    }
+}
+
+aroai_building_university_ceiling = {
+    value = aroai_building_university_target
+    multiply = 1.40
+    min = {
+        value = aroai_building_university_target
+        add = 1
+    }
+}
+
+# Сonstruction target
+
+aroai_unutilized_workforce_higher_threshold = {
+    value = 0.125
+}
+
+aroai_unutilized_workforce_lower_threshold = {
+    value = 0.050
+}
+
+aroai_unutilized_workforce_total_threshold = {
+    value = aroai_unutilized_workforce_higher_threshold
+    add = aroai_unutilized_workforce_lower_threshold
+}
+
+aroai_unutilized_workforce_total_threshold_halved = {
+    value = aroai_unutilized_workforce_higher_threshold
+    divide = 2
+    add = aroai_unutilized_workforce_lower_threshold
+}
+
+aroai_unutilized_workforce_multiplier = { # = 1 when no workforce, 0 when workforce >= threshold
+    if = {
+        limit = {
+            has_variable = aroai_unutilized_workforce
+        }
+        value = 1.00
+        subtract = {
+            value = var:aroai_unutilized_workforce
+            subtract = aroai_unutilized_workforce_lower_threshold
+            min = 0.00
+            multiply = {
+                value = 1
+                divide = {
+                    value = aroai_unutilized_workforce_higher_threshold
+                    min = 0.01
+                }
+            }
+        }
+        min = 0.00
+    }
+    else = {
+        value = 0.00
+    }
+}
+
+# Income is divided by this to make it equal to high tax income, but it gets back to normal when workforce < threshold
+aroai_building_construction_sector_spending_factor = {
+    value = aroai_high_tax_level_factor
+    add = {
+        value = 1.00
+        subtract = aroai_high_tax_level_factor
+        multiply = aroai_unutilized_workforce_multiplier
+    }
+}
+
+aroai_sum_of_all_fixed_shares_with_excess_and_factor = {
+    value = aroai_building_university_spending_share
+    add = aroai_building_port_spending_share
+    multiply = 1.20
+
+    # For government administration expenses it may be legit to be much higher than share, so we take share
+    # as a basis but overwrite it with actual expenses ratio if needed.
+    add = {
+        value = aroai_building_government_administration_spending_value
+        divide = aroai_country_active_income
+        min = {
+            value = aroai_building_government_administration_spending_share
+            multiply = 1.20
+        }
+    }
+    add = {
+        value = aroai_building_barracks_spending_value
+        divide = aroai_country_active_income
+        min = {
+            value = aroai_building_barracks_spending_share
+            multiply = 1.20
+        }
+    }
+    add = {
+        value = aroai_building_naval_base_spending_value
+        divide = aroai_country_active_income
+        min = {
+            value = aroai_building_naval_base_spending_share
+            multiply = 1.20
+        }
+    }
+
+    # All the shares above are relative to medium tax level, but with construction target tax level is flexible
+    multiply = aroai_building_construction_sector_spending_factor
+}
+
+aroai_building_construction_sector_spending_target = {
+    value = aroai_building_construction_sector_spending_government
+    add = {
+        value = aroai_investment_pool_expected
+        max = {
+            value = aroai_building_construction_sector_spending_government
+
+            #
+            divide = {
+                value = 1.00
+                subtract = aroai_max_percent_of_autonomous_construction_points
+                add = {
+                    value = aroai_max_percent_of_autonomous_construction_points
+                    multiply = aroai_building_construction_sector_share_of_wages_in_expenses
+                }
+                min = 0.01
+            }
+        }
+    }
+    multiply = aroai_construction_of_ai_countries
+}
+
+aroai_building_construction_sector_spending_government = {
+    value = aroai_country_active_income
+    if = {
+        limit = {
+            is_player = no
+        }
+        divide = aroai_building_construction_sector_spending_factor
+    }
+    multiply = {
+        value = 1.00
+        subtract = {
+            value = aroai_building_government_administration_spending_value
+            add = aroai_building_university_spending_value
+            add = aroai_building_port_spending_value
+            add = aroai_building_barracks_spending_value
+            add = aroai_building_naval_base_spending_value
+            divide = {
+                value = aroai_country_active_income
+                if = {
+                    limit = {
+                        is_player = no
+                    }
+                    divide = aroai_building_construction_sector_spending_factor
+                }
+                min = 1
+            }
+        }
+        min = {
+            value = {
+                value = 1.00
+                subtract = aroai_sum_of_all_fixed_shares_with_excess_and_factor
+            }
+            min = 0.10
+        }
+    }
+    
+    if = {
+        limit = {
+            is_player = no
+        }
+        
+        # Target is multiplied by this so AI spends more, and then spends less when workforce < threshold
+        multiply = {
+            value = 0.900
+            add = {
+                value = 0.325
+                multiply = {
+                    value = 1.00
+                    subtract = aroai_unutilized_workforce_multiplier
+                }
+            }
+        }
+    }
+}
+
+aroai_building_construction_sector_spending_1 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.400
+}
+
+aroai_building_construction_sector_spending_2 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.342
+}
+
+aroai_building_construction_sector_spending_3 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.285
+}
+
+aroai_building_construction_sector_spending_4 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.228
+}
+
+aroai_building_construction_sector_spending_5 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.171
+}
+
+aroai_building_construction_sector_spending_6 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.114
+}
+
+aroai_building_construction_sector_spending_7 = {
+    value = aroai_building_construction_sector_spending_target
+    divide = 1.057
+}
+
+aroai_building_construction_sector_spending_8 = {
+    value = aroai_building_construction_sector_spending_target
+}
+
+aroai_building_construction_sector_spending_paucity = {
+    value = aroai_building_construction_sector_spending_target
+    multiply = 0.80
+}
+
+aroai_building_construction_sector_spending_floor = {
+    value = aroai_building_construction_sector_spending_target
+    multiply = 0.60
+}
+
+aroai_building_construction_sector_spending_excess = {
+    value = aroai_building_construction_sector_spending_target
+    if = {
+        limit = {
+            aroai_are_military_expenses_higher_than_usual = no
+        }
+        multiply = 1.20
+    }
+    else = {
+        multiply = 1.50
+    }
+}
+
+aroai_building_construction_sector_spending_ceiling = {
+    value = aroai_building_construction_sector_spending_target
+    if = {
+        limit = {
+            aroai_are_military_expenses_higher_than_usual = no
+        }
+        multiply = 1.40
+    }
+    else = {
+        multiply = 2.00
+    }
+}
+
+aroai_building_construction_sector_spending_value = {
+    if = {
+        limit = {
+            aroai_building_construction_sector_expenses_per_point > 0
+        }
+        value = aroai_building_construction_sector_expenses_per_point
+        multiply = aroai_construction_points_from_sectors_current
+    }
+    else = {
+        value = 0 ###########
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_construction_sector_spending_expected = {
+    value = aroai_building_construction_sector_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_construction_sector_spending_value > 0
+                has_variable = aroai_building_construction_sector_total
+                var:aroai_building_construction_sector_total > 0
+            }
+            value = aroai_building_construction_sector_spending_value
+            divide = var:aroai_building_construction_sector_total
+        }
+        else = {
+            value = 2000
+        }
+        multiply = aroai_construction_limit_5_6
+    }
+}
+
+# Infrastructure target
+
+aroai_infrastructure_1 = {
+    value = 0.60
+}
+
+aroai_infrastructure_2 = {
+    value = 0.70
+}
+
+aroai_infrastructure_3 = {
+    value = 0.80
+}
+
+aroai_infrastructure_4 = {
+    value = 0.90
+}
+
+aroai_infrastructure_5 = {
+    value = 1.00
+}
+
+aroai_infrastructure_6 = {
+    value = 1.10
+}
+
+aroai_infrastructure_7 = {
+    value = 1.20
+}
+
+# Convoy target
+
+aroai_building_port_spending_share = {
+    value = 0.10
+    multiply = aroai_target_multiplier_with_high_government_spending
+    multiply = aroai_target_multiplier_with_investment_pool
+    if = {
+        limit = {
+            is_player = yes
+        }
+        if = {
+            limit = {
+                tax_level = high
+            }
+            divide = aroai_high_tax_level_factor
+        }
+        else_if = {
+            limit = {
+                tax_level = very_high
+            }
+            divide = aroai_very_high_tax_level_factor
+        }
+    }
+}
+
+aroai_building_port_spending_target = {
+    value = aroai_country_active_income
+    multiply = aroai_building_port_spending_share
+}
+
+aroai_building_port_spending_paucity = {
+    value = aroai_building_port_spending_target
+    multiply = 0.80
+}
+
+aroai_building_port_spending_floor = {
+    value = aroai_building_port_spending_target
+    multiply = 0.60
+}
+
+aroai_building_port_spending_ceiling = {
+    value = aroai_building_port_spending_target
+    multiply = 1.40
+}
+
+aroai_building_port_spending_excess = {
+    value = aroai_building_port_spending_target
+    multiply = 1.20
+}
+
+aroai_building_port_spending_value = {
+    if = {
+        limit = {
+            has_variable = aroai_building_port_spending
+            var:aroai_building_port_spending > 0
+        }
+        value = var:aroai_building_port_spending
+        floor = yes
+        divide = {
+            value = var:aroai_building_port_spending
+            subtract = {
+                value = var:aroai_building_port_spending
+                floor = yes 
+            }
+            multiply = 100
+        }
+    }
+    else = {
+        value = aroai_country_active_income
+        multiply = aroai_building_port_spending_share
+        multiply = 1.10
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_port_spending_expected = {
+    value = aroai_building_port_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_port_spending_value > 0
+                has_variable = aroai_building_port_total
+                var:aroai_building_port_total > 0
+            }
+            value = aroai_building_port_spending_value
+            divide = var:aroai_building_port_total
+        }
+        else = {
+            value = 1000
+        }
+        multiply = aroai_construction_limit_3_6
+    }
+}
+
+aroai_ports_on_market_capital_coastline = {
+    if = {
+        limit = {
+            has_variable = aroai_capital_coastline_states
+        }
+        add = {
+            value = var:aroai_capital_coastline_states
+            divide = 6
+            floor = yes
+        }
+    }
+}
+
+aroai_convoys_5 = {
+    value = aroai_convoys_target
+    divide = 2.80
+}
+
+aroai_convoys_6 = {
+    value = aroai_convoys_target
+    divide = 2.20
+}
+
+aroai_convoys_7 = {
+    value = aroai_convoys_target
+    divide = 1.60
+}
+
+aroai_convoys_8 = {
+    value = aroai_convoys_target
+}
+
+aroai_convoys_9 = {
+    value = aroai_convoys_target
+    multiply = 1.05
+}
+
+aroai_convoys_10 = {
+    value = aroai_convoys_target
+    multiply = 1.10
+}
+
+aroai_convoys_11 = {
+    value = aroai_convoys_target
+    multiply = 1.15
+}
+
+aroai_convoys_12 = {
+    value = aroai_convoys_target
+    multiply = 1.20
+}
+
+aroai_convoys_target = {
+    value = aroai_minus_half_unincorporated_population
+    divide = 1000000
+    multiply = 500
+    if = {
+        limit = {
+            has_law = law_type:law_isolationism
+        }
+        multiply = 0.10
+    }
+    multiply = aroai_target_minus_half_unincorporated_gdp_per_capita_scaling
+}
+
+aroai_convoys_paucity = {
+    value = aroai_convoys_target
+    multiply = 0.80
+}
+
+aroai_convoys_floor = {
+    value = aroai_convoys_target
+    multiply = 0.60
+}
+
+aroai_convoys_excess = {
+    value = aroai_convoys_target
+    multiply = 1.1666
+    multiply = 1.20
+    min = {
+        value = aroai_convoys_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = concrete_dockyards
+                }
+                value = 500
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = gantry_cranes
+                }
+                value = 350
+            }
+            else = {
+                value = 200
+            }
+            multiply = 1.20
+        }
+    }
+}
+
+aroai_convoys_ceiling = {
+    value = aroai_convoys_target
+    multiply = 1.1428
+    multiply = 1.40
+    min = {
+        value = aroai_convoys_target
+        add = {
+            if = {
+                limit = {
+                    has_technology_researched = concrete_dockyards
+                }
+                value = 500
+            }
+            else_if = {
+                limit = {
+                    has_technology_researched = gantry_cranes
+                }
+                value = 350
+            }
+            else = {
+                value = 200
+            }
+            multiply = 1.40
+        }
+    }
+}
+
+aroai_convoys_current = {
+    value = modifier:country_convoys_capacity_add
+    multiply = {
+        value = modifier:country_convoys_capacity_mult
+        add = 1
+    }
+}
+
+# Battalion target
+
+aroai_military_spending_share = {
+    value = 0.30
+    multiply = aroai_target_multiplier_with_high_government_spending
+    multiply = aroai_target_multiplier_with_investment_pool
+}
+
+aroai_building_barracks_vs_naval_base_share = {
+    if = {
+        limit = {
+            has_variable = aroai_building_barracks_total
+            var:aroai_building_barracks_total > 0
+            has_variable = aroai_building_naval_base_total
+            var:aroai_building_naval_base_total > 0
+            has_variable = aroai_building_barracks_spending
+            var:aroai_building_barracks_spending > 0
+            has_variable = aroai_building_naval_base_spending
+            var:aroai_building_naval_base_spending > 0
+        }
+        value = {
+            value = aroai_battalion_target
+            divide = var:aroai_building_barracks_total
+            multiply = var:aroai_building_barracks_spending
+        }
+        divide = {
+            value = {
+                value = aroai_battalion_target
+                divide = var:aroai_building_barracks_total
+                multiply = var:aroai_building_barracks_spending
+            }
+            add = {
+                value = aroai_flotilla_target
+                divide = var:aroai_building_naval_base_total
+                multiply = var:aroai_building_naval_base_spending
+            }
+            min = 1
+        }
+    }
+    else = {
+        value = {
+            value = aroai_battalion_target
+            divide = {
+                value = aroai_battalion_target
+                add = aroai_flotilla_target
+                min = 1
+            }
+        }
+    }
+    max = 0.80
+}
+
+aroai_building_barracks_spending_share = {
+    value = aroai_military_spending_share
+    multiply = aroai_building_barracks_vs_naval_base_share
+    multiply = {
+        value = aroai_battalion_target
+        divide = {
+            value = var:aroai_building_barracks_total
+            min = 1
+        }
+        subtract = 1.10
+        multiply = 5
+        add = 1
+        min = 1.00
+        max = {
+            value = 5
+            divide = 3
+        }
+    }
+    if = {
+        limit = {
+            is_player = yes
+        }
+        if = {
+            limit = {
+                tax_level = high
+            }
+            divide = aroai_high_tax_level_factor
+        }
+        else_if = {
+            limit = {
+                tax_level = very_high
+            }
+            divide = aroai_very_high_tax_level_factor
+        }
+    }
+}
+
+aroai_building_barracks_spending_target = {
+    value = aroai_country_active_income
+    multiply = aroai_building_barracks_spending_share
+}
+
+aroai_building_barracks_spending_excess = {
+    value = aroai_building_barracks_spending_target
+    multiply = 1.20
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_building_barracks_spending_ceiling = {
+    value = aroai_building_barracks_spending_target
+    multiply = 1.40
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_building_barracks_spending_value = {
+    if = {
+        limit = {
+            has_variable = aroai_building_barracks_spending
+            var:aroai_building_barracks_spending > 0
+        }
+        value = var:aroai_building_barracks_spending
+        floor = yes
+        divide = {
+            value = var:aroai_building_barracks_spending
+            subtract = {
+                value = var:aroai_building_barracks_spending
+                floor = yes 
+            }
+            multiply = 100
+        }
+    }
+    else = {
+        value = aroai_country_active_income
+        multiply = aroai_building_barracks_spending_share
+        multiply = 1.10
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_barracks_spending_expected = {
+    value = aroai_building_barracks_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_barracks_spending_value > 0
+                has_variable = aroai_building_barracks_total
+                var:aroai_building_barracks_total > 0
+            }
+            value = aroai_building_barracks_spending_value
+            divide = var:aroai_building_barracks_total
+        }
+        else = {
+            value = 400
+        }
+        multiply = aroai_construction_limit_8_6
+    }
+}
+
+aroai_battalion_1 = {
+    value = aroai_battalion_target
+    divide = 1.90
+}
+
+aroai_battalion_2 = {
+    value = aroai_battalion_target
+    divide = 1.75
+}
+
+aroai_battalion_3 = {
+    value = aroai_battalion_target
+    divide = 1.60
+}
+
+aroai_battalion_4 = {
+    value = aroai_battalion_target
+    divide = 1.45
+}
+
+aroai_battalion_5 = {
+    value = aroai_battalion_target
+    divide = 1.30
+}
+
+aroai_battalion_6 = {
+    value = aroai_battalion_target
+    divide = 1.15
+}
+
+aroai_battalion_7 = {
+    value = aroai_battalion_target
+}
+
+aroai_battalion_8 = {
+    value = aroai_battalion_target
+    multiply = 1.05
+}
+
+aroai_battalion_9 = {
+    value = aroai_battalion_target
+    multiply = 1.10
+}
+
+aroai_battalion_base = {
+    value = aroai_minus_half_unincorporated_population
+    divide = 1000000
+    multiply = 7.50
+    multiply = {
+        value = aroai_target_minus_half_unincorporated_gdp_per_capita_scaling
+        subtract = 1
+        multiply = 3
+        divide = 8
+        add = 1
+    }
+}
+
+aroai_battalion_average_threat = {
+    if = {
+        limit = {
+            var:aroai_army_size_equal_to_average_threat > aroai_battalion_base
+        }
+        value = var:aroai_army_size_equal_to_average_threat
+        divide = aroai_battalion_base
+        subtract = 1
+        multiply = {
+            value = var:aroai_army_size_equal_to_average_threat
+            divide = aroai_battalion_base
+            subtract = 1
+        }
+        divide = 72
+        add = 0.875
+        max = 2.00
+    }
+    else = {
+        value = 1
+    }
+}
+
+aroai_battalion_biggest_threat = {
+    if = {
+        limit = {
+            var:aroai_army_size_equal_to_biggest_threat < aroai_battalion_base
+        }
+        value = {
+            value = var:aroai_army_size_equal_to_biggest_threat
+            multiply = 1.25
+        }
+        divide = aroai_battalion_base
+        min = 0.50
+        max = 1.00
+    }
+    else = {
+        value = 1
+    }
+}
+
+aroai_battalion_target = {
+    value = aroai_battalion_base
+    multiply = aroai_battalion_average_threat
+    multiply = aroai_battalion_biggest_threat
+}
+
+aroai_battalion_excess = {
+    value = aroai_battalion_target
+    multiply = 1.20
+    min = {
+        value = aroai_battalion_target
+        add = {
+            value = aroai_construction_limit_8_6
+            multiply = 1.20
+        }
+    }
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 4.0
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.15
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.0
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.05
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_battalion_ceiling = {
+    value = aroai_battalion_target
+    multiply = 1.40
+    min = {
+        value = aroai_battalion_target
+        add = {
+            value = aroai_construction_limit_8_6
+            multiply = 1.40
+        }
+    }
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 4.0
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.15
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.0
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.05
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_battalion_paucity = {
+    value = aroai_battalion_target
+    multiply = 0.80
+}
+
+aroai_battalion_floor = {
+    value = aroai_battalion_target
+    multiply = 0.25
+}
+
+# Flotilla target
+
+aroai_building_naval_base_spending_share = {
+    value = aroai_military_spending_share
+    multiply = {
+        value = 1
+        subtract = aroai_building_barracks_vs_naval_base_share
+    }
+    multiply = {
+        value = aroai_flotilla_target
+        divide = {
+            value = navy_size
+            min = 1
+        }
+        subtract = 1.10
+        multiply = 5
+        add = 1
+        min = 1.00
+        max = {
+            value = 5
+            divide = 3
+        }
+    }
+    if = {
+        limit = {
+            is_player = yes
+        }
+        if = {
+            limit = {
+                tax_level = high
+            }
+            divide = aroai_high_tax_level_factor
+        }
+        else_if = {
+            limit = {
+                tax_level = very_high
+            }
+            divide = aroai_very_high_tax_level_factor
+        }
+    }
+}
+
+aroai_building_naval_base_spending_target = {
+    value = aroai_country_active_income
+    multiply = aroai_building_naval_base_spending_share
+}
+
+aroai_building_naval_base_spending_excess = {
+    value = aroai_building_naval_base_spending_target
+    multiply = 1.20
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_building_naval_base_spending_ceiling = {
+    value = aroai_building_naval_base_spending_target
+    multiply = 1.40
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:PRU
+            this = c:PRU
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_building_naval_base_spending_value = {
+    if = {
+        limit = {
+            has_variable = aroai_building_naval_base_spending
+            var:aroai_building_naval_base_spending > 0
+        }
+        value = var:aroai_building_naval_base_spending
+        floor = yes
+        divide = {
+            value = var:aroai_building_naval_base_spending
+            subtract = {
+                value = var:aroai_building_naval_base_spending
+                floor = yes 
+            }
+            multiply = 100
+        }
+    }
+    else = {
+        value = aroai_country_active_income
+        multiply = aroai_building_naval_base_spending_share
+        multiply = 1.10
+    }
+    min = 0
+    max = 1000000000 #billion
+}
+
+aroai_building_naval_base_spending_expected = {
+    value = aroai_building_naval_base_spending_value
+    add = {
+        if = {
+            limit = {
+                aroai_building_naval_base_spending_value > 0
+                has_variable = aroai_building_naval_base_total
+                var:aroai_building_naval_base_total > 0
+            }
+            value = aroai_building_naval_base_spending_value
+            divide = var:aroai_building_naval_base_total
+        }
+        else = {
+            value = 400
+        }
+        multiply = aroai_construction_limit_5_6
+    }
+}
+
+aroai_flotilla_1 = {
+    value = aroai_flotilla_target
+    divide = 1.90
+}
+
+aroai_flotilla_2 = {
+    value = aroai_flotilla_target
+    divide = 1.75
+}
+
+aroai_flotilla_3 = {
+    value = aroai_flotilla_target
+    divide = 1.60
+}
+
+aroai_flotilla_4 = {
+    value = aroai_flotilla_target
+    divide = 1.45
+}
+
+aroai_flotilla_5 = {
+    value = aroai_flotilla_target
+    divide = 1.30
+}
+
+aroai_flotilla_6 = {
+    value = aroai_flotilla_target
+    divide = 1.15
+}
+
+aroai_flotilla_7 = {
+    value = aroai_flotilla_target
+}
+
+aroai_flotilla_8 = {
+    value = aroai_flotilla_target
+    multiply = 1.05
+}
+
+aroai_flotilla_9 = {
+    value = aroai_flotilla_target
+    multiply = 1.10
+}
+
+aroai_flotilla_base = {
+    value = var:aroai_incorporated_coastal_population
+    add = {
+        value = aroai_half_unincorporated_coastal_population
+        # multiply = 7
+        # divide = 9
+    }
+    add = {
+        value = aroai_minus_half_unincorporated_population
+        subtract = var:aroai_incorporated_coastal_population
+        subtract = aroai_half_unincorporated_coastal_population
+        multiply = 4
+        divide = 9
+    }
+    divide = 1000000
+    multiply = 3.50
+    multiply = {
+        value = aroai_target_minus_half_unincorporated_gdp_per_capita_scaling
+        subtract = 1
+        multiply = 3
+        divide = 5
+        add = 1
+    }
+}
+
+aroai_flotilla_average_threat = {
+    if = {
+        limit = {
+            var:aroai_navy_size_equal_to_average_threat > aroai_flotilla_base
+        }
+        value = var:aroai_navy_size_equal_to_average_threat
+        divide = aroai_flotilla_base
+        subtract = 1
+        multiply = {
+            value = var:aroai_navy_size_equal_to_average_threat
+            divide = aroai_flotilla_base
+            subtract = 1
+        }
+        divide = 72
+        add = 0.875
+        max = {
+            value = 4
+            divide = 3
+        }
+    }
+    else = {
+        value = 1
+    }
+}
+
+aroai_flotilla_biggest_threat = {
+    if = {
+        limit = {
+            var:aroai_navy_size_equal_to_biggest_threat < aroai_flotilla_base
+        }
+        value = {
+            value = var:aroai_navy_size_equal_to_biggest_threat
+            multiply = 1.25
+        }
+        divide = aroai_flotilla_base
+        min = 0.50
+        max = 1.00
+    }
+    else = {
+        value = 1
+    }
+}
+
+aroai_flotilla_target = {
+    if = {
+        limit = {
+            var:aroai_incorporated_coastal_population > 0
+        }
+        value = aroai_flotilla_base
+        multiply = aroai_flotilla_average_threat
+        multiply = aroai_flotilla_biggest_threat
+    }
+    else = {
+        value = 0
+    }
+}
+
+aroai_flotilla_excess = {
+    value = aroai_flotilla_target
+    multiply = 1.20
+    min = {
+        value = aroai_flotilla_target
+        add = {
+            value = aroai_construction_limit_5_6
+            multiply = 1.20
+        }
+    }
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_flotilla_ceiling = {
+    value = aroai_flotilla_target
+    multiply = 1.40
+    min = {
+        value = aroai_flotilla_target
+        add = {
+            value = aroai_construction_limit_5_6
+            multiply = 1.40
+        }
+    }
+    if = {
+        limit = {
+            exists = c:EGY
+            this = c:EGY
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 2.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.075
+                }
+            }
+        }
+    }
+    else_if = {
+        limit = {
+            exists = c:TUR
+            this = c:TUR
+            year < 1870
+        }
+        if = {
+            limit = {
+                year < 1850
+            }
+            multiply = 1.5
+        }
+        else = {
+            multiply = {
+                value = 1.0
+                add = {
+                    value = 1870
+                    subtract = year
+                    multiply = 0.025
+                }
+            }
+        }
+    }
+}
+
+aroai_flotilla_paucity = {
+    value = aroai_flotilla_target
+    multiply = 0.80
+}
+
+aroai_flotilla_floor = {
+    value = aroai_flotilla_target
+    multiply = 0.25
+}

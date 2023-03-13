@@ -1,0 +1,50 @@
+﻿aroai_requirements_for_construction_in_state = {
+    owner = root
+    OR = {
+        $workforce$ = 0
+        root.aroai_building_type_$id$_collected_data_2 <= $crucial$
+        aroai_available_workforce >= aroai_required_workforce
+    }
+    OR = {
+        NOT = {
+            aroai_is_agriculture_building = {
+                class = $class$
+            }
+        }
+        AND = {
+            free_arable_land > 0
+            OR = {
+                NOT = {
+                    has_variable = aroai_queued_agriculture_buildings
+                }
+                var:aroai_queued_agriculture_buildings < free_arable_land
+            }
+        }
+    }
+}
+
+aroai_is_agriculture_building = {
+    $class$ = 5
+}
+
+aroai_check_if_counter_is_within_limit = {
+    OR = {
+        NOT = {
+            has_variable = aroai_building_type_$counter$_collected_data
+        }
+        switch = {
+            trigger = aroai_building_type_$id$_collected_data_average_of_1_and_2
+            1 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_1 }
+            2 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_2 }
+            3 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_3 }
+            4 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_4 }
+            5 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_5 }
+            6 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_6 }
+            7 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_7 }
+            8 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_8 }
+            9 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_9 }
+            10 = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_10 }
+            fallback = { aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_11 }
+        }
+    }
+}

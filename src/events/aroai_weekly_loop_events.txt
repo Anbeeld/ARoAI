@@ -1,0 +1,22 @@
+﻿namespace = aroai_weekly_loop_events
+
+aroai_weekly_loop_events.1 = {
+    type = country_event
+    hidden = yes
+    
+    trigger = {}
+    
+    immediate = {
+        if = {
+            limit = {
+                aroai_is_country_allowed = no
+            }
+            aroai_clear_country_cycle_variables = yes
+        }
+        else = {
+            aroai_perform_iteration_of_weekly_loop = {
+                day_1_of_main_loop = no
+            }
+        }
+    }
+}

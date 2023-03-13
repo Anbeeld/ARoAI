@@ -1,0 +1,2691 @@
+﻿aroai_check_production_methods = {
+    root = {
+        switch = {
+            trigger = $id$
+            4 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 6
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 40
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 6000000
+                    }
+                }
+                else_if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 5
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 35
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 5000000
+                    }
+                }
+                else_if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 4
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 30
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 4000000
+                    }
+                }
+                else_if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 3
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 25
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 3000000
+                    }
+                }
+                else_if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 2
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 20
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 2000000
+                    }
+                }
+                else_if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 < 1
+                        }
+                        prev = {
+                            aroai_infrastructure_per_level_of_railway = 15
+                        }
+                    }
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                        }
+                        change_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            subtract = {
+                                value = aroai_building_type_$id$_collected_data_4
+                                multiply = 1000000
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            8 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            has_active_production_method = pm_hardwood
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            18 = {
+                if = {
+                    limit = {
+                        NAND = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                            aroai_building_type_$id$_collected_data_4 >= 3
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 2
+                            }
+                            prev = {
+                                has_active_production_method = pm_potatoes
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 1000000
+                        }
+                    }
+                    else_if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 1
+                            }
+                            prev = {
+                                has_active_production_method = pm_apple_orchards
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 2000000
+                        }
+                    }
+                }
+            }
+            19 = {
+                if = {
+                    limit = {
+                        NAND = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                            aroai_building_type_$id$_collected_data_4 >= 3
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 2
+                            }
+                            prev = {
+                                has_active_production_method = pm_citrus_orchards
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 1000000
+                        }
+                    }
+                    else_if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 1
+                            }
+                            prev = {
+                                has_active_production_method = pm_vineyards
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 2000000
+                        }
+                    }
+                }
+            }
+            # 20 = {
+                # if = {
+                    # limit = {
+                        # OR = {
+                            # NOT = {
+                                # has_variable = aroai_building_type_$id$_collected_data
+                            # }
+                            # aroai_building_type_$id$_collected_data_4 = 0
+                        # }
+                        # prev = {
+                            # has_active_production_method = pm_fig_orchards
+                        # }
+                    # }
+                    # aroai_add_to_variable = {
+                        # name = aroai_building_type_$id$_collected_data
+                        # value = 1000000
+                    # }
+                # }
+            # }
+            21 = {
+                if = {
+                    limit = {
+                        NAND = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                            aroai_building_type_$id$_collected_data_4 >= 3
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 2
+                            }
+                            prev = {
+                                has_active_production_method = pm_citrus_orchards
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 1000000
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 1
+                            }
+                            prev = {
+                                has_active_production_method = pm_vineyards_building_maize_farm
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 2000000
+                        }
+                    }
+                }
+            }
+            # 22 = {
+                # if = {
+                    # limit = {
+                        # OR = {
+                            # NOT = {
+                                # has_variable = aroai_building_type_$id$_collected_data
+                            # }
+                            # aroai_building_type_$id$_collected_data_4 = 0
+                        # }
+                        # prev = {
+                            # has_active_production_method = pm_fig_orchards
+                        # }
+                    # }
+                    # aroai_add_to_variable = {
+                        # name = aroai_building_type_$id$_collected_data
+                        # value = 1000000
+                    # }
+                # }
+            # }
+            33 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_pot_stills
+                                has_active_production_method = pm_patent_stills
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            34 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_craftsman_sewing
+                                has_active_production_method = pm_elastics
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            35 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_luxury_furniture
+                                has_active_production_method = pm_precision_tools
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            36 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_ceramics
+                                has_active_production_method = pm_bone_china
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            39 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_leblanc_process
+                                has_active_production_method = pm_ammonia-soda_process
+                                has_active_production_method = pm_vacuum_evaporation
+                                has_active_production_method = pm_brine_electrolysis
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            40 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            has_active_production_method = pm_rayon
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            42 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            has_active_production_method = pm_automobile_production
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            43 = {
+                if = {
+                    limit = {
+                        NAND = {
+                            has_variable = aroai_building_type_$id$_collected_data
+                            aroai_building_type_$id$_collected_data_4 >= 3
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 2
+                            }
+                            prev = {
+                                OR = {
+                                    has_active_production_method = pm_basic_shipbuilding
+                                    has_active_production_method = pm_complex_shipbuilding
+                                }
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 1000000
+                        }
+                    }
+                    if = {
+                        limit = {
+                            OR = {
+                                NOT = {
+                                    has_variable = aroai_building_type_$id$_collected_data
+                                }
+                                aroai_building_type_$id$_collected_data_4 = 0
+                                aroai_building_type_$id$_collected_data_4 = 1
+                            }
+                            prev = {
+                                OR = {
+                                    has_active_production_method = pm_metal_shipbuilding
+                                    has_active_production_method = pm_arc_welding_shipbuilding
+                                }
+                            }
+                        }
+                        aroai_add_to_variable = {
+                            name = aroai_building_type_$id$_collected_data
+                            value = 2000000
+                        }
+                    }
+                }
+            }
+            45 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            has_active_production_method = pm_radios
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            46 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            OR = {
+                                has_active_production_method = pm_cannons
+                                has_active_production_method = pm_smoothbores
+                                has_active_production_method = pm_breech_loaders
+                            }
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+            48 = {
+                if = {
+                    limit = {
+                        OR = {
+                            NOT = {
+                                has_variable = aroai_building_type_$id$_collected_data
+                            }
+                            aroai_building_type_$id$_collected_data_4 = 0
+                        }
+                        prev = {
+                            has_active_production_method = pm_tank_production
+                        }
+                    }
+                    aroai_add_to_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        value = 1000000
+                    }
+                }
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_government_administration = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_university = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_construction_sector = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_railway = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_port = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_barracks = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_naval_base = {
+    aroai_evaluate_with_custom_trigger = {
+        id = $id$
+        crucial = $crucial$
+    }
+}
+
+aroai_evaluate_building_logging_camp = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:wood
+        weight = aroai_resource_weight_1
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:hardwood
+            weight = aroai_resource_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_fishing_wharf = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fish
+        weight = aroai_resource_weight_4
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_resource_weight_8
+        offset = 4
+    }
+}
+
+aroai_evaluate_building_whaling_station = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:oil
+        weight = aroai_resource_weight_1
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:meat
+        weight = aroai_resource_weight_10
+        offset = 6
+    }
+}
+
+aroai_evaluate_building_rubber_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:rubber
+        weight = aroai_resource_weight_2
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_oil_rig = {
+    if = {
+        limit = {
+            any_scope_state = {
+                has_potential_resource = bg_oil_extraction
+            }
+            NOT = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+        }
+        set_local_variable = {
+            name = aroai_saved_priority
+            value = 2
+        }
+        set_local_variable = {
+            name = aroai_saved_level
+            value = 1
+        }
+        set_local_variable = {
+            name = aroai_saved_productivity
+            value = 1
+        }
+    }
+    else = {
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:oil
+            weight = aroai_resource_weight_1
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_coal_mine = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:coal
+        weight = aroai_resource_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_iron_mine = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:iron
+        weight = aroai_resource_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_lead_mine = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:lead
+        weight = aroai_resource_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_sulfur_mine = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:sulfur
+        weight = aroai_resource_weight_2
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_gold_mine = {
+    set_local_variable = {
+        name = aroai_saved_priority
+        value = 6
+    }
+    set_local_variable = {
+        name = aroai_saved_level
+        value = 5
+    }
+    set_local_variable = {
+        name = aroai_saved_productivity
+        value = 5
+    }
+    if = {
+        limit = {
+            OR = {
+                always = yes
+                $id$ = 0
+                $crucial$ = 0
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_rye_farm = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_2
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 = 1
+                aroai_building_type_$id$_collected_data_4 >= 3
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:liquor
+            weight = aroai_agriculture_weight_10
+            offset = 6
+        }
+    }
+    # if = {
+        # limit = {
+            # OR = {
+                # NOT = {
+                    # has_variable = aroai_building_type_$id$_collected_data
+                # }
+                # aroai_building_type_$id$_collected_data_4 = 2
+                # aroai_building_type_$id$_collected_data_4 >= 3
+            # }
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:fruit
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:sugar
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+    # }
+}
+
+aroai_evaluate_building_wheat_farm = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_2
+        offset = 0
+    }
+    # if = {
+        # limit = {
+            # OR = {
+                # NOT = {
+                    # has_variable = aroai_building_type_$id$_collected_data
+                # }
+                # aroai_building_type_$id$_collected_data_4 = 1
+                # aroai_building_type_$id$_collected_data_4 >= 3
+            # }
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:fruit
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:sugar
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+    # }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 = 2
+                aroai_building_type_$id$_collected_data_4 >= 3
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:wine
+            weight = aroai_agriculture_weight_11
+            offset = 6
+        }
+    }
+}
+
+aroai_evaluate_building_rice_farm = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_2
+        offset = 0
+    }
+    # if = {
+        # limit = {
+            # OR = {
+                # NOT = {
+                    # has_variable = aroai_building_type_$id$_collected_data
+                # }
+                # aroai_building_type_$id$_collected_data_4 = 1
+                # aroai_building_type_$id$_collected_data_4 >= 3
+            # }
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:fruit
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:sugar
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+    # }
+}
+
+aroai_evaluate_building_maize_farm = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_2
+        offset = 0
+    }
+    # if = {
+        # limit = {
+            # OR = {
+                # NOT = {
+                    # has_variable = aroai_building_type_$id$_collected_data
+                # }
+                # aroai_building_type_$id$_collected_data_4 = 1
+                # aroai_building_type_$id$_collected_data_4 >= 3
+            # }
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:fruit
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:sugar
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+    # }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 = 2
+                aroai_building_type_$id$_collected_data_4 >= 3
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:wine
+            weight = aroai_agriculture_weight_11
+            offset = 6
+        }
+    }
+}
+
+aroai_evaluate_building_millet_farm = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_2
+        offset = 0
+    }
+    # if = {
+        # limit = {
+            # OR = {
+                # NOT = {
+                    # has_variable = aroai_building_type_$id$_collected_data
+                # }
+                # aroai_building_type_$id$_collected_data_4 = 1
+                # aroai_building_type_$id$_collected_data_4 >= 3
+            # }
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:fruit
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+        # aroai_evaluate_production_building = {
+            # id = $id$
+            # crucial = $crucial$
+            # good = mg:sugar
+            # weight = aroai_agriculture_weight_4
+            # offset = 4
+        # }
+    # }
+}
+
+aroai_evaluate_building_livestock_ranch = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fabric
+        weight = aroai_agriculture_weight_1
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:meat
+        weight = aroai_agriculture_weight_4
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_cotton_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fabric
+        weight = aroai_agriculture_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_dye_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:dye
+        weight = aroai_agriculture_weight_3
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_silk_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:silk
+        weight = aroai_agriculture_weight_5
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_banana_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fruit
+        weight = aroai_agriculture_weight_4
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:grain
+        weight = aroai_agriculture_weight_8
+        offset = 4
+    }
+}
+
+aroai_evaluate_building_sugar_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:sugar
+        weight = aroai_agriculture_weight_4
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_tea_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:tea
+        weight = aroai_agriculture_weight_5
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:coffee
+        weight = aroai_agriculture_weight_9
+        offset = 4
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:wine
+        weight = aroai_agriculture_weight_9
+        offset = 4
+    }
+}
+
+aroai_evaluate_building_coffee_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:coffee
+        weight = aroai_agriculture_weight_5
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:tea
+        weight = aroai_agriculture_weight_9
+        offset = 4
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:wine
+        weight = aroai_agriculture_weight_9
+        offset = 4
+    }
+}
+
+aroai_evaluate_building_tobacco_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:tobacco
+        weight = aroai_agriculture_weight_4
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:liquor
+        weight = aroai_agriculture_weight_8
+        offset = 4
+    }
+    if = {
+        limit = {
+            NOT = {
+                is_banning_goods = g:opium
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:opium
+            weight = aroai_agriculture_weight_8
+            offset = 4
+        }
+    }
+}
+
+aroai_evaluate_building_opium_plantation = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:opium
+        weight = aroai_agriculture_weight_3
+        offset = 0
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:liquor
+        weight = aroai_agriculture_weight_7
+        offset = 4
+    }
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:tobacco
+        weight = aroai_agriculture_weight_7
+        offset = 4
+    }
+}
+
+aroai_evaluate_building_food_industry = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:groceries
+        weight = aroai_industry_weight_4
+        offset = 0
+    }
+    if = {
+        limit = {
+            has_technology_researched = distillation
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:liquor
+            weight = aroai_industry_weight_4
+            offset = 0
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:tobacco
+            weight = aroai_industry_weight_8
+            offset = 4
+        }
+        if = {
+            limit = {
+                NOT = {
+                    is_banning_goods = g:opium
+                }
+            }
+            aroai_evaluate_production_building = {
+                id = $id$
+                crucial = $crucial$
+                good = mg:opium
+                weight = aroai_industry_weight_8
+                offset = 4
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_textile_mills = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:clothes
+        weight = aroai_industry_weight_3
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:luxury_clothes
+            weight = aroai_industry_weight_5
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_furniture_manufacturies = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:furniture
+        weight = aroai_industry_weight_3
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:luxury_furniture
+            weight = aroai_industry_weight_5
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_glassworks = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:glass
+        weight = aroai_industry_weight_3
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:porcelain
+            weight = aroai_industry_weight_5
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_tooling_workshops = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:tools
+        weight = aroai_industry_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_paper_mills = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:paper
+        weight = aroai_industry_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_chemical_plants = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fertilizer
+        weight = aroai_industry_weight_2
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:explosives
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_synthetics_plants = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:dye
+        weight = aroai_industry_weight_3
+        offset = 0
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:silk
+            weight = aroai_industry_weight_5
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_steel_mills = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:steel
+        weight = aroai_industry_weight_1
+        offset = 0
+    }
+}
+
+aroai_evaluate_building_motor_industry = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:engines
+        weight = aroai_industry_weight_1
+        offset = 0
+    }
+    if = {
+        limit = {
+            has_technology_researched = combustion_engine
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:automobiles
+            weight = aroai_industry_weight_4
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_shipyards = {
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 = 1
+                aroai_building_type_$id$_collected_data_4 >= 3
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:clippers
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+        if = {
+            limit = {
+                OR = {
+                    aroai_is_using_military_forces = no
+                    market.mg:manowars.aroai_price_level >= aroai_floor_when_using_military_forces
+                }
+            }
+            aroai_evaluate_production_building = {
+                id = $id$
+                crucial = $crucial$
+                good = mg:manowars
+                weight = aroai_industry_weight_3
+                offset = 0
+            }
+        }
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 = 2
+                aroai_building_type_$id$_collected_data_4 >= 3
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:steamers
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+        if = {
+            limit = {
+                OR = {
+                    aroai_is_using_military_forces = no
+                    market.mg:ironclads.aroai_price_level >= aroai_floor_when_using_military_forces
+                }
+            }
+            aroai_evaluate_production_building = {
+                id = $id$
+                crucial = $crucial$
+                good = mg:ironclads
+                weight = aroai_industry_weight_3
+                offset = 0
+            }
+        }
+    }
+}
+
+aroai_evaluate_building_power_plant = {
+    if = {
+        limit = {
+            NOT = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+        }
+        set_local_variable = {
+            name = aroai_saved_priority
+            value = 2
+        }
+        set_local_variable = {
+            name = aroai_saved_level
+            value = 1
+        }
+        set_local_variable = {
+            name = aroai_saved_productivity
+            value = 1
+        }
+    }
+    else = {
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:electricity
+            weight = aroai_industry_weight_1
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_electrics_industry = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:telephones
+        weight = aroai_industry_weight_3
+        offset = 0
+    }
+    if = {
+        limit = {
+            has_technology_researched = radio
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:radios
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_arms_industry = {
+    if = {
+        limit = {
+            OR = {
+                aroai_is_using_military_forces = no
+                market.mg:small_arms.aroai_price_level >= aroai_floor_when_using_military_forces
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:small_arms
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+    if = {
+        limit = {
+            has_technology_researched = artillery
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+            OR = {
+                aroai_is_using_military_forces = no
+                market.mg:artillery.aroai_price_level >= aroai_floor_when_using_military_forces
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:artillery
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_munition_plants = {
+    if = {
+        limit = {
+            OR = {
+                aroai_is_using_military_forces = no
+                market.mg:ammunition.aroai_price_level >= aroai_floor_when_using_military_forces
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:ammunition
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_war_machine_industry = {
+    if = {
+        limit = {
+            OR = {
+                aroai_is_using_military_forces = no
+                market.mg:aeroplanes.aroai_price_level >= aroai_floor_when_using_military_forces
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:aeroplanes
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+    if = {
+        limit = {
+            has_technology_researched = mobile_armor
+            OR = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_building_type_$id$_collected_data_4 >= 1
+            }
+            OR = {
+                aroai_is_using_military_forces = no
+                market.mg:tanks.aroai_price_level >= aroai_floor_when_using_military_forces
+            }
+        }
+        aroai_evaluate_production_building = {
+            id = $id$
+            crucial = $crucial$
+            good = mg:tanks
+            weight = aroai_industry_weight_3
+            offset = 0
+        }
+    }
+}
+
+aroai_evaluate_building_arts_academy = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:fine_art
+        weight = aroai_industry_weight_5
+        offset = 0
+    }
+}
+
+aroai_construct_special_buildings = {
+    set_variable = aroai_tried_special_buildings
+    
+    # Suez Canal
+    if = {
+        limit = {
+            has_technology_researched = colonization
+            owns_treaty_port_in = STATE_SINAI
+            has_variable = suez_survey_complete
+            NOT = {
+                s:STATE_SINAI = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_suez_canal
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_SINAI = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_suez_canal
+            }
+        }
+    }
+    
+    # Panama Canal
+    if = {
+        limit = {
+            has_technology_researched = civilizing_mission
+            owns_treaty_port_in = STATE_PANAMA
+            has_variable = panama_survey_complete
+            NOT = {
+                s:STATE_PANAMA = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_panama_canal
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_PANAMA = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_panama_canal
+            }
+        }
+    }
+    
+    # Big Ben
+    if = {
+        limit = {
+            s:STATE_HOME_COUNTIES = {
+                any_scope_state = {
+                    owner = root
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_big_ben
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_HOME_COUNTIES = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_big_ben
+            }
+        }
+    }
+    
+    # Eiffel Tower
+    if = {
+        limit = {
+            has_technology_researched = steel_frame_buildings
+            s:STATE_ILE_DE_FRANCE = {
+                any_scope_state = {
+                    owner = root
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_eiffel_tower
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_ILE_DE_FRANCE = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_eiffel_tower
+            }
+        }
+    }
+    
+    # Statue of Liberty
+    if = {
+        limit = {
+            has_technology_researched = steel_frame_buildings
+            s:STATE_NEW_YORK = {
+                any_scope_state = {
+                    owner = root
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_statue_of_liberty
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_NEW_YORK = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_statue_of_liberty
+            }
+        }
+    }
+    
+    # Mosque of Djenne
+    if = {
+        limit = {
+            s:STATE_EASTERN_MALI = {
+                any_scope_state = {
+                    owner = root
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_mosque_of_djenne
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_EASTERN_MALI = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_mosque_of_djenne
+            }
+        }
+    }
+    
+    # Skyscraper
+    random_scope_state = {
+        limit = {
+            has_modifier = skyscraper_site
+            NOT = {
+                any_scope_building = {
+                    is_building_type = building_skyscraper
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        start_building_construction = building_skyscraper
+    }
+    
+    if = {
+        limit = {
+            aroai_is_using_compatibility_patches = yes
+        }
+        aroai_construct_special_buildings_compatibility = yes
+    }
+}
+
+# -----------------------------------------------------------------------------------
+# Effects below were generated with a modding tool and should not be changed manually
+# -----------------------------------------------------------------------------------
+
+aroai_construct_special_buildings_compatibility = {
+    every_in_global_list = {
+        variable = aroai_compatibility_patches
+        switch = {
+            trigger = this
+            1 = { aroai_construct_special_buildings_1 = yes } 2 = { aroai_construct_special_buildings_2 = yes }
+            3 = { aroai_construct_special_buildings_3 = yes } 4 = { aroai_construct_special_buildings_4 = yes }
+            5 = { aroai_construct_special_buildings_5 = yes } 6 = { aroai_construct_special_buildings_6 = yes }
+            7 = { aroai_construct_special_buildings_7 = yes } 8 = { aroai_construct_special_buildings_8 = yes }
+            9 = { aroai_construct_special_buildings_9 = yes } 10 = { aroai_construct_special_buildings_10 = yes }
+            11 = { aroai_construct_special_buildings_11 = yes } 12 = { aroai_construct_special_buildings_12 = yes }
+            13 = { aroai_construct_special_buildings_13 = yes } 14 = { aroai_construct_special_buildings_14 = yes }
+            15 = { aroai_construct_special_buildings_15 = yes } 16 = { aroai_construct_special_buildings_16 = yes }
+            17 = { aroai_construct_special_buildings_17 = yes } 18 = { aroai_construct_special_buildings_18 = yes }
+            19 = { aroai_construct_special_buildings_19 = yes } 20 = { aroai_construct_special_buildings_20 = yes }
+            21 = { aroai_construct_special_buildings_21 = yes } 22 = { aroai_construct_special_buildings_22 = yes }
+            23 = { aroai_construct_special_buildings_23 = yes } 24 = { aroai_construct_special_buildings_24 = yes }
+            25 = { aroai_construct_special_buildings_25 = yes } 26 = { aroai_construct_special_buildings_26 = yes }
+            27 = { aroai_construct_special_buildings_27 = yes } 28 = { aroai_construct_special_buildings_28 = yes }
+            29 = { aroai_construct_special_buildings_29 = yes } 30 = { aroai_construct_special_buildings_30 = yes }
+            31 = { aroai_construct_special_buildings_31 = yes } 32 = { aroai_construct_special_buildings_32 = yes }
+            33 = { aroai_construct_special_buildings_33 = yes } 34 = { aroai_construct_special_buildings_34 = yes }
+            35 = { aroai_construct_special_buildings_35 = yes } 36 = { aroai_construct_special_buildings_36 = yes }
+            37 = { aroai_construct_special_buildings_37 = yes } 38 = { aroai_construct_special_buildings_38 = yes }
+            39 = { aroai_construct_special_buildings_39 = yes } 40 = { aroai_construct_special_buildings_40 = yes }
+            41 = { aroai_construct_special_buildings_41 = yes } 42 = { aroai_construct_special_buildings_42 = yes }
+            43 = { aroai_construct_special_buildings_43 = yes } 44 = { aroai_construct_special_buildings_44 = yes }
+            45 = { aroai_construct_special_buildings_45 = yes } 46 = { aroai_construct_special_buildings_46 = yes }
+            47 = { aroai_construct_special_buildings_47 = yes } 48 = { aroai_construct_special_buildings_48 = yes }
+            49 = { aroai_construct_special_buildings_49 = yes } 50 = { aroai_construct_special_buildings_50 = yes }
+            51 = { aroai_construct_special_buildings_51 = yes } 52 = { aroai_construct_special_buildings_52 = yes }
+            53 = { aroai_construct_special_buildings_53 = yes } 54 = { aroai_construct_special_buildings_54 = yes }
+            55 = { aroai_construct_special_buildings_55 = yes } 56 = { aroai_construct_special_buildings_56 = yes }
+            57 = { aroai_construct_special_buildings_57 = yes } 58 = { aroai_construct_special_buildings_58 = yes }
+            59 = { aroai_construct_special_buildings_59 = yes } 60 = { aroai_construct_special_buildings_60 = yes }
+            61 = { aroai_construct_special_buildings_61 = yes } 62 = { aroai_construct_special_buildings_62 = yes }
+            63 = { aroai_construct_special_buildings_63 = yes } 64 = { aroai_construct_special_buildings_64 = yes }
+            65 = { aroai_construct_special_buildings_65 = yes } 66 = { aroai_construct_special_buildings_66 = yes }
+            67 = { aroai_construct_special_buildings_67 = yes } 68 = { aroai_construct_special_buildings_68 = yes }
+            69 = { aroai_construct_special_buildings_69 = yes } 70 = { aroai_construct_special_buildings_70 = yes }
+            71 = { aroai_construct_special_buildings_71 = yes } 72 = { aroai_construct_special_buildings_72 = yes }
+            73 = { aroai_construct_special_buildings_73 = yes } 74 = { aroai_construct_special_buildings_74 = yes }
+            75 = { aroai_construct_special_buildings_75 = yes } 76 = { aroai_construct_special_buildings_76 = yes }
+            77 = { aroai_construct_special_buildings_77 = yes } 78 = { aroai_construct_special_buildings_78 = yes }
+            79 = { aroai_construct_special_buildings_79 = yes } 80 = { aroai_construct_special_buildings_80 = yes }
+            81 = { aroai_construct_special_buildings_81 = yes } 82 = { aroai_construct_special_buildings_82 = yes }
+            83 = { aroai_construct_special_buildings_83 = yes } 84 = { aroai_construct_special_buildings_84 = yes }
+            85 = { aroai_construct_special_buildings_85 = yes } 86 = { aroai_construct_special_buildings_86 = yes }
+            87 = { aroai_construct_special_buildings_87 = yes } 88 = { aroai_construct_special_buildings_88 = yes }
+            89 = { aroai_construct_special_buildings_89 = yes } 90 = { aroai_construct_special_buildings_90 = yes }
+            91 = { aroai_construct_special_buildings_91 = yes } 92 = { aroai_construct_special_buildings_92 = yes }
+            93 = { aroai_construct_special_buildings_93 = yes } 94 = { aroai_construct_special_buildings_94 = yes }
+            95 = { aroai_construct_special_buildings_95 = yes } 96 = { aroai_construct_special_buildings_96 = yes }
+            97 = { aroai_construct_special_buildings_97 = yes } 98 = { aroai_construct_special_buildings_98 = yes }
+            99 = { aroai_construct_special_buildings_99 = yes } 100 = { aroai_construct_special_buildings_100 = yes }
+            101 = { aroai_construct_special_buildings_101 = yes } 102 = { aroai_construct_special_buildings_102 = yes }
+            103 = { aroai_construct_special_buildings_103 = yes } 104 = { aroai_construct_special_buildings_104 = yes }
+            105 = { aroai_construct_special_buildings_105 = yes } 106 = { aroai_construct_special_buildings_106 = yes }
+            107 = { aroai_construct_special_buildings_107 = yes } 108 = { aroai_construct_special_buildings_108 = yes }
+            109 = { aroai_construct_special_buildings_109 = yes } 110 = { aroai_construct_special_buildings_110 = yes }
+            111 = { aroai_construct_special_buildings_111 = yes } 112 = { aroai_construct_special_buildings_112 = yes }
+            113 = { aroai_construct_special_buildings_113 = yes } 114 = { aroai_construct_special_buildings_114 = yes }
+            115 = { aroai_construct_special_buildings_115 = yes } 116 = { aroai_construct_special_buildings_116 = yes }
+            117 = { aroai_construct_special_buildings_117 = yes } 118 = { aroai_construct_special_buildings_118 = yes }
+            119 = { aroai_construct_special_buildings_119 = yes } 120 = { aroai_construct_special_buildings_120 = yes }
+            121 = { aroai_construct_special_buildings_121 = yes } 122 = { aroai_construct_special_buildings_122 = yes }
+            123 = { aroai_construct_special_buildings_123 = yes } 124 = { aroai_construct_special_buildings_124 = yes }
+            125 = { aroai_construct_special_buildings_125 = yes } 126 = { aroai_construct_special_buildings_126 = yes }
+            127 = { aroai_construct_special_buildings_127 = yes } 128 = { aroai_construct_special_buildings_128 = yes }
+            129 = { aroai_construct_special_buildings_129 = yes } 130 = { aroai_construct_special_buildings_130 = yes }
+            131 = { aroai_construct_special_buildings_131 = yes } 132 = { aroai_construct_special_buildings_132 = yes }
+            133 = { aroai_construct_special_buildings_133 = yes } 134 = { aroai_construct_special_buildings_134 = yes }
+            135 = { aroai_construct_special_buildings_135 = yes } 136 = { aroai_construct_special_buildings_136 = yes }
+            137 = { aroai_construct_special_buildings_137 = yes } 138 = { aroai_construct_special_buildings_138 = yes }
+            139 = { aroai_construct_special_buildings_139 = yes } 140 = { aroai_construct_special_buildings_140 = yes }
+            141 = { aroai_construct_special_buildings_141 = yes } 142 = { aroai_construct_special_buildings_142 = yes }
+            143 = { aroai_construct_special_buildings_143 = yes } 144 = { aroai_construct_special_buildings_144 = yes }
+            145 = { aroai_construct_special_buildings_145 = yes } 146 = { aroai_construct_special_buildings_146 = yes }
+            147 = { aroai_construct_special_buildings_147 = yes } 148 = { aroai_construct_special_buildings_148 = yes }
+            149 = { aroai_construct_special_buildings_149 = yes } 150 = { aroai_construct_special_buildings_150 = yes }
+            151 = { aroai_construct_special_buildings_151 = yes } 152 = { aroai_construct_special_buildings_152 = yes }
+            153 = { aroai_construct_special_buildings_153 = yes } 154 = { aroai_construct_special_buildings_154 = yes }
+            155 = { aroai_construct_special_buildings_155 = yes } 156 = { aroai_construct_special_buildings_156 = yes }
+            157 = { aroai_construct_special_buildings_157 = yes } 158 = { aroai_construct_special_buildings_158 = yes }
+            159 = { aroai_construct_special_buildings_159 = yes } 160 = { aroai_construct_special_buildings_160 = yes }
+            161 = { aroai_construct_special_buildings_161 = yes } 162 = { aroai_construct_special_buildings_162 = yes }
+            163 = { aroai_construct_special_buildings_163 = yes } 164 = { aroai_construct_special_buildings_164 = yes }
+            165 = { aroai_construct_special_buildings_165 = yes } 166 = { aroai_construct_special_buildings_166 = yes }
+            167 = { aroai_construct_special_buildings_167 = yes } 168 = { aroai_construct_special_buildings_168 = yes }
+            169 = { aroai_construct_special_buildings_169 = yes } 170 = { aroai_construct_special_buildings_170 = yes }
+            171 = { aroai_construct_special_buildings_171 = yes } 172 = { aroai_construct_special_buildings_172 = yes }
+            173 = { aroai_construct_special_buildings_173 = yes } 174 = { aroai_construct_special_buildings_174 = yes }
+            175 = { aroai_construct_special_buildings_175 = yes } 176 = { aroai_construct_special_buildings_176 = yes }
+            177 = { aroai_construct_special_buildings_177 = yes } 178 = { aroai_construct_special_buildings_178 = yes }
+            179 = { aroai_construct_special_buildings_179 = yes } 180 = { aroai_construct_special_buildings_180 = yes }
+            181 = { aroai_construct_special_buildings_181 = yes } 182 = { aroai_construct_special_buildings_182 = yes }
+            183 = { aroai_construct_special_buildings_183 = yes } 184 = { aroai_construct_special_buildings_184 = yes }
+            185 = { aroai_construct_special_buildings_185 = yes } 186 = { aroai_construct_special_buildings_186 = yes }
+            187 = { aroai_construct_special_buildings_187 = yes } 188 = { aroai_construct_special_buildings_188 = yes }
+            189 = { aroai_construct_special_buildings_189 = yes } 190 = { aroai_construct_special_buildings_190 = yes }
+            191 = { aroai_construct_special_buildings_191 = yes } 192 = { aroai_construct_special_buildings_192 = yes }
+            193 = { aroai_construct_special_buildings_193 = yes } 194 = { aroai_construct_special_buildings_194 = yes }
+            195 = { aroai_construct_special_buildings_195 = yes } 196 = { aroai_construct_special_buildings_196 = yes }
+            197 = { aroai_construct_special_buildings_197 = yes } 198 = { aroai_construct_special_buildings_198 = yes }
+            199 = { aroai_construct_special_buildings_199 = yes } 200 = { aroai_construct_special_buildings_200 = yes }
+        }
+    }
+}
+
+aroai_construct_special_buildings_1 = {} aroai_construct_special_buildings_2 = {}
+aroai_construct_special_buildings_3 = {} aroai_construct_special_buildings_4 = {}
+aroai_construct_special_buildings_5 = {} aroai_construct_special_buildings_6 = {}
+aroai_construct_special_buildings_7 = {} aroai_construct_special_buildings_8 = {}
+aroai_construct_special_buildings_9 = {} aroai_construct_special_buildings_10 = {}
+aroai_construct_special_buildings_11 = {} aroai_construct_special_buildings_12 = {}
+aroai_construct_special_buildings_13 = {} aroai_construct_special_buildings_14 = {}
+aroai_construct_special_buildings_15 = {} aroai_construct_special_buildings_16 = {}
+aroai_construct_special_buildings_17 = {} aroai_construct_special_buildings_18 = {}
+aroai_construct_special_buildings_19 = {} aroai_construct_special_buildings_20 = {}
+aroai_construct_special_buildings_21 = {} aroai_construct_special_buildings_22 = {}
+aroai_construct_special_buildings_23 = {} aroai_construct_special_buildings_24 = {}
+aroai_construct_special_buildings_25 = {} aroai_construct_special_buildings_26 = {}
+aroai_construct_special_buildings_27 = {} aroai_construct_special_buildings_28 = {}
+aroai_construct_special_buildings_29 = {} aroai_construct_special_buildings_30 = {}
+aroai_construct_special_buildings_31 = {} aroai_construct_special_buildings_32 = {}
+aroai_construct_special_buildings_33 = {} aroai_construct_special_buildings_34 = {}
+aroai_construct_special_buildings_35 = {} aroai_construct_special_buildings_36 = {}
+aroai_construct_special_buildings_37 = {} aroai_construct_special_buildings_38 = {}
+aroai_construct_special_buildings_39 = {} aroai_construct_special_buildings_40 = {}
+aroai_construct_special_buildings_41 = {} aroai_construct_special_buildings_42 = {}
+aroai_construct_special_buildings_43 = {} aroai_construct_special_buildings_44 = {}
+aroai_construct_special_buildings_45 = {} aroai_construct_special_buildings_46 = {}
+aroai_construct_special_buildings_47 = {} aroai_construct_special_buildings_48 = {}
+aroai_construct_special_buildings_49 = {} aroai_construct_special_buildings_50 = {}
+aroai_construct_special_buildings_51 = {} aroai_construct_special_buildings_52 = {}
+aroai_construct_special_buildings_53 = {} aroai_construct_special_buildings_54 = {}
+aroai_construct_special_buildings_55 = {} aroai_construct_special_buildings_56 = {}
+aroai_construct_special_buildings_57 = {} aroai_construct_special_buildings_58 = {}
+aroai_construct_special_buildings_59 = {} aroai_construct_special_buildings_60 = {}
+aroai_construct_special_buildings_61 = {} aroai_construct_special_buildings_62 = {}
+aroai_construct_special_buildings_63 = {} aroai_construct_special_buildings_64 = {}
+aroai_construct_special_buildings_65 = {} aroai_construct_special_buildings_66 = {}
+aroai_construct_special_buildings_67 = {} aroai_construct_special_buildings_68 = {}
+aroai_construct_special_buildings_69 = {} aroai_construct_special_buildings_70 = {}
+aroai_construct_special_buildings_71 = {} aroai_construct_special_buildings_72 = {}
+aroai_construct_special_buildings_73 = {} aroai_construct_special_buildings_74 = {}
+aroai_construct_special_buildings_75 = {} aroai_construct_special_buildings_76 = {}
+aroai_construct_special_buildings_77 = {} aroai_construct_special_buildings_78 = {}
+aroai_construct_special_buildings_79 = {} aroai_construct_special_buildings_80 = {}
+aroai_construct_special_buildings_81 = {} aroai_construct_special_buildings_82 = {}
+aroai_construct_special_buildings_83 = {} aroai_construct_special_buildings_84 = {}
+aroai_construct_special_buildings_85 = {} aroai_construct_special_buildings_86 = {}
+aroai_construct_special_buildings_87 = {} aroai_construct_special_buildings_88 = {}
+aroai_construct_special_buildings_89 = {} aroai_construct_special_buildings_90 = {}
+aroai_construct_special_buildings_91 = {} aroai_construct_special_buildings_92 = {}
+aroai_construct_special_buildings_93 = {} aroai_construct_special_buildings_94 = {}
+aroai_construct_special_buildings_95 = {} aroai_construct_special_buildings_96 = {}
+aroai_construct_special_buildings_97 = {} aroai_construct_special_buildings_98 = {}
+aroai_construct_special_buildings_99 = {} aroai_construct_special_buildings_100 = {}
+aroai_construct_special_buildings_101 = {} aroai_construct_special_buildings_102 = {}
+aroai_construct_special_buildings_103 = {} aroai_construct_special_buildings_104 = {}
+aroai_construct_special_buildings_105 = {} aroai_construct_special_buildings_106 = {}
+aroai_construct_special_buildings_107 = {} aroai_construct_special_buildings_108 = {}
+aroai_construct_special_buildings_109 = {} aroai_construct_special_buildings_110 = {}
+aroai_construct_special_buildings_111 = {} aroai_construct_special_buildings_112 = {}
+aroai_construct_special_buildings_113 = {} aroai_construct_special_buildings_114 = {}
+aroai_construct_special_buildings_115 = {} aroai_construct_special_buildings_116 = {}
+aroai_construct_special_buildings_117 = {} aroai_construct_special_buildings_118 = {}
+aroai_construct_special_buildings_119 = {} aroai_construct_special_buildings_120 = {}
+aroai_construct_special_buildings_121 = {} aroai_construct_special_buildings_122 = {}
+aroai_construct_special_buildings_123 = {} aroai_construct_special_buildings_124 = {}
+aroai_construct_special_buildings_125 = {} aroai_construct_special_buildings_126 = {}
+aroai_construct_special_buildings_127 = {} aroai_construct_special_buildings_128 = {}
+aroai_construct_special_buildings_129 = {} aroai_construct_special_buildings_130 = {}
+aroai_construct_special_buildings_131 = {} aroai_construct_special_buildings_132 = {}
+aroai_construct_special_buildings_133 = {} aroai_construct_special_buildings_134 = {}
+aroai_construct_special_buildings_135 = {} aroai_construct_special_buildings_136 = {}
+aroai_construct_special_buildings_137 = {} aroai_construct_special_buildings_138 = {}
+aroai_construct_special_buildings_139 = {} aroai_construct_special_buildings_140 = {}
+aroai_construct_special_buildings_141 = {} aroai_construct_special_buildings_142 = {}
+aroai_construct_special_buildings_143 = {} aroai_construct_special_buildings_144 = {}
+aroai_construct_special_buildings_145 = {} aroai_construct_special_buildings_146 = {}
+aroai_construct_special_buildings_147 = {} aroai_construct_special_buildings_148 = {}
+aroai_construct_special_buildings_149 = {} aroai_construct_special_buildings_150 = {}
+aroai_construct_special_buildings_151 = {} aroai_construct_special_buildings_152 = {}
+aroai_construct_special_buildings_153 = {} aroai_construct_special_buildings_154 = {}
+aroai_construct_special_buildings_155 = {} aroai_construct_special_buildings_156 = {}
+aroai_construct_special_buildings_157 = {} aroai_construct_special_buildings_158 = {}
+aroai_construct_special_buildings_159 = {} aroai_construct_special_buildings_160 = {}
+aroai_construct_special_buildings_161 = {} aroai_construct_special_buildings_162 = {}
+aroai_construct_special_buildings_163 = {} aroai_construct_special_buildings_164 = {}
+aroai_construct_special_buildings_165 = {} aroai_construct_special_buildings_166 = {}
+aroai_construct_special_buildings_167 = {} aroai_construct_special_buildings_168 = {}
+aroai_construct_special_buildings_169 = {} aroai_construct_special_buildings_170 = {}
+aroai_construct_special_buildings_171 = {} aroai_construct_special_buildings_172 = {}
+aroai_construct_special_buildings_173 = {} aroai_construct_special_buildings_174 = {}
+aroai_construct_special_buildings_175 = {} aroai_construct_special_buildings_176 = {}
+aroai_construct_special_buildings_177 = {} aroai_construct_special_buildings_178 = {}
+aroai_construct_special_buildings_179 = {} aroai_construct_special_buildings_180 = {}
+aroai_construct_special_buildings_181 = {} aroai_construct_special_buildings_182 = {}
+aroai_construct_special_buildings_183 = {} aroai_construct_special_buildings_184 = {}
+aroai_construct_special_buildings_185 = {} aroai_construct_special_buildings_186 = {}
+aroai_construct_special_buildings_187 = {} aroai_construct_special_buildings_188 = {}
+aroai_construct_special_buildings_189 = {} aroai_construct_special_buildings_190 = {}
+aroai_construct_special_buildings_191 = {} aroai_construct_special_buildings_192 = {}
+aroai_construct_special_buildings_193 = {} aroai_construct_special_buildings_194 = {}
+aroai_construct_special_buildings_195 = {} aroai_construct_special_buildings_196 = {}
+aroai_construct_special_buildings_197 = {} aroai_construct_special_buildings_198 = {}
+aroai_construct_special_buildings_199 = {} aroai_construct_special_buildings_200 = {}
+
+aroai_perform_for_every_building_type = {
+    aroai_perform_for_building_type = { effect = $effect$ key = building_government_administration id = 1
+    class = 1 counter = 1 order = 2 limit = 4 crucial = 10 workforce = 0 allocate = 4 branching = 0 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_university id = 2
+    class = 1 counter = 2 order = 9 limit = 3 crucial = 8 workforce = 0 allocate = 1 branching = 1 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_construction_sector id = 3
+    class = 2 counter = 3 order = 1 limit = 5 crucial = 5 workforce = 0 allocate = 1 branching = 1 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_railway id = 4
+    class = 2 counter = 4 order = 3 limit = 5 crucial = 99 workforce = 0 allocate = 7 branching = 0 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_port id = 5
+    class = 2 counter = 5 order = 3 limit = 3 crucial = 99 workforce = 0 allocate = 5 branching = 0 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_barracks id = 6
+    class = 3 counter = 6 order = 9 limit = 8 crucial = 8 workforce = 0 allocate = 2 branching = 0 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_naval_base id = 7
+    class = 3 counter = 7 order = 9 limit = 5 crucial = 8 workforce = 0 allocate = 2 branching = 0 scaling = 0 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_logging_camp id = 8
+    class = 4 counter = 8 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_fishing_wharf id = 9
+    class = 4 counter = 9 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_whaling_station id = 10
+    class = 4 counter = 10 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_rubber_plantation id = 11
+    class = 4 counter = 11 order = 6 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_oil_rig id = 12
+    class = 4 counter = 12 order = 4 limit = 5 crucial = 11 workforce = 0 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_coal_mine id = 13
+    class = 4 counter = 13 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_iron_mine id = 14
+    class = 4 counter = 14 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_lead_mine id = 15
+    class = 4 counter = 15 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_sulfur_mine id = 16
+    class = 4 counter = 16 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_gold_mine id = 17
+    class = 4 counter = 17 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_rye_farm id = 18
+    class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_wheat_farm id = 19
+    class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_rice_farm id = 20
+    class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_maize_farm id = 21
+    class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_millet_farm id = 22
+    class = 5 counter = 18 order = 10 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_livestock_ranch id = 23
+    class = 5 counter = 23 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_cotton_plantation id = 24
+    class = 5 counter = 23 order = 5 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_dye_plantation id = 25
+    class = 5 counter = 25 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_silk_plantation id = 26
+    class = 5 counter = 26 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_banana_plantation id = 27
+    class = 5 counter = 27 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_sugar_plantation id = 28
+    class = 5 counter = 28 order = 13 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_tea_plantation id = 29
+    class = 5 counter = 29 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_coffee_plantation id = 30
+    class = 5 counter = 30 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_tobacco_plantation id = 31
+    class = 5 counter = 31 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_opium_plantation id = 32
+    class = 5 counter = 32 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_food_industry id = 33
+    class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_textile_mills id = 34
+    class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_furniture_manufacturies id = 35
+    class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_glassworks id = 36
+    class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_tooling_workshops id = 37
+    class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_paper_mills id = 38
+    class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_chemical_plants id = 39
+    class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_synthetics_plants id = 40
+    class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_steel_mills id = 41
+    class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_motor_industry id = 42
+    class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_shipyards id = 43
+    class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_power_plant id = 44
+    class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_electrics_industry id = 45
+    class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_arms_industry id = 46
+    class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_munition_plants id = 47
+    class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_war_machine_industry id = 48
+    class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_arts_academy id = 49
+    class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    if = {
+        limit = {
+            aroai_is_using_compatibility_patches = yes
+        }
+        aroai_perform_for_every_building_type_compatibility = { effect = $effect$ }
+    }
+}
+
+aroai_perform_for_every_building_type_compatibility = {
+    every_in_global_list = {
+        variable = aroai_compatibility_patches
+        switch = {
+            trigger = this
+            1 = { prev = { aroai_perform_for_every_building_type_1 = { effect = $effect$ } } }
+            2 = { prev = { aroai_perform_for_every_building_type_2 = { effect = $effect$ } } }
+            3 = { prev = { aroai_perform_for_every_building_type_3 = { effect = $effect$ } } }
+            4 = { prev = { aroai_perform_for_every_building_type_4 = { effect = $effect$ } } }
+            5 = { prev = { aroai_perform_for_every_building_type_5 = { effect = $effect$ } } }
+            6 = { prev = { aroai_perform_for_every_building_type_6 = { effect = $effect$ } } }
+            7 = { prev = { aroai_perform_for_every_building_type_7 = { effect = $effect$ } } }
+            8 = { prev = { aroai_perform_for_every_building_type_8 = { effect = $effect$ } } }
+            9 = { prev = { aroai_perform_for_every_building_type_9 = { effect = $effect$ } } }
+            10 = { prev = { aroai_perform_for_every_building_type_10 = { effect = $effect$ } } }
+            11 = { prev = { aroai_perform_for_every_building_type_11 = { effect = $effect$ } } }
+            12 = { prev = { aroai_perform_for_every_building_type_12 = { effect = $effect$ } } }
+            13 = { prev = { aroai_perform_for_every_building_type_13 = { effect = $effect$ } } }
+            14 = { prev = { aroai_perform_for_every_building_type_14 = { effect = $effect$ } } }
+            15 = { prev = { aroai_perform_for_every_building_type_15 = { effect = $effect$ } } }
+            16 = { prev = { aroai_perform_for_every_building_type_16 = { effect = $effect$ } } }
+            17 = { prev = { aroai_perform_for_every_building_type_17 = { effect = $effect$ } } }
+            18 = { prev = { aroai_perform_for_every_building_type_18 = { effect = $effect$ } } }
+            19 = { prev = { aroai_perform_for_every_building_type_19 = { effect = $effect$ } } }
+            20 = { prev = { aroai_perform_for_every_building_type_20 = { effect = $effect$ } } }
+            21 = { prev = { aroai_perform_for_every_building_type_21 = { effect = $effect$ } } }
+            22 = { prev = { aroai_perform_for_every_building_type_22 = { effect = $effect$ } } }
+            23 = { prev = { aroai_perform_for_every_building_type_23 = { effect = $effect$ } } }
+            24 = { prev = { aroai_perform_for_every_building_type_24 = { effect = $effect$ } } }
+            25 = { prev = { aroai_perform_for_every_building_type_25 = { effect = $effect$ } } }
+            26 = { prev = { aroai_perform_for_every_building_type_26 = { effect = $effect$ } } }
+            27 = { prev = { aroai_perform_for_every_building_type_27 = { effect = $effect$ } } }
+            28 = { prev = { aroai_perform_for_every_building_type_28 = { effect = $effect$ } } }
+            29 = { prev = { aroai_perform_for_every_building_type_29 = { effect = $effect$ } } }
+            30 = { prev = { aroai_perform_for_every_building_type_30 = { effect = $effect$ } } }
+            31 = { prev = { aroai_perform_for_every_building_type_31 = { effect = $effect$ } } }
+            32 = { prev = { aroai_perform_for_every_building_type_32 = { effect = $effect$ } } }
+            33 = { prev = { aroai_perform_for_every_building_type_33 = { effect = $effect$ } } }
+            34 = { prev = { aroai_perform_for_every_building_type_34 = { effect = $effect$ } } }
+            35 = { prev = { aroai_perform_for_every_building_type_35 = { effect = $effect$ } } }
+            36 = { prev = { aroai_perform_for_every_building_type_36 = { effect = $effect$ } } }
+            37 = { prev = { aroai_perform_for_every_building_type_37 = { effect = $effect$ } } }
+            38 = { prev = { aroai_perform_for_every_building_type_38 = { effect = $effect$ } } }
+            39 = { prev = { aroai_perform_for_every_building_type_39 = { effect = $effect$ } } }
+            40 = { prev = { aroai_perform_for_every_building_type_40 = { effect = $effect$ } } }
+            41 = { prev = { aroai_perform_for_every_building_type_41 = { effect = $effect$ } } }
+            42 = { prev = { aroai_perform_for_every_building_type_42 = { effect = $effect$ } } }
+            43 = { prev = { aroai_perform_for_every_building_type_43 = { effect = $effect$ } } }
+            44 = { prev = { aroai_perform_for_every_building_type_44 = { effect = $effect$ } } }
+            45 = { prev = { aroai_perform_for_every_building_type_45 = { effect = $effect$ } } }
+            46 = { prev = { aroai_perform_for_every_building_type_46 = { effect = $effect$ } } }
+            47 = { prev = { aroai_perform_for_every_building_type_47 = { effect = $effect$ } } }
+            48 = { prev = { aroai_perform_for_every_building_type_48 = { effect = $effect$ } } }
+            49 = { prev = { aroai_perform_for_every_building_type_49 = { effect = $effect$ } } }
+            50 = { prev = { aroai_perform_for_every_building_type_50 = { effect = $effect$ } } }
+            51 = { prev = { aroai_perform_for_every_building_type_51 = { effect = $effect$ } } }
+            52 = { prev = { aroai_perform_for_every_building_type_52 = { effect = $effect$ } } }
+            53 = { prev = { aroai_perform_for_every_building_type_53 = { effect = $effect$ } } }
+            54 = { prev = { aroai_perform_for_every_building_type_54 = { effect = $effect$ } } }
+            55 = { prev = { aroai_perform_for_every_building_type_55 = { effect = $effect$ } } }
+            56 = { prev = { aroai_perform_for_every_building_type_56 = { effect = $effect$ } } }
+            57 = { prev = { aroai_perform_for_every_building_type_57 = { effect = $effect$ } } }
+            58 = { prev = { aroai_perform_for_every_building_type_58 = { effect = $effect$ } } }
+            59 = { prev = { aroai_perform_for_every_building_type_59 = { effect = $effect$ } } }
+            60 = { prev = { aroai_perform_for_every_building_type_60 = { effect = $effect$ } } }
+            61 = { prev = { aroai_perform_for_every_building_type_61 = { effect = $effect$ } } }
+            62 = { prev = { aroai_perform_for_every_building_type_62 = { effect = $effect$ } } }
+            63 = { prev = { aroai_perform_for_every_building_type_63 = { effect = $effect$ } } }
+            64 = { prev = { aroai_perform_for_every_building_type_64 = { effect = $effect$ } } }
+            65 = { prev = { aroai_perform_for_every_building_type_65 = { effect = $effect$ } } }
+            66 = { prev = { aroai_perform_for_every_building_type_66 = { effect = $effect$ } } }
+            67 = { prev = { aroai_perform_for_every_building_type_67 = { effect = $effect$ } } }
+            68 = { prev = { aroai_perform_for_every_building_type_68 = { effect = $effect$ } } }
+            69 = { prev = { aroai_perform_for_every_building_type_69 = { effect = $effect$ } } }
+            70 = { prev = { aroai_perform_for_every_building_type_70 = { effect = $effect$ } } }
+            71 = { prev = { aroai_perform_for_every_building_type_71 = { effect = $effect$ } } }
+            72 = { prev = { aroai_perform_for_every_building_type_72 = { effect = $effect$ } } }
+            73 = { prev = { aroai_perform_for_every_building_type_73 = { effect = $effect$ } } }
+            74 = { prev = { aroai_perform_for_every_building_type_74 = { effect = $effect$ } } }
+            75 = { prev = { aroai_perform_for_every_building_type_75 = { effect = $effect$ } } }
+            76 = { prev = { aroai_perform_for_every_building_type_76 = { effect = $effect$ } } }
+            77 = { prev = { aroai_perform_for_every_building_type_77 = { effect = $effect$ } } }
+            78 = { prev = { aroai_perform_for_every_building_type_78 = { effect = $effect$ } } }
+            79 = { prev = { aroai_perform_for_every_building_type_79 = { effect = $effect$ } } }
+            80 = { prev = { aroai_perform_for_every_building_type_80 = { effect = $effect$ } } }
+            81 = { prev = { aroai_perform_for_every_building_type_81 = { effect = $effect$ } } }
+            82 = { prev = { aroai_perform_for_every_building_type_82 = { effect = $effect$ } } }
+            83 = { prev = { aroai_perform_for_every_building_type_83 = { effect = $effect$ } } }
+            84 = { prev = { aroai_perform_for_every_building_type_84 = { effect = $effect$ } } }
+            85 = { prev = { aroai_perform_for_every_building_type_85 = { effect = $effect$ } } }
+            86 = { prev = { aroai_perform_for_every_building_type_86 = { effect = $effect$ } } }
+            87 = { prev = { aroai_perform_for_every_building_type_87 = { effect = $effect$ } } }
+            88 = { prev = { aroai_perform_for_every_building_type_88 = { effect = $effect$ } } }
+            89 = { prev = { aroai_perform_for_every_building_type_89 = { effect = $effect$ } } }
+            90 = { prev = { aroai_perform_for_every_building_type_90 = { effect = $effect$ } } }
+            91 = { prev = { aroai_perform_for_every_building_type_91 = { effect = $effect$ } } }
+            92 = { prev = { aroai_perform_for_every_building_type_92 = { effect = $effect$ } } }
+            93 = { prev = { aroai_perform_for_every_building_type_93 = { effect = $effect$ } } }
+            94 = { prev = { aroai_perform_for_every_building_type_94 = { effect = $effect$ } } }
+            95 = { prev = { aroai_perform_for_every_building_type_95 = { effect = $effect$ } } }
+            96 = { prev = { aroai_perform_for_every_building_type_96 = { effect = $effect$ } } }
+            97 = { prev = { aroai_perform_for_every_building_type_97 = { effect = $effect$ } } }
+            98 = { prev = { aroai_perform_for_every_building_type_98 = { effect = $effect$ } } }
+            99 = { prev = { aroai_perform_for_every_building_type_99 = { effect = $effect$ } } }
+            100 = { prev = { aroai_perform_for_every_building_type_100 = { effect = $effect$ } } }
+            101 = { prev = { aroai_perform_for_every_building_type_101 = { effect = $effect$ } } }
+            102 = { prev = { aroai_perform_for_every_building_type_102 = { effect = $effect$ } } }
+            103 = { prev = { aroai_perform_for_every_building_type_103 = { effect = $effect$ } } }
+            104 = { prev = { aroai_perform_for_every_building_type_104 = { effect = $effect$ } } }
+            105 = { prev = { aroai_perform_for_every_building_type_105 = { effect = $effect$ } } }
+            106 = { prev = { aroai_perform_for_every_building_type_106 = { effect = $effect$ } } }
+            107 = { prev = { aroai_perform_for_every_building_type_107 = { effect = $effect$ } } }
+            108 = { prev = { aroai_perform_for_every_building_type_108 = { effect = $effect$ } } }
+            109 = { prev = { aroai_perform_for_every_building_type_109 = { effect = $effect$ } } }
+            110 = { prev = { aroai_perform_for_every_building_type_110 = { effect = $effect$ } } }
+            111 = { prev = { aroai_perform_for_every_building_type_111 = { effect = $effect$ } } }
+            112 = { prev = { aroai_perform_for_every_building_type_112 = { effect = $effect$ } } }
+            113 = { prev = { aroai_perform_for_every_building_type_113 = { effect = $effect$ } } }
+            114 = { prev = { aroai_perform_for_every_building_type_114 = { effect = $effect$ } } }
+            115 = { prev = { aroai_perform_for_every_building_type_115 = { effect = $effect$ } } }
+            116 = { prev = { aroai_perform_for_every_building_type_116 = { effect = $effect$ } } }
+            117 = { prev = { aroai_perform_for_every_building_type_117 = { effect = $effect$ } } }
+            118 = { prev = { aroai_perform_for_every_building_type_118 = { effect = $effect$ } } }
+            119 = { prev = { aroai_perform_for_every_building_type_119 = { effect = $effect$ } } }
+            120 = { prev = { aroai_perform_for_every_building_type_120 = { effect = $effect$ } } }
+            121 = { prev = { aroai_perform_for_every_building_type_121 = { effect = $effect$ } } }
+            122 = { prev = { aroai_perform_for_every_building_type_122 = { effect = $effect$ } } }
+            123 = { prev = { aroai_perform_for_every_building_type_123 = { effect = $effect$ } } }
+            124 = { prev = { aroai_perform_for_every_building_type_124 = { effect = $effect$ } } }
+            125 = { prev = { aroai_perform_for_every_building_type_125 = { effect = $effect$ } } }
+            126 = { prev = { aroai_perform_for_every_building_type_126 = { effect = $effect$ } } }
+            127 = { prev = { aroai_perform_for_every_building_type_127 = { effect = $effect$ } } }
+            128 = { prev = { aroai_perform_for_every_building_type_128 = { effect = $effect$ } } }
+            129 = { prev = { aroai_perform_for_every_building_type_129 = { effect = $effect$ } } }
+            130 = { prev = { aroai_perform_for_every_building_type_130 = { effect = $effect$ } } }
+            131 = { prev = { aroai_perform_for_every_building_type_131 = { effect = $effect$ } } }
+            132 = { prev = { aroai_perform_for_every_building_type_132 = { effect = $effect$ } } }
+            133 = { prev = { aroai_perform_for_every_building_type_133 = { effect = $effect$ } } }
+            134 = { prev = { aroai_perform_for_every_building_type_134 = { effect = $effect$ } } }
+            135 = { prev = { aroai_perform_for_every_building_type_135 = { effect = $effect$ } } }
+            136 = { prev = { aroai_perform_for_every_building_type_136 = { effect = $effect$ } } }
+            137 = { prev = { aroai_perform_for_every_building_type_137 = { effect = $effect$ } } }
+            138 = { prev = { aroai_perform_for_every_building_type_138 = { effect = $effect$ } } }
+            139 = { prev = { aroai_perform_for_every_building_type_139 = { effect = $effect$ } } }
+            140 = { prev = { aroai_perform_for_every_building_type_140 = { effect = $effect$ } } }
+            141 = { prev = { aroai_perform_for_every_building_type_141 = { effect = $effect$ } } }
+            142 = { prev = { aroai_perform_for_every_building_type_142 = { effect = $effect$ } } }
+            143 = { prev = { aroai_perform_for_every_building_type_143 = { effect = $effect$ } } }
+            144 = { prev = { aroai_perform_for_every_building_type_144 = { effect = $effect$ } } }
+            145 = { prev = { aroai_perform_for_every_building_type_145 = { effect = $effect$ } } }
+            146 = { prev = { aroai_perform_for_every_building_type_146 = { effect = $effect$ } } }
+            147 = { prev = { aroai_perform_for_every_building_type_147 = { effect = $effect$ } } }
+            148 = { prev = { aroai_perform_for_every_building_type_148 = { effect = $effect$ } } }
+            149 = { prev = { aroai_perform_for_every_building_type_149 = { effect = $effect$ } } }
+            150 = { prev = { aroai_perform_for_every_building_type_150 = { effect = $effect$ } } }
+            151 = { prev = { aroai_perform_for_every_building_type_151 = { effect = $effect$ } } }
+            152 = { prev = { aroai_perform_for_every_building_type_152 = { effect = $effect$ } } }
+            153 = { prev = { aroai_perform_for_every_building_type_153 = { effect = $effect$ } } }
+            154 = { prev = { aroai_perform_for_every_building_type_154 = { effect = $effect$ } } }
+            155 = { prev = { aroai_perform_for_every_building_type_155 = { effect = $effect$ } } }
+            156 = { prev = { aroai_perform_for_every_building_type_156 = { effect = $effect$ } } }
+            157 = { prev = { aroai_perform_for_every_building_type_157 = { effect = $effect$ } } }
+            158 = { prev = { aroai_perform_for_every_building_type_158 = { effect = $effect$ } } }
+            159 = { prev = { aroai_perform_for_every_building_type_159 = { effect = $effect$ } } }
+            160 = { prev = { aroai_perform_for_every_building_type_160 = { effect = $effect$ } } }
+            161 = { prev = { aroai_perform_for_every_building_type_161 = { effect = $effect$ } } }
+            162 = { prev = { aroai_perform_for_every_building_type_162 = { effect = $effect$ } } }
+            163 = { prev = { aroai_perform_for_every_building_type_163 = { effect = $effect$ } } }
+            164 = { prev = { aroai_perform_for_every_building_type_164 = { effect = $effect$ } } }
+            165 = { prev = { aroai_perform_for_every_building_type_165 = { effect = $effect$ } } }
+            166 = { prev = { aroai_perform_for_every_building_type_166 = { effect = $effect$ } } }
+            167 = { prev = { aroai_perform_for_every_building_type_167 = { effect = $effect$ } } }
+            168 = { prev = { aroai_perform_for_every_building_type_168 = { effect = $effect$ } } }
+            169 = { prev = { aroai_perform_for_every_building_type_169 = { effect = $effect$ } } }
+            170 = { prev = { aroai_perform_for_every_building_type_170 = { effect = $effect$ } } }
+            171 = { prev = { aroai_perform_for_every_building_type_171 = { effect = $effect$ } } }
+            172 = { prev = { aroai_perform_for_every_building_type_172 = { effect = $effect$ } } }
+            173 = { prev = { aroai_perform_for_every_building_type_173 = { effect = $effect$ } } }
+            174 = { prev = { aroai_perform_for_every_building_type_174 = { effect = $effect$ } } }
+            175 = { prev = { aroai_perform_for_every_building_type_175 = { effect = $effect$ } } }
+            176 = { prev = { aroai_perform_for_every_building_type_176 = { effect = $effect$ } } }
+            177 = { prev = { aroai_perform_for_every_building_type_177 = { effect = $effect$ } } }
+            178 = { prev = { aroai_perform_for_every_building_type_178 = { effect = $effect$ } } }
+            179 = { prev = { aroai_perform_for_every_building_type_179 = { effect = $effect$ } } }
+            180 = { prev = { aroai_perform_for_every_building_type_180 = { effect = $effect$ } } }
+            181 = { prev = { aroai_perform_for_every_building_type_181 = { effect = $effect$ } } }
+            182 = { prev = { aroai_perform_for_every_building_type_182 = { effect = $effect$ } } }
+            183 = { prev = { aroai_perform_for_every_building_type_183 = { effect = $effect$ } } }
+            184 = { prev = { aroai_perform_for_every_building_type_184 = { effect = $effect$ } } }
+            185 = { prev = { aroai_perform_for_every_building_type_185 = { effect = $effect$ } } }
+            186 = { prev = { aroai_perform_for_every_building_type_186 = { effect = $effect$ } } }
+            187 = { prev = { aroai_perform_for_every_building_type_187 = { effect = $effect$ } } }
+            188 = { prev = { aroai_perform_for_every_building_type_188 = { effect = $effect$ } } }
+            189 = { prev = { aroai_perform_for_every_building_type_189 = { effect = $effect$ } } }
+            190 = { prev = { aroai_perform_for_every_building_type_190 = { effect = $effect$ } } }
+            191 = { prev = { aroai_perform_for_every_building_type_191 = { effect = $effect$ } } }
+            192 = { prev = { aroai_perform_for_every_building_type_192 = { effect = $effect$ } } }
+            193 = { prev = { aroai_perform_for_every_building_type_193 = { effect = $effect$ } } }
+            194 = { prev = { aroai_perform_for_every_building_type_194 = { effect = $effect$ } } }
+            195 = { prev = { aroai_perform_for_every_building_type_195 = { effect = $effect$ } } }
+            196 = { prev = { aroai_perform_for_every_building_type_196 = { effect = $effect$ } } }
+            197 = { prev = { aroai_perform_for_every_building_type_197 = { effect = $effect$ } } }
+            198 = { prev = { aroai_perform_for_every_building_type_198 = { effect = $effect$ } } }
+            199 = { prev = { aroai_perform_for_every_building_type_199 = { effect = $effect$ } } }
+            200 = { prev = { aroai_perform_for_every_building_type_200 = { effect = $effect$ } } }
+        }
+    }
+}
+
+aroai_perform_for_every_building_type_1 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_2 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_3 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_4 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_5 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_6 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_7 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_8 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_9 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_10 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_11 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_12 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_13 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_14 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_15 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_16 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_17 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_18 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_19 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_20 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_21 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_22 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_23 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_24 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_25 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_26 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_27 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_28 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_29 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_30 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_31 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_32 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_33 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_34 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_35 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_36 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_37 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_38 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_39 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_40 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_41 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_42 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_43 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_44 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_45 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_46 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_47 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_48 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_49 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_50 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_51 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_52 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_53 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_54 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_55 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_56 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_57 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_58 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_59 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_60 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_61 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_62 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_63 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_64 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_65 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_66 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_67 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_68 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_69 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_70 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_71 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_72 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_73 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_74 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_75 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_76 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_77 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_78 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_79 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_80 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_81 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_82 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_83 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_84 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_85 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_86 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_87 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_88 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_89 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_90 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_91 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_92 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_93 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_94 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_95 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_96 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_97 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_98 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_99 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_100 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_101 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_102 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_103 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_104 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_105 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_106 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_107 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_108 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_109 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_110 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_111 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_112 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_113 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_114 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_115 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_116 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_117 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_118 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_119 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_120 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_121 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_122 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_123 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_124 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_125 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_126 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_127 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_128 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_129 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_130 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_131 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_132 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_133 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_134 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_135 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_136 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_137 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_138 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_139 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_140 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_141 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_142 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_143 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_144 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_145 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_146 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_147 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_148 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_149 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_150 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_151 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_152 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_153 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_154 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_155 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_156 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_157 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_158 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_159 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_160 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_161 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_162 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_163 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_164 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_165 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_166 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_167 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_168 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_169 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_170 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_171 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_172 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_173 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_174 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_175 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_176 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_177 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_178 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_179 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_180 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_181 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_182 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_183 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_184 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_185 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_186 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_187 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_188 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_189 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_190 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_191 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_192 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_193 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_194 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_195 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_196 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_197 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_198 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_199 = { if = { limit = { always = no $effect$ = 0 } } }
+aroai_perform_for_every_building_type_200 = { if = { limit = { always = no $effect$ = 0 } } }

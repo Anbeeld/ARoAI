@@ -1,0 +1,20 @@
+﻿aroai_open_autobuild_settings = {
+    is_shown = {
+        is_player = yes
+        has_game_rule = aroai_autobuild_for_players_allowed
+        NOT = {
+            has_variable = aroai_autobuild_settings
+        }
+    }
+    
+    when_taken = {
+        trigger_event = {
+            id = aroai_autobuild_events.1
+            popup = yes
+        }
+    }
+    
+    ai_chance = {
+        base = 0
+    }
+}

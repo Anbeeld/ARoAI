@@ -1,0 +1,234 @@
+﻿# Government administration
+aroai_downsize_government_administration = {
+    var:aroai_building_government_administration_level > 0
+    var:aroai_building_government_administration_level <= aroai_building_government_administration_downsizing_threshold
+    OR = {
+        root = {
+            OR = {
+                AND = {
+                    aroai_building_government_administration_spending_value >= aroai_building_government_administration_spending_ceiling
+                    bureaucracy >= aroai_bureaucracy_excess
+                }
+                bureaucracy >= aroai_bureaucracy_ceiling
+            }
+        }
+        any_scope_building = {
+            is_building_type = building_government_administration
+            prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
+        }
+    }
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_government_administration_level > 0
+                var:aroai_building_government_administration_level < aroai_current_government_administration_level
+                OR = {
+                    root = {
+                        OR = {
+                            AND = {
+                                aroai_building_government_administration_spending_value >= aroai_building_government_administration_spending_ceiling
+                                bureaucracy >= aroai_bureaucracy_excess
+                            }
+                            bureaucracy >= aroai_bureaucracy_ceiling
+                        }
+                    }
+                    any_scope_building = {
+                        is_building_type = building_government_administration
+                        prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
+                    }
+                }
+            }
+        }
+    }
+}
+
+# University
+aroai_downsize_university = {
+    var:aroai_building_university_level > 0
+    OR = {
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -2
+                }
+            }
+            aroai_are_military_expenses_higher_than_usual = no
+        }
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -3
+                }
+            }
+        }
+        var:aroai_building_university_level <= aroai_building_university_downsizing_threshold
+    }
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_university_level > 0
+                var:aroai_building_university_level < aroai_current_university_level
+            }
+        }
+    }
+}
+
+# Construction sector
+aroai_downsize_construction_sector = {
+    var:aroai_building_construction_sector_level > 0
+    OR = {
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -2
+                }
+            }
+            aroai_are_military_expenses_higher_than_usual = no
+        }
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -3
+                }
+            }
+        }
+        var:aroai_building_construction_sector_level <= aroai_building_construction_sector_downsizing_threshold
+    }
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_construction_sector_level > 0
+                var:aroai_building_construction_sector_level < aroai_current_construction_sector_level
+            }
+        }
+    }
+}
+
+# Port
+aroai_downsize_port = {
+    var:aroai_building_port_level > 0
+    OR = {
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -2
+                }
+            }
+            aroai_are_military_expenses_higher_than_usual = no
+        }
+        root = {
+            NOT = {
+                aroai_budget_health_is_equal_or_higher = {
+                    level = -3
+                }
+            }
+        }
+        var:aroai_building_port_level <= aroai_building_port_downsizing_threshold
+    }
+    OR = {
+        root = {
+            aroai_overseas_connections_are_required = no
+        }
+        AND = {
+            NOT = {
+                this = root.market_capital
+            }
+            root = {
+                aroai_has_variable_list = {
+                    name = aroai_market_capital_coastline
+                }
+                is_target_in_variable_list = {
+                    name = aroai_market_capital_coastline
+                    target = prev
+                }
+                any_in_list = {
+                    variable = aroai_market_capital_coastline
+                    aroai_has_building = {
+                        key = building_port
+                    }
+                    count > aroai_ports_on_market_capital_coastline
+                }
+            }
+        }
+        root = {
+            is_target_in_variable_list = {
+                name = aroai_safe_to_delete_ports_in_outer_lands
+                target = prev
+            }
+        }
+    }
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_port_level > 0
+                var:aroai_building_port_level < aroai_current_port_level
+                OR = {
+                    root = {
+                        aroai_overseas_connections_are_required = no
+                    }
+                    AND = {
+                        NOT = {
+                            this = root.market_capital
+                        }
+                        root = {
+                            aroai_has_variable_list = {
+                                name = aroai_market_capital_coastline
+                            }
+                            is_target_in_variable_list = {
+                                name = aroai_market_capital_coastline
+                                target = prev
+                            }
+                            any_in_list = {
+                                variable = aroai_market_capital_coastline
+                                aroai_has_building = {
+                                    key = building_port
+                                }
+                                count > aroai_ports_on_market_capital_coastline
+                            }
+                        }
+                    }
+                    root = {
+                        is_target_in_variable_list = {
+                            name = aroai_safe_to_delete_ports_in_outer_lands
+                            target = prev
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Barracks
+aroai_downsize_barracks = {
+    var:aroai_building_barracks_level > 0
+    var:aroai_building_barracks_level <= aroai_building_barracks_downsizing_threshold
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_barracks_level > 0
+                var:aroai_building_barracks_level < aroai_current_barracks_level
+            }
+        }
+    }
+}
+
+# Naval base
+aroai_downsize_naval_base = {
+    var:aroai_building_naval_base_level > 0
+    var:aroai_building_naval_base_level <= aroai_building_naval_base_downsizing_threshold
+    save_temporary_scope_as = aroai_current_state
+    NOT = {
+        root = {
+            any_scope_state = {
+                var:aroai_building_naval_base_level > 0
+                var:aroai_building_naval_base_level < aroai_current_naval_base_level
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+﻿namespace = aroai_evaluation_events
+
+aroai_evaluation_events.1 = {
+    type = country_event
+    hidden = yes
+    
+    trigger = {}
+
+    immediate = {
+        if = {
+            limit = {
+                aroai_is_country_allowed = no
+            }
+            aroai_clear_country_cycle_variables = yes
+            aroai_clear_country_iteration_variables = yes
+        }
+        else_if = {
+            limit = {
+                aroai_is_construction_allowed = no
+            }
+            aroai_clear_country_iteration_variables = yes
+        }
+        else = {
+            aroai_perform_for_every_building_type = {
+                effect = 5 # aroai_check_priority_of_building
+            }
+            trigger_event = {
+                id = aroai_construction_events.1
+                days = 1
+            }
+        }
+    }
+}

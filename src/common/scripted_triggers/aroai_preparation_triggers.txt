@@ -1,0 +1,271 @@
+﻿# Requirements for downsizing government funded buildings which is mostly a budget balancing thing
+aroai_is_downsizing_allowed = {
+    is_player = no
+    has_revolution = no
+    is_revolutionary = no
+    has_variable = aroai_country_budget_surplus
+}
+
+# Requirements for constructing both special and standard buildings
+aroai_is_construction_allowed = {
+    has_revolution = no
+    is_revolutionary = no
+    has_variable = aroai_country_budget_surplus
+    OR = {
+        aroai_day_of_ongoing_iteration = 1
+        AND = {
+            aroai_regular_building = yes
+            aroai_free_construction_points > 0
+        }
+        aroai_critical_building = yes
+    }
+    OR = {
+        is_player = no
+        AND = {
+            has_game_rule = aroai_autobuild_for_players_allowed
+            has_variable = aroai_autobuild
+        }
+    }
+}
+
+aroai_regular_building = {
+    OR = {
+        is_player = yes
+        scaled_debt < 0.45
+        aroai_has_no_construction_sectors = yes
+    }
+}
+
+aroai_critical_building = {
+    OR = {
+    
+        trigger_if = {
+            limit = {
+                aroai_day_of_ongoing_iteration >= 3
+                has_variable = aroai_building_type_1_collected_data
+            }
+            aroai_building_type_1_collected_data_1 = 1
+        }
+        trigger_else = {
+            trigger_if = {
+                limit = {
+                    has_variable = aroai_building_type_1_collected_data
+                }
+                aroai_building_type_1_collected_data_5 <= 0
+            }
+            trigger_else = {
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_government_administration
+                            is_under_construction = yes
+                        }
+                    }
+                }
+            }
+            aroai_consider_building_government_administration = {
+                id = 1
+            }
+            aroai_evaluate_building_government_administration = {
+                priority = 1
+            }
+            any_scope_state = {
+                aroai_sanction_building_government_administration = {
+                    id = 1
+                }
+            }
+        }
+        
+        trigger_if = {
+            limit = {
+                aroai_day_of_ongoing_iteration >= 3
+                has_variable = aroai_building_type_3_collected_data
+            }
+            aroai_building_type_3_collected_data_1 = 1
+        }
+        trigger_else = {
+            trigger_if = {
+                limit = {
+                    has_variable = aroai_building_type_3_collected_data
+                }
+                aroai_building_type_3_collected_data_1 >= 90
+                aroai_building_type_3_collected_data_5 <= 0
+            }
+            trigger_else = {
+                OR = {
+                    any_scope_state = {
+                        filter = {
+                            market_access >= 0.80
+                            any_scope_building = {
+                                is_building_type = building_construction_sector
+                                level > 0
+                            }
+                        }
+                        percent >= 0.90
+                        any_scope_building = {
+                            is_building_type = building_construction_sector
+                            building_has_goods_shortage = no
+                        }
+                    }
+                    NOT = {
+                        any_scope_state = {
+                            market_access >= 0.80
+                            any_scope_building = {
+                                is_building_type = building_construction_sector
+                                level > 0
+                            }
+                        }
+                    }
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_construction_sector
+                            is_under_construction = yes
+                        }
+                    }
+                }
+            }
+            aroai_consider_building_construction_sector = {
+                id = 3
+            }
+            aroai_evaluate_building_construction_sector = {
+                priority = 1
+            }
+            any_scope_state = {
+                aroai_sanction_building_construction_sector = {
+                    id = 3
+                }
+            }
+        }
+        
+        trigger_if = {
+            limit = {
+                aroai_day_of_ongoing_iteration >= 3
+                has_variable = aroai_building_type_5_collected_data
+            }
+            aroai_building_type_5_collected_data_1 = 1
+        }
+        trigger_else = {
+            trigger_if = {
+                limit = {
+                    has_variable = aroai_building_type_5_collected_data
+                }
+                aroai_building_type_5_collected_data_5 <= 0
+            }
+            trigger_else = {
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_port
+                            is_under_construction = yes
+                        }
+                    }
+                }
+            }
+            aroai_consider_building_port = {
+                id = 5
+            }
+            aroai_evaluate_building_port = {
+                priority = 1
+            }
+            any_scope_state = {
+                aroai_sanction_building_port = {
+                    id = 5
+                }
+            }
+        }
+    }
+}
+
+aroai_has_no_construction_sectors = {
+    trigger_if = {
+        limit = {
+            has_variable = aroai_building_construction_sector_total
+        }
+        var:aroai_building_construction_sector_total <= 0
+    }
+    trigger_else = {
+        NOT = {
+            any_scope_building = {
+                is_building_type = building_construction_sector
+                level > 0
+            }
+        }
+    }
+}
+
+# Are there any free construction points?
+aroai_has_free_construction_points = {
+    OR = {
+        aroai_free_construction_points > 0
+        aroai_critical_building = yes
+    }
+}
+
+aroai_overseas_connections_are_required = {
+    OR = {
+        aroai_has_variable_list = {
+            name = aroai_coastline_of_outer_lands
+        }
+        any_country = {
+            NOT = {
+                this = root
+            }
+            market.owner = root
+            any_scope_state = {
+                is_coastal = yes
+            }
+        }
+    }
+}
+
+aroai_has_enough_workforce = {
+    aroai_available_workforce >= aroai_required_workforce
+    OR = {
+        aroai_available_workforce >= aroai_sufficient_workforce
+        NOT = {
+            any_scope_building = {
+                is_under_construction = yes
+            }
+        }
+    }
+}
+
+aroai_has_enough_infrastructure = {
+    aroai_infrastructure_balance_percent_with_ongoing_constructions >= 0.90
+}
+
+# Is profitable right now and (hopefully) in a near future
+aroai_building_is_profitable = {
+    aroai_profit_per_occupied_level >= aroai_20_percent_of_average_profit
+    cash_reserves_ratio >= 0.10
+}
+
+# Building is larger than it should be
+aroai_building_is_excessive = {
+    OR = {
+        aroai_profit_per_occupied_level < aroai_10_percent_of_average_profit
+        earnings < aroai_75_percent_of_average_productivity
+    }
+    occupancy >= 0.40
+}
+
+# Building is almost empty and thus unneeded
+aroai_building_is_abandoned = {
+    is_under_construction = no
+    level > 0
+    occupancy < 0.40
+}
+
+aroai_can_downsize_production_building = {
+    has_local_variable = aroai_downsizing_is_allowed
+    OR = {
+        has_local_variable = aroai_construction_is_allowed
+        AND = {
+            has_variable = aroai_cycles_since_production_downsizing
+            var:aroai_cycles_since_production_downsizing >= 5
+        }
+    }
+    var:aroai_unutilized_workforce < aroai_unutilized_workforce_total_threshold
+}

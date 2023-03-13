@@ -1,0 +1,630 @@
+﻿aroai_track_stalemate_wars_between_ai_countries = {
+    if = {
+        limit = {
+            has_game_rule = aroai_stalemate_war_prevention_enabled
+            OR = {
+                NOT = {
+                    has_global_variable = aroai_date_of_last_tracking_of_stalemate_wars
+                }
+                aroai_days_since_stalemate_wars_were_tracked >= 30
+            }
+        }
+        set_global_variable = {
+            name = aroai_date_of_last_tracking_of_stalemate_wars
+            value = game_date
+        }
+
+        # Collect all the wars that are going on in the game right now
+        every_country = {
+            limit = {
+                is_at_war = yes
+            }
+            every_scope_war = {
+                limit = {
+                    NOT = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_ongoing_wars
+                            target = this
+                        }
+                    }
+                }
+                add_to_global_variable_list = {
+                    name = aroai_ongoing_wars
+                    target = this
+                }
+            }
+        }
+
+        # Wars that already ended are not removed from lists automatically, so we need to compare every list with aroai_ongoing_wars
+        aroai_remove_ended_wars_from_stalemate_list = { number = 1 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 2 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 3 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 4 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 5 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 6 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 7 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 8 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 9 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 10 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 11 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 12 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 13 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 14 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 15 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 16 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 17 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 18 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 19 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 20 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 21 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 22 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 23 }
+        aroai_remove_ended_wars_from_stalemate_list = { number = 24 }
+
+        # For every war check if both warleaders are not players and are stuck at 0 or -10 (which is 0 but offset by event) war support
+        # If true, either start tracking it or advance it through the lists or forcefully end it if it's stuck for long enough
+        every_in_global_list = {
+            variable = aroai_ongoing_wars
+            if = {
+                limit = {
+                    any_country = {
+                        save_temporary_scope_as = aroai_potential_warleader
+                        prev = {
+                            is_warleader = scope:aroai_potential_warleader
+                        }
+                        count = 2
+                    }
+                    NOT = {
+                        any_country = {
+                            save_temporary_scope_as = aroai_potential_warleader
+                            prev = {
+                                is_warleader = scope:aroai_potential_warleader
+                            }
+                            OR = {
+                                is_player = yes
+                                prev = {
+                                    NOR = {
+                                        has_war_support = {
+                                            target = scope:aroai_potential_warleader
+                                            value = 0
+                                        }
+                                        has_war_support = {
+                                            target = scope:aroai_potential_warleader
+                                            value = -10
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_1
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_1
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_2
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_2
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_2
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_3
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_3
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_3
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_4
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_4
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_4
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_5
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_5
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_5
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_6
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_6
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_6
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_7
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_7
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_7
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_8
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_8
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_8
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_9
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_9
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_9
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_10
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_10
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_10
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_11
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_11
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_11
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_12
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_12
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_12
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_13
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_13
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_13
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_14
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_14
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_14
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_15
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_15
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_15
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_16
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_16
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_16
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_17
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_17
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_17
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_18
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_18
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_18
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_19
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_19
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_19
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_20
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_20
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_20
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_21
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_21
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_21
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_22
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_22
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_22
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_23
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_23
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_23
+                        target = this
+                    }
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_24
+                        target = this
+                    }
+                }
+                else_if = {
+                    limit = {
+                        aroai_is_target_in_global_variable_list = {
+                            name = aroai_stalemate_wars_24
+                            target = this
+                        }
+                    }
+                    remove_list_global_variable = {
+                        name = aroai_stalemate_wars_24
+                        target = this
+                    }
+                    this = {
+                        aroai_forcefully_end_stalemate_war = yes
+                    }
+                }
+                else = {
+                    add_to_global_variable_list = {
+                        name = aroai_stalemate_wars_1
+                        target = this
+                    }
+                }
+            }
+            remove_list_global_variable = {
+                name = aroai_ongoing_wars
+                target = this
+            }
+        }
+
+        # Garbage collection
+        clear_global_variable_list = aroai_ongoing_wars
+    }
+}
+
+aroai_remove_ended_wars_from_stalemate_list = {
+    every_in_global_list = {
+        variable = aroai_stalemate_wars_$number$
+        limit = {
+            NOT = {
+                aroai_is_target_in_global_variable_list = {
+                    name = aroai_ongoing_wars
+                    target = this
+                }
+            }
+        }
+        remove_list_global_variable = {
+            name = aroai_stalemate_wars_$number$
+            target = this
+        }
+    }
+}
+
+aroai_forcefully_end_stalemate_war = {
+
+    # Create list of all the war participants and save both warleaders
+    every_country = {
+        limit = {
+            save_temporary_scope_as = aroai_potential_participant
+            prev = {
+                is_war_participant = scope:aroai_potential_participant
+            }
+        }
+        add_to_global_variable_list = {
+            name = aroai_war_participants
+            target = this
+        }
+        if = {
+            limit = {
+                save_temporary_scope_as = aroai_potential_warleader
+                prev = {
+                    is_warleader = scope:aroai_potential_warleader
+                }
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        exists = scope:aroai_first_warleader
+                    }
+                }
+                save_scope_as = aroai_first_warleader
+            }
+            else = {
+                save_scope_as = aroai_second_warleader
+            }
+        }
+    }
+
+    # Find a diplomatic play that has all the war participants in it, so it's most likely is the play behind this war
+    random_diplomatic_play = {
+        limit = {
+            is_war = yes
+            NOT = {
+                any_in_global_list = {
+                    variable = aroai_war_participants
+                    save_temporary_scope_as = aroai_war_participant
+                    prev = {
+                        NOR = {
+                            initiator = scope:aroai_war_participant
+                            any_scope_initiator_ally = {
+                                this = scope:aroai_war_participant
+                            }
+                            target = scope:aroai_war_participant
+                            any_scope_target_ally = {
+                                this = scope:aroai_war_participant
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        # Secessionist are considered winners as other side was unable to force them into staying as one country
+        if = {
+            limit = {
+                scope:aroai_first_warleader = {
+                    is_secessionist = yes
+                }
+            }
+            resolve_play_for = scope:aroai_first_warleader
+        }
+        else_if = {
+            limit = {
+                scope:aroai_second_warleader = {
+                    is_secessionist = yes
+                }
+            }
+            resolve_play_for = scope:aroai_second_warleader
+        }
+
+        # In case of revolution a side with higher population wins
+        else_if = {
+            limit = {
+                OR = {
+                    scope:aroai_first_warleader = {
+                        is_revolutionary = yes
+                    }
+                    scope:aroai_second_warleader = {
+                        is_revolutionary = yes
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    scope:aroai_first_warleader.total_population > scope:aroai_second_warleader.total_population
+                }
+                resolve_play_for = scope:aroai_first_warleader
+            }
+            else = {
+                resolve_play_for = scope:aroai_second_warleader
+            }
+        }
+
+        # Otherwise it's white peace
+        else = {
+            end_play = yes
+        }
+    }
+
+    # Garbage collection
+    clear_global_variable_list = aroai_war_participants
+    clear_saved_scope = aroai_first_warleader
+    clear_saved_scope = aroai_second_warleader
+}

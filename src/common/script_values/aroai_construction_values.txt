@@ -1,0 +1,178 @@
+﻿aroai_simultaneous_constructions = {
+    value = aroai_construction_points_current
+    divide = aroai_construction_points_per_building
+    max = aroai_millions_of_minus_half_unincorporated_population
+}
+
+aroai_simultaneously_developed = {
+    value = root.var:aroai_square_root_of_construction_points
+    divide = 20
+    floor = yes
+    add = 1
+}
+
+aroai_states_for_new_buildings = {
+    value = num_unincorporated_states
+    divide = 4
+    floor = yes
+    min = 2
+}
+
+# aroai_ongoing_construction is an array variable, and aroai_ongoing_constructions is a list of them
+# dddcbbbbaa.aa
+# aaaa | multiply = 100    | 1 | building type id
+# bbbb | divide = 100      | 2 | points left (c = 1) or weeks passed (c > 1)
+# c    | divide = 1000000  | 3 | 1 = is under construction, 2 = expected to be finished, 3 = was finished for sure
+# ddd  | divide = 10000000 | 4 | count (max 213)
+
+aroai_current_ongoing_constructions_element_without_count = {
+    value = this
+    subtract = {
+        value = this
+        divide = 10000000
+        floor = yes
+        multiply = 10000000
+    }
+}
+
+aroai_current_ongoing_constructions_element_1 = {
+    value = this
+    subtract = {
+        value = this
+        divide = 100
+        floor = yes
+        multiply = 100
+    }
+    multiply = 100
+    floor = yes
+}
+
+aroai_current_ongoing_constructions_element_2 = {
+    value = this
+    subtract = {
+        value = this
+        divide = 1000000
+        floor = yes
+        multiply = 1000000
+    }
+    divide = 100
+    floor = yes
+}
+
+aroai_current_ongoing_constructions_element_3 = {
+    value = this
+    subtract = {
+        value = this
+        divide = 10000000
+        floor = yes
+        multiply = 10000000
+    }
+    divide = 1000000
+    floor = yes
+}
+
+aroai_current_ongoing_constructions_element_4 = {
+    value = this
+    divide = 10000000
+    floor = yes
+}
+
+aroai_construction_limit_1_1 = { value = aroai_simultaneous_constructions multiply = 0.21 round = yes add = 1 }
+aroai_construction_limit_1_2 = { value = aroai_simultaneous_constructions multiply = 0.19 round = yes add = 1 }
+aroai_construction_limit_1_3 = { value = aroai_simultaneous_constructions multiply = 0.17 round = yes add = 1 }
+aroai_construction_limit_1_4 = { value = aroai_simultaneous_constructions multiply = 0.152 round = yes add = 1 }
+aroai_construction_limit_1_5 = { value = aroai_simultaneous_constructions multiply = 0.136 round = yes add = 1 }
+aroai_construction_limit_1_6 = { value = aroai_simultaneous_constructions multiply = 0.12 round = yes add = 1 }
+aroai_construction_limit_1_7 = { value = aroai_simultaneous_constructions multiply = 0.106 round = yes add = 1 }
+aroai_construction_limit_1_8 = { value = aroai_simultaneous_constructions multiply = 0.092 round = yes add = 1 }
+aroai_construction_limit_1_9 = { value = aroai_simultaneous_constructions multiply = 0.08 round = yes add = 1 }
+aroai_construction_limit_1_10 = { value = aroai_simultaneous_constructions multiply = 0.07 round = yes add = 1 }
+aroai_construction_limit_1_11 = { value = aroai_simultaneous_constructions multiply = 0.06 round = yes add = 1 }
+aroai_construction_limit_2_1 = { value = aroai_simultaneous_constructions multiply = 0.263 round = yes add = 1 }
+aroai_construction_limit_2_2 = { value = aroai_simultaneous_constructions multiply = 0.237 round = yes add = 1 }
+aroai_construction_limit_2_3 = { value = aroai_simultaneous_constructions multiply = 0.213 round = yes add = 1 }
+aroai_construction_limit_2_4 = { value = aroai_simultaneous_constructions multiply = 0.191 round = yes add = 1 }
+aroai_construction_limit_2_5 = { value = aroai_simultaneous_constructions multiply = 0.17 round = yes add = 1 }
+aroai_construction_limit_2_6 = { value = aroai_simultaneous_constructions multiply = 0.15 round = yes add = 1 }
+aroai_construction_limit_2_7 = { value = aroai_simultaneous_constructions multiply = 0.132 round = yes add = 1 }
+aroai_construction_limit_2_8 = { value = aroai_simultaneous_constructions multiply = 0.116 round = yes add = 1 }
+aroai_construction_limit_2_9 = { value = aroai_simultaneous_constructions multiply = 0.101 round = yes add = 1 }
+aroai_construction_limit_2_10 = { value = aroai_simultaneous_constructions multiply = 0.087 round = yes add = 1 }
+aroai_construction_limit_2_11 = { value = aroai_simultaneous_constructions multiply = 0.075 round = yes add = 1 }
+aroai_construction_limit_3_1 = { value = aroai_simultaneous_constructions multiply = 0.315 round = yes add = 1 }
+aroai_construction_limit_3_2 = { value = aroai_simultaneous_constructions multiply = 0.284 round = yes add = 1 }
+aroai_construction_limit_3_3 = { value = aroai_simultaneous_constructions multiply = 0.256 round = yes add = 1 }
+aroai_construction_limit_3_4 = { value = aroai_simultaneous_constructions multiply = 0.229 round = yes add = 1 }
+aroai_construction_limit_3_5 = { value = aroai_simultaneous_constructions multiply = 0.203 round = yes add = 1 }
+aroai_construction_limit_3_6 = { value = aroai_simultaneous_constructions multiply = 0.18 round = yes add = 1 }
+aroai_construction_limit_3_7 = { value = aroai_simultaneous_constructions multiply = 0.158 round = yes add = 1 }
+aroai_construction_limit_3_8 = { value = aroai_simultaneous_constructions multiply = 0.139 round = yes add = 1 }
+aroai_construction_limit_3_9 = { value = aroai_simultaneous_constructions multiply = 0.121 round = yes add = 1 }
+aroai_construction_limit_3_10 = { value = aroai_simultaneous_constructions multiply = 0.104 round = yes add = 1 }
+aroai_construction_limit_3_11 = { value = aroai_simultaneous_constructions multiply = 0.09 round = yes add = 1 }
+aroai_construction_limit_4_1 = { value = aroai_simultaneous_constructions multiply = 0.368 round = yes add = 1 }
+aroai_construction_limit_4_2 = { value = aroai_simultaneous_constructions multiply = 0.332 round = yes add = 1 }
+aroai_construction_limit_4_3 = { value = aroai_simultaneous_constructions multiply = 0.298 round = yes add = 1 }
+aroai_construction_limit_4_4 = { value = aroai_simultaneous_constructions multiply = 0.267 round = yes add = 1 }
+aroai_construction_limit_4_5 = { value = aroai_simultaneous_constructions multiply = 0.237 round = yes add = 1 }
+aroai_construction_limit_4_6 = { value = aroai_simultaneous_constructions multiply = 0.21 round = yes add = 1 }
+aroai_construction_limit_4_7 = { value = aroai_simultaneous_constructions multiply = 0.185 round = yes add = 1 }
+aroai_construction_limit_4_8 = { value = aroai_simultaneous_constructions multiply = 0.162 round = yes add = 1 }
+aroai_construction_limit_4_9 = { value = aroai_simultaneous_constructions multiply = 0.141 round = yes add = 1 }
+aroai_construction_limit_4_10 = { value = aroai_simultaneous_constructions multiply = 0.122 round = yes add = 1 }
+aroai_construction_limit_4_11 = { value = aroai_simultaneous_constructions multiply = 0.105 round = yes add = 1 }
+aroai_construction_limit_5_1 = { value = aroai_simultaneous_constructions multiply = 0.42 round = yes add = 1 }
+aroai_construction_limit_5_2 = { value = aroai_simultaneous_constructions multiply = 0.379 round = yes add = 1 }
+aroai_construction_limit_5_3 = { value = aroai_simultaneous_constructions multiply = 0.341 round = yes add = 1 }
+aroai_construction_limit_5_4 = { value = aroai_simultaneous_constructions multiply = 0.305 round = yes add = 1 }
+aroai_construction_limit_5_5 = { value = aroai_simultaneous_constructions multiply = 0.271 round = yes add = 1 }
+aroai_construction_limit_5_6 = { value = aroai_simultaneous_constructions multiply = 0.24 round = yes add = 1 }
+aroai_construction_limit_5_7 = { value = aroai_simultaneous_constructions multiply = 0.211 round = yes add = 1 }
+aroai_construction_limit_5_8 = { value = aroai_simultaneous_constructions multiply = 0.185 round = yes add = 1 }
+aroai_construction_limit_5_9 = { value = aroai_simultaneous_constructions multiply = 0.161 round = yes add = 1 }
+aroai_construction_limit_5_10 = { value = aroai_simultaneous_constructions multiply = 0.139 round = yes add = 1 }
+aroai_construction_limit_5_11 = { value = aroai_simultaneous_constructions multiply = 0.12 round = yes add = 1 }
+aroai_construction_limit_6_1 = { value = aroai_simultaneous_constructions multiply = 0.473 round = yes add = 1 }
+aroai_construction_limit_6_2 = { value = aroai_simultaneous_constructions multiply = 0.427 round = yes add = 1 }
+aroai_construction_limit_6_3 = { value = aroai_simultaneous_constructions multiply = 0.383 round = yes add = 1 }
+aroai_construction_limit_6_4 = { value = aroai_simultaneous_constructions multiply = 0.343 round = yes add = 1 }
+aroai_construction_limit_6_5 = { value = aroai_simultaneous_constructions multiply = 0.305 round = yes add = 1 }
+aroai_construction_limit_6_6 = { value = aroai_simultaneous_constructions multiply = 0.27 round = yes add = 1 }
+aroai_construction_limit_6_7 = { value = aroai_simultaneous_constructions multiply = 0.238 round = yes add = 1 }
+aroai_construction_limit_6_8 = { value = aroai_simultaneous_constructions multiply = 0.208 round = yes add = 1 }
+aroai_construction_limit_6_9 = { value = aroai_simultaneous_constructions multiply = 0.181 round = yes add = 1 }
+aroai_construction_limit_6_10 = { value = aroai_simultaneous_constructions multiply = 0.157 round = yes add = 1 }
+aroai_construction_limit_6_11 = { value = aroai_simultaneous_constructions multiply = 0.135 round = yes add = 1 }
+aroai_construction_limit_7_1 = { value = aroai_simultaneous_constructions multiply = 0.525 round = yes add = 1 }
+aroai_construction_limit_7_2 = { value = aroai_simultaneous_constructions multiply = 0.474 round = yes add = 1 }
+aroai_construction_limit_7_3 = { value = aroai_simultaneous_constructions multiply = 0.426 round = yes add = 1 }
+aroai_construction_limit_7_4 = { value = aroai_simultaneous_constructions multiply = 0.381 round = yes add = 1 }
+aroai_construction_limit_7_5 = { value = aroai_simultaneous_constructions multiply = 0.339 round = yes add = 1 }
+aroai_construction_limit_7_6 = { value = aroai_simultaneous_constructions multiply = 0.3 round = yes add = 1 }
+aroai_construction_limit_7_7 = { value = aroai_simultaneous_constructions multiply = 0.264 round = yes add = 1 }
+aroai_construction_limit_7_8 = { value = aroai_simultaneous_constructions multiply = 0.231 round = yes add = 1 }
+aroai_construction_limit_7_9 = { value = aroai_simultaneous_constructions multiply = 0.201 round = yes add = 1 }
+aroai_construction_limit_7_10 = { value = aroai_simultaneous_constructions multiply = 0.174 round = yes add = 1 }
+aroai_construction_limit_7_11 = { value = aroai_simultaneous_constructions multiply = 0.15 round = yes add = 1 }
+aroai_construction_limit_8_1 = { value = aroai_simultaneous_constructions multiply = 0.578 round = yes add = 1 }
+aroai_construction_limit_8_2 = { value = aroai_simultaneous_constructions multiply = 0.521 round = yes add = 1 }
+aroai_construction_limit_8_3 = { value = aroai_simultaneous_constructions multiply = 0.469 round = yes add = 1 }
+aroai_construction_limit_8_4 = { value = aroai_simultaneous_constructions multiply = 0.419 round = yes add = 1 }
+aroai_construction_limit_8_5 = { value = aroai_simultaneous_constructions multiply = 0.373 round = yes add = 1 }
+aroai_construction_limit_8_6 = { value = aroai_simultaneous_constructions multiply = 0.33 round = yes add = 1 }
+aroai_construction_limit_8_7 = { value = aroai_simultaneous_constructions multiply = 0.29 round = yes add = 1 }
+aroai_construction_limit_8_8 = { value = aroai_simultaneous_constructions multiply = 0.254 round = yes add = 1 }
+aroai_construction_limit_8_9 = { value = aroai_simultaneous_constructions multiply = 0.221 round = yes add = 1 }
+aroai_construction_limit_8_10 = { value = aroai_simultaneous_constructions multiply = 0.191 round = yes add = 1 }
+aroai_construction_limit_8_11 = { value = aroai_simultaneous_constructions multiply = 0.165 round = yes add = 1 }
+aroai_construction_limit_9_1 = { value = aroai_simultaneous_constructions multiply = 0.63 round = yes add = 1 }
+aroai_construction_limit_9_2 = { value = aroai_simultaneous_constructions multiply = 0.569 round = yes add = 1 }
+aroai_construction_limit_9_3 = { value = aroai_simultaneous_constructions multiply = 0.511 round = yes add = 1 }
+aroai_construction_limit_9_4 = { value = aroai_simultaneous_constructions multiply = 0.457 round = yes add = 1 }
+aroai_construction_limit_9_5 = { value = aroai_simultaneous_constructions multiply = 0.407 round = yes add = 1 }
+aroai_construction_limit_9_6 = { value = aroai_simultaneous_constructions multiply = 0.36 round = yes add = 1 }
+aroai_construction_limit_9_7 = { value = aroai_simultaneous_constructions multiply = 0.317 round = yes add = 1 }
+aroai_construction_limit_9_8 = { value = aroai_simultaneous_constructions multiply = 0.277 round = yes add = 1 }
+aroai_construction_limit_9_9 = { value = aroai_simultaneous_constructions multiply = 0.241 round = yes add = 1 }
+aroai_construction_limit_9_10 = { value = aroai_simultaneous_constructions multiply = 0.209 round = yes add = 1 }
+aroai_construction_limit_9_11 = { value = aroai_simultaneous_constructions multiply = 0.18 round = yes add = 1 }

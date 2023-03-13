@@ -1,0 +1,48 @@
+﻿pm_no_street_lighting = {
+    texture = "gfx/interface/icons/production_method_icons/no_street_lighting.dds"
+    
+    ai_value = 50000
+}    
+
+pm_gas_streetlights = {
+    texture = "gfx/interface/icons/production_method_icons/gas_streetlights.dds"
+    
+    unlocking_technologies = {
+    }
+
+    building_modifiers = {
+        workforce_scaled = {
+            building_input_coal_add = 10
+            building_output_services_add = 30
+        }
+
+        level_scaled = {
+            building_employment_laborers_add = 400
+            building_employment_engineers_add = 100
+        }
+    }
+    
+    ai_value = 100000
+}        
+
+pm_electric_streetlights = {
+    texture = "gfx/interface/icons/production_method_icons/electric_streetlights.dds"
+    
+    unlocking_technologies = {
+        electrical_generation
+    }
+    
+    building_modifiers = {
+        workforce_scaled = {
+            building_input_electricity_add = 10
+            building_output_services_add = 50
+        }
+
+        level_scaled = {
+            building_employment_laborers_add = 350
+            building_employment_engineers_add = 150
+        }
+    }
+    
+    ai_value = 0
+}

@@ -1,0 +1,12 @@
+{
+  "name" : "Anbeeld's Revision of AI",
+  "id" : "",
+  "version" : "",
+  "supported_game_version" : "",
+  "short_description" : "",
+  "tags" : [],
+  "relationships" : [],
+  "game_custom_data" : {
+    "multiplayer_synchronized" : true
+  }
+}

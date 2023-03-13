@@ -1,0 +1,35 @@
+﻿namespace = aroai_construction_events
+
+aroai_construction_events.1 = {
+    type = country_event
+    hidden = yes
+    
+    trigger = {}
+    
+    immediate = {
+        if = {
+            limit = {
+                aroai_is_country_allowed = no
+            }
+            aroai_clear_country_cycle_variables = yes
+            aroai_clear_country_iteration_variables = yes
+        }
+        else_if = {
+            limit = {
+                aroai_is_construction_allowed = no
+            }
+            aroai_clear_country_iteration_variables = yes
+        }
+        else = {
+            if = {
+                limit = {
+                    aroai_has_free_construction_points = yes
+                }
+                aroai_choose_building_type_to_construct = yes
+            }
+            else = {
+                aroai_clear_country_iteration_variables = yes
+            }
+        }
+    }
+}

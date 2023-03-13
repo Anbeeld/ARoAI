@@ -1,0 +1,4 @@
+﻿aroai_innovation_redirection = {
+    icon = gfx/interface/icons/timed_modifier_icons/modifier_lightbulb_positive.dds
+    country_weekly_innovation_mult = -1
+}

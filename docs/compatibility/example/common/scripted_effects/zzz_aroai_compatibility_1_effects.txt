@@ -1,0 +1,94 @@
+﻿# --------------------
+# Synthetic oil plants
+# --------------------
+
+aroai_evaluate_building_synthetic_oil_plants = { # Paste building key in the name
+    aroai_evaluate_production_building = {
+        id = $id$ # Don't change, just copy
+        crucial = $crucial$ # Don't change, just copy
+        good = mg:oil # Good that we'll judge this building by, usually the one produced by it
+        weight = aroai_industry_weight_1 # How important is it to build this building for this resource
+        offset = 0 # Values over 0 mean higher than usual productivity will be required for this good in this building
+    }
+}
+
+# Notes:
+#
+# Prefix in weight ("industry_") is determined by building, not by good. Even though oil is usually a resource good,
+# the building is industry so you are required to use industry prefix here. Even if it was grain you must use industry.
+# 
+# Most primary goods have weight from 1 to 5, check /src/common/scripted_effects/aroai_static_data_effects.txt for more
+# examples. Offset is rarely used, but it's important for byproducts and substitution, if you'll dive deep into it.
+# 
+# You can evaluate a building by multiple goods simply by performing the effect multiple times, e.g.:
+# aroai_evaluate_building_whaling_station = {
+#     aroai_evaluate_production_building = {
+#         id = $id$
+#         crucial = $crucial$
+#         good = mg:oil
+#         weight = aroai_resource_weight_1
+#         offset = 0
+#     }
+#     aroai_evaluate_production_building = {
+#         id = $id$
+#         crucial = $crucial$
+#         good = mg:meat
+#         weight = aroai_resource_weight_10
+#         offset = 6
+#     }
+# }
+# Both weight and offset are high for meat here, meaning it's much less important than oil when we evaluate whaling
+# station, as it's basically a byproduct in terms of building economy and what affects if it's productive or not.
+# 
+# However, you are free to set any amount of goods with various weights and offsets, e.g. two equal or similar in
+# priority goods. Usually this is done with checking if buildings in the country are using required production methods,
+# as in aroai_evaluate_building_logging_camp for example, but compatibility patches do not support this, so can just do
+# something like:
+# aroai_evaluate_building_logging_camp = {
+#     aroai_evaluate_production_building = {
+#         id = $id$
+#         crucial = $crucial$
+#         good = mg:wood
+#         weight = aroai_resource_weight_1
+#         offset = 0
+#     }
+#     aroai_evaluate_production_building = {
+#         id = $id$
+#         crucial = $crucial$
+#         good = mg:hardwood
+#         weight = aroai_resource_weight_3
+#         offset = 0
+#     }
+# }
+
+# -----------------------
+# Synthetic rubber plants
+# -----------------------
+
+aroai_evaluate_building_synthetic_rubber_plants = {
+    aroai_evaluate_production_building = {
+        id = $id$
+        crucial = $crucial$
+        good = mg:rubber
+        weight = aroai_industry_weight_2
+        offset = 0
+    }
+}
+
+# -----------------------------------------------------------------------------------
+# Effects below were generated with a modding tool and should not be changed manually
+# -----------------------------------------------------------------------------------
+
+aroai_add_to_list_of_compatibility_patches_1 = {
+    add_to_global_variable_list = {
+        name = aroai_compatibility_patches
+        target = 1
+    }
+}
+
+aroai_perform_for_every_building_type_1 = {
+    aroai_perform_for_building_type = { effect = $effect$ key = building_synthetic_oil_plants id = 201
+    class = 4 counter = 12 order = 6 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    aroai_perform_for_building_type = { effect = $effect$ key = building_synthetic_rubber_plants id = 202
+    class = 4 counter = 11 order = 7 limit = 5 crucial = 11 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+}

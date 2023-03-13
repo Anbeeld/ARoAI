@@ -1,0 +1,1850 @@
+﻿# Find army and navy average and biggest threat numbers
+aroai_determine_highest_and_average_military_threat = {
+    
+    set_variable = {
+        name = aroai_army_size_equal_to_average_threat
+        value = 0
+    }
+    set_variable = {
+        name = aroai_navy_size_equal_to_average_threat
+        value = 0
+    }
+    set_variable = {
+        name = aroai_army_size_equal_to_biggest_threat
+        value = 0
+    }
+    set_variable = {
+        name = aroai_navy_size_equal_to_biggest_threat
+        value = 0
+    }
+    
+    ordered_country = {
+        order_by = aroai_army_power_projection_with_conscription
+        max = 6
+        root = {
+            change_variable = {
+                name = aroai_army_size_equal_to_average_threat
+                add = prev.aroai_army_power_projection_with_conscription
+            }
+        }
+        if = {
+            limit = {
+                NOT = {
+                    this = root
+                }
+                root.var:aroai_army_size_equal_to_biggest_threat < aroai_army_power_projection_with_conscription
+            }
+            root = {
+                set_variable = {
+                    name = aroai_army_size_equal_to_biggest_threat
+                    value = prev.aroai_army_power_projection_with_conscription
+                }
+            }
+        }
+    }
+    ordered_country = {
+        order_by = aroai_navy_power_projection
+        max = 6
+        root = {
+            change_variable = {
+                name = aroai_navy_size_equal_to_average_threat
+                add = prev.aroai_navy_power_projection
+            }
+        }
+        if = {
+            limit = {
+                NOT = {
+                    this = root
+                }
+                root.var:aroai_navy_size_equal_to_biggest_threat < aroai_navy_power_projection
+            }
+            root = {
+                set_variable = {
+                    name = aroai_navy_size_equal_to_biggest_threat
+                    value = prev.aroai_navy_power_projection
+                }
+            }
+        }
+    }
+    change_variable = {
+        name = aroai_army_size_equal_to_average_threat
+        divide = 6
+    }
+    change_variable = {
+        name = aroai_navy_size_equal_to_average_threat
+        divide = 6
+    }
+    
+    set_variable = {
+        name = aroai_army_size_equal_to_average_threat
+        value = {
+            value = var:aroai_army_size_equal_to_average_threat
+            if = {
+                limit = {
+                    has_variable = aroai_building_barracks_total
+                    var:aroai_building_barracks_total > 0
+                    aroai_army_power_projection > 0
+                }
+                subtract = aroai_conscription_power_projection
+                divide = {
+                    value = aroai_army_power_projection
+                    divide = var:aroai_building_barracks_total
+                }
+            }
+        }
+    }
+    set_variable = {
+        name = aroai_army_size_equal_to_biggest_threat
+        value = {
+            value = var:aroai_army_size_equal_to_biggest_threat
+            if = {
+                limit = {
+                    has_variable = aroai_building_barracks_total
+                    var:aroai_building_barracks_total > 0
+                    aroai_army_power_projection > 0
+                }
+                subtract = aroai_conscription_power_projection
+                divide = {
+                    value = aroai_army_power_projection
+                    divide = var:aroai_building_barracks_total
+                }
+            }
+        }
+    }
+    set_variable = {
+        name = aroai_navy_size_equal_to_average_threat
+        value = {
+            value = var:aroai_navy_size_equal_to_average_threat
+            if = {
+                limit = {
+                    navy_size > 0
+                    aroai_navy_power_projection > 0
+                }
+                divide = {
+                    value = aroai_navy_power_projection
+                    divide = navy_size
+                }
+            }
+        }
+    }
+    set_variable = {
+        name = aroai_navy_size_equal_to_biggest_threat
+        value = {
+            value = var:aroai_navy_size_equal_to_biggest_threat
+            if = {
+                limit = {
+                    navy_size > 0
+                    aroai_navy_power_projection > 0
+                }
+                divide = {
+                    value = aroai_navy_power_projection
+                    divide = navy_size
+                }
+            }
+        }
+    }
+}
+
+# Set up variables for roleplay offset
+aroai_determine_roleplay_building_priorities = {
+    
+    if = {
+        limit = {
+            is_player = no
+            has_game_rule = aroai_building_priorities_roleplay
+        }
+        if = {
+            limit = {
+                NOT = {
+                    market.owner = this
+                }
+            }
+            if = {
+                limit = {
+                    aroai_gdp_per_capita < 3
+                }
+                set_variable = {
+                    name = aroai_resource_weight_factor
+                    value = -1
+                }
+                set_variable = {
+                    name = aroai_agriculture_weight_factor
+                    value = -1
+                }
+            }
+            set_variable = {
+                name = aroai_industry_weight_factor
+                value = 2
+            }
+        }
+        else_if = {
+            limit = {
+                OR = {
+                    has_law = law_type:law_traditionalism
+                    AND = {
+                        country_rank <= 3
+                        aroai_gdp_per_capita < 3
+                    }
+                }
+            }
+            set_variable = {
+                name = aroai_resource_weight_factor
+                value = 1
+            }
+            set_variable = {
+                name = aroai_agriculture_weight_factor
+                value = -1
+            }
+            set_variable = {
+                name = aroai_industry_weight_factor
+                value = 2
+            }
+        }
+        else_if = {
+            limit = {
+                OR = {
+                    has_law = law_type:law_agrarianism
+                    AND = {
+                        country_rank <= 3
+                        aroai_gdp_per_capita < 6
+                    }
+                    AND = {
+                        country_rank <= 5
+                        aroai_gdp_per_capita < 3
+                    }
+                }
+            }
+            set_variable = {
+                name = aroai_agriculture_weight_factor
+                value = -1
+            }
+            set_variable = {
+                name = aroai_industry_weight_factor
+                value = 1
+            }
+        }
+    }
+    
+}
+
+#
+aroai_collect_data_for_construction_and_downsizing = {
+    
+    # Calculate incorporated and coastal values: set variables
+    set_variable = {
+        name = aroai_total_coastal_population
+        value = 0
+    }
+    set_variable = {
+        name = aroai_incorporated_population
+        value = 0
+    }
+    set_variable = {
+        name = aroai_incorporated_coastal_population
+        value = 0
+    }
+    set_variable = {
+        name = aroai_incorporated_gdp
+        value = 0
+    }
+    
+    # Calculate desired bureaucracy: set variables
+    set_variable = {
+        name = aroai_surplus_bureaucracy_target
+        value = 0
+    }
+    
+    set_local_variable = {
+        name = aroai_amount_of_elements_in_construction_list
+        value = 0
+    }
+    
+    every_scope_state = {
+        
+        #
+        if = {
+            limit = {
+                is_coastal = yes
+            }
+            root = {
+                change_variable = {
+                    name = aroai_total_coastal_population
+                    add = prev.state_population
+                }
+            }
+        }
+        if = {
+            limit = {
+                is_incorporated = yes
+            }
+            root = {
+                change_variable = {
+                    name = aroai_incorporated_population
+                    add = prev.state_population
+                }
+                change_variable = {
+                    name = aroai_incorporated_gdp
+                    add = prev.gdp
+                }
+            }
+            if = {
+                limit = {
+                    is_coastal = yes
+                }
+                root = {
+                    change_variable = {
+                        name = aroai_incorporated_coastal_population
+                        add = prev.state_population
+                    }
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                incorporation_progress > 0
+            }
+            root = {
+                change_variable = {
+                    name = aroai_incorporated_population
+                    add = {
+                        value = prev.state_population
+                        multiply = prev.incorporation_progress
+                    }
+                }
+                change_variable = {
+                    name = aroai_incorporated_gdp
+                    add = {
+                        value = prev.gdp
+                        multiply = prev.incorporation_progress
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    is_coastal = yes
+                }
+                root = {
+                    change_variable = {
+                        name = aroai_incorporated_coastal_population
+                        add = {
+                            value = prev.state_population
+                            multiply = prev.incorporation_progress
+                        }
+                    }
+                }
+            }
+        }
+        
+        # Calculate desired bureaucracy: find the most expensive state
+        if = {
+            limit = {
+                is_incorporated = no
+                incorporation_progress <= 0
+                root.var:aroai_surplus_bureaucracy_target < state_population
+            }
+            root = {
+                set_variable = {
+                    name = aroai_surplus_bureaucracy_target
+                    value = prev.state_population
+                }
+            }
+        }
+        
+        #
+        set_variable = {
+            name = aroai_available_workforce
+            value = aroai_unemployed_population
+        }
+
+        #
+        if = {
+            limit = {
+                OR = {
+                    AND = {
+                        exists = sr:region_north_china
+                        region = sr:region_north_china
+                    }
+                    AND = {
+                        exists = sr:region_south_china
+                        region = sr:region_south_china
+                    }
+                    AND = {
+                        exists = s:STATE_LHASA
+                        state_region = s:STATE_LHASA
+                    }
+                    AND = {
+                        exists = s:STATE_NGARI
+                        state_region = s:STATE_NGARI
+                    }
+                    AND = {
+                        exists = s:STATE_NORTHERN_MANCHURIA
+                        state_region = s:STATE_NORTHERN_MANCHURIA
+                    }
+                    AND = {
+                        exists = s:STATE_OUTER_MANCHURIA
+                        state_region = s:STATE_OUTER_MANCHURIA
+                    }
+                    AND = {
+                        exists = s:STATE_SOUTHERN_MANCHURIA
+                        state_region = s:STATE_SOUTHERN_MANCHURIA
+                    }
+                }
+            }
+            root = {
+                aroai_add_to_variable = {
+                    name = aroai_chinese_population
+                    value = prev.state_population
+                }
+            }
+        }
+        else_if = {
+            limit = {
+                OR = {
+                    AND = {
+                        exists = sr:region_north_india
+                        region = sr:region_north_india
+                    }
+                    AND = {
+                        exists = sr:region_south_india
+                        region = sr:region_south_india
+                    }
+                }
+            }
+            root = {
+                aroai_add_to_variable = {
+                    name = aroai_indian_population
+                    value = prev.state_population
+                }
+            }
+        }
+
+        #
+        set_local_variable = {
+            name = aroai_state_weight_in_construction
+            value = {
+                value = state_population
+                divide = 200000
+                floor = yes
+                add = 1
+            }
+        }
+
+        while = {
+            limit = {
+                local_var:aroai_state_weight_in_construction > 0
+            }
+            set_local_variable = {
+                name = aroai_state_construction_efficiency
+                value = {
+                    value = modifier:state_construction_mult
+                    add = 1
+                    min = define:NEconomy|MIN_CONSTRUCTION_EFFICIENCY
+                    multiply = 1000
+                    round = yes
+                    max = 21460
+                    multiply = 100000
+                    add = {
+                        value = local_var:aroai_amount_of_elements_in_construction_list
+                        divide = 100
+                    }
+                }
+            }
+            add_to_local_variable_list = {
+                name = aroai_construction_efficiency_records
+                target = local_var:aroai_state_construction_efficiency
+            }
+            change_local_variable = {
+                name = aroai_amount_of_elements_in_construction_list
+                add = 1
+            }
+            change_local_variable = {
+                name = aroai_state_weight_in_construction
+                subtract = 1
+            }
+        }
+        
+        # Set up state level counters of government building
+        set_variable = { # D/O
+            name = aroai_building_government_administration_level
+            value = 0
+        }
+        set_variable = { # D/O
+            name = aroai_building_university_level
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_construction_sector_level
+            value = 0
+        }
+        #set_variable = {
+        #    name = aroai_railway_level
+        #    value = 0
+        #}
+        set_variable = {
+            name = aroai_building_port_level
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_barracks_level
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_naval_base_level
+            value = 0
+        }
+        set_variable = {
+            name = aroai_building_conscription_center_occupancy
+            value = 0
+        }
+    }
+
+
+    if = {
+        limit = {
+            local_var:aroai_amount_of_elements_in_construction_list > 0
+        }
+        
+        set_local_variable = {
+            name = aroai_amount_of_elements_in_construction_list
+            value = {
+                value = local_var:aroai_amount_of_elements_in_construction_list
+                divide = 2
+                floor = yes
+            }
+        }
+        ordered_in_local_list = {
+            variable = aroai_construction_efficiency_records
+            order_by = this
+            position = local_var:aroai_amount_of_elements_in_construction_list
+            root = {
+                set_variable = {
+                    name = aroai_median_construction_efficiency
+                    value = {
+                        value = prev
+                        divide = 100000
+                        floor = yes
+                        divide = 100
+                    }
+                }
+            }
+        }
+        
+    }
+
+    remove_local_variable = aroai_amount_of_elements_in_construction_list
+    clear_local_variable_list = aroai_construction_efficiency_records
+
+    # Calculate desired bureau, aroai_surplus_bureaucracy_target = the most expensive state to integrate
+    change_variable = {
+        name = aroai_surplus_bureaucracy_target
+        divide = 5000
+    }
+    if = {
+        limit = {
+            var:aroai_surplus_bureaucracy_target < aroai_institution_bureaucracy_cost # If institution is more expensive, then change variable to institution
+        }
+        set_variable = {
+            name = aroai_surplus_bureaucracy_target
+            value = aroai_institution_bureaucracy_cost
+        }
+    }
+    
+    # Set up country level counters of government building
+    set_variable = {
+        name = aroai_building_government_administration_total
+        value = 0
+    }
+    set_variable = {
+        name = aroai_building_university_total
+        value = 0
+    }
+    # set_variable = {
+        # name = aroai_building_construction_sector_total
+        # value = 0
+    # }
+    #set_variable = {
+    #    name = aroai_railway_total
+    #    value = 0
+    #}
+    set_variable = {
+        name = aroai_building_port_total
+        value = 0
+    }
+    #set_variable = {
+    #    name = aroai_building_barracks_total
+    #    value = 0
+    #}
+    set_variable = {
+        name = aroai_building_naval_base_total
+        value = 0
+    }
+    
+    #
+    every_scope_building = {
+        limit = {
+            level > 0
+        }
+        if = {
+            limit = {
+                is_subsistence_building = yes
+            }
+            state = {
+                change_variable = {
+                    name = aroai_available_workforce
+                    add = {
+                        value = prev.aroai_occupied_levels
+                        if = {
+                            limit = {
+                                prev = {
+                                    is_building_type = building_subsistence_rice_paddies
+                                }
+                            }
+                            multiply = 9000
+                        }
+                        else = {
+                            multiply = 4500
+                        }
+                    }
+                }
+            }
+        }
+        else = {
+            if = {
+                limit = {
+                    is_building_type = building_government_administration
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_government_administration_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_government_administration_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_government_administration_total
+                        add = prev.level
+                    }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_government_administration_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_university
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_university_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_university_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_university_total
+                        add = prev.level
+                    }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_university_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_construction_sector
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_construction_sector_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_construction_sector_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                    # change_variable = {
+                        # name = aroai_building_construction_sector_total
+                        # add = prev.level
+                    # }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_construction_sector_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_railway
+                }
+                #
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_port
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_port_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_port_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_port_total
+                        add = prev.level
+                    }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_port_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_naval_base
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_naval_base_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_naval_base_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                    change_variable = {
+                        name = aroai_building_naval_base_total
+                        add = prev.level
+                    }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_naval_base_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_barracks
+                }
+                root = {
+                    if = {
+                        limit = {
+                            has_variable = aroai_building_barracks_cooldown
+                            prev = {
+                                is_under_construction = yes
+                            }
+                        }
+                        aroai_renew_variable = {
+                            name = aroai_building_barracks_cooldown
+                            days = aroai_days_in_building_cooldown
+                        }
+                    }
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_barracks_level
+                        add = prev.level
+                    }
+                }
+            }
+            else_if = {
+                limit = {
+                    is_building_type = building_conscription_center
+                }
+                state = {
+                    change_variable = {
+                        name = aroai_building_conscription_center_occupancy
+                        add = prev.occupancy
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    # Calculate free workforce that is available in the state
+    set_variable = {
+        name = aroai_unutilized_workforce
+        value = 0
+    }
+    set_local_variable = {
+        name = aroai_potential_workforce
+        value = 0
+    }
+    every_scope_state = {
+        root = {
+            change_variable = {
+                name = aroai_unutilized_workforce
+                add = prev.aroai_available_workforce
+            }
+            change_local_variable = {
+                name = aroai_potential_workforce
+                add = {
+                    value = prev.state_population
+                    multiply = {
+                        value = define:NPops|WORKING_ADULT_RATIO_BASE
+                        add = prev.modifier:state_working_adult_ratio_add
+                        multiply = 0.90
+                    }
+                }
+            }
+        }
+    }
+    
+    # Calculate unutilized workforce which is ratio of unused
+    set_variable = {
+        name = aroai_unutilized_workforce
+        value = {
+            value = var:aroai_unutilized_workforce
+            divide = {
+                value = local_var:aroai_potential_workforce
+                min = 1
+            }
+            min = 0
+            max = 1
+        }
+    }
+    
+    # Some square root we'll need
+    aroai_calculate_square_root = { # Root of minus half unincorporated GDP per capita
+        precision = 2
+        input = aroai_minus_half_unincorporated_gdp_per_capita
+        output = aroai_square_root_of_minus_half_unincorporated_gdp_per_capita
+    }
+    aroai_calculate_square_root = { # Root of construction points
+        precision = 1
+        input = aroai_construction_points_current
+        output = aroai_square_root_of_construction_points
+    }
+    
+    #
+    if = {
+        limit = {
+            has_local_variable = aroai_construction_is_allowed
+            NOR = {
+                AND = {
+                    aroai_regular_building = yes
+                    aroai_free_construction_points > 0
+                }
+                aroai_critical_building = yes
+            }
+        }
+        remove_local_variable = aroai_construction_is_allowed
+    }
+    
+    # Set up variables
+    set_variable = {
+        name = aroai_median_building_productivity
+        value = 0
+    }
+    set_variable = {
+        name = aroai_median_building_profitability
+        value = 0
+    }
+    
+    if = {
+        limit = {
+            OR = {
+                AND = {
+                    has_local_variable = aroai_construction_is_allowed
+                    aroai_regular_building = yes
+                }
+                aroai_can_downsize_production_building = yes
+            }
+        }
+        
+        set_local_variable = {
+            name = aroai_productivity_value_count
+            value = 0
+        }
+        set_local_variable = {
+            name = aroai_building_object_count
+            value = 0
+        }
+        
+        every_scope_building = {
+            limit = {
+                aroai_occupied_levels > 0
+                is_subsistence_building = no
+                is_government_funded = no
+                NOR = {
+                    is_building_group = bg_trade
+                    is_building_group = bg_service
+                    is_building_group = bg_monuments
+                    is_building_group = bg_monuments_hidden
+                }
+            }
+            
+            if = {
+                limit = {
+                    earnings > 0
+                }
+                
+                root = {
+                    
+                    set_local_variable = {
+                        name = aroai_formatted_productivity
+                        value = {
+                            value = prev.earnings
+                            multiply = 100
+                            floor = yes
+                            max = 99999
+                            multiply = 10000
+                            add = {
+                                value = local_var:aroai_productivity_value_count
+                                divide = 100
+                            }
+                        }
+                    }
+                    
+                    set_local_variable = {
+                        name = aroai_level_counter
+                        value = {
+                            value = prev.aroai_occupied_levels
+                            divide = 4
+                        }
+                    }
+                    while = {
+                        limit = {
+                            local_var:aroai_level_counter > 0
+                        }
+                        add_to_variable_list = {
+                            name = aroai_productivity_value_list
+                            target = local_var:aroai_formatted_productivity
+                        }
+                        change_local_variable = {
+                            name = aroai_formatted_productivity
+                            add = 0.01
+                        }
+                        change_local_variable = {
+                            name = aroai_productivity_value_count
+                            add = 1
+                        }
+                        change_local_variable = {
+                            name = aroai_level_counter
+                            subtract = 1
+                        }
+                    }
+                    
+                    remove_local_variable = aroai_formatted_productivity
+                    remove_local_variable = aroai_level_counter
+                }
+                
+                if = {
+                    limit = {
+                        weekly_profit > 0
+                    }
+                    root = {
+                        add_to_variable_list = {
+                            name = aroai_building_object_list
+                            target = prev
+                        }
+                        change_local_variable = {
+                            name = aroai_building_object_count
+                            add = 1
+                        }
+                    }
+                }
+            }
+        }
+        
+        #
+        if = {
+            limit = {
+                local_var:aroai_productivity_value_count > 0
+            }
+            
+            set_local_variable = {
+                name = aroai_productivity_value_count
+                value = {
+                    value = local_var:aroai_productivity_value_count
+                    divide = 2
+                    floor = yes
+                }
+            }
+            ordered_in_list = {
+                variable = aroai_productivity_value_list
+                order_by = this
+                position = local_var:aroai_productivity_value_count
+                root = {
+                    set_variable = {
+                        name = aroai_median_building_productivity
+                        value = {
+                            value = prev
+                            divide = 10000
+                            floor = yes
+                            divide = 100
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        clear_variable_list = aroai_productivity_value_list
+        
+        if = {
+            limit = {
+                local_var:aroai_building_object_count > 0
+            }
+            
+            set_local_variable = {
+                name = aroai_building_object_count
+                value = {
+                    value = local_var:aroai_building_object_count
+                    divide = 2
+                    floor = yes
+                }
+            }
+            ordered_in_list = {
+                variable = aroai_building_object_list
+                order_by = aroai_profit_per_occupied_level
+                position = local_var:aroai_building_object_count
+                root = {
+                    set_variable = {
+                        name = aroai_median_building_profitability
+                        value = prev.aroai_profit_per_occupied_level
+                    }
+                }
+            }
+            
+        }
+        
+        clear_variable_list = aroai_building_object_list
+    }
+    
+    #
+    if = {
+        limit = {
+            has_local_variable = aroai_construction_is_allowed
+            aroai_can_downsize_production_building = yes
+        }
+        aroai_perform_for_every_building_type = {
+            effect = 1 # aroai_collect_building_level_data_1
+        }
+        set_variable = {
+            name = aroai_cycles_since_production_downsizing
+            value = 0
+        }
+    }
+    else_if = {
+        limit = {
+            has_local_variable = aroai_construction_is_allowed
+        }
+        aroai_perform_for_every_building_type = {
+            effect = 2 # aroai_collect_building_level_data_2
+        }
+    }
+    else_if = {
+        limit = {
+            aroai_can_downsize_production_building = yes
+        }
+        aroai_perform_for_every_building_type = {
+            effect = 3 # aroai_collect_building_level_data_3
+        }
+        set_variable = {
+            name = aroai_cycles_since_production_downsizing
+            value = 0
+        }
+    }
+    
+    # Check if the state meets requirements of being suitable for building
+    every_scope_state = {
+        limit = {
+            aroai_has_enough_infrastructure = yes
+            aroai_has_enough_workforce = yes
+        }
+        root = {
+            add_to_variable_list = {
+                name = aroai_suitable_states
+                target = prev
+            }
+        }
+    }
+}
+
+aroai_count_ongoing_constructions = {
+    if = {
+        limit = {
+            is_under_construction = yes
+        }
+        state = {
+            every_in_list = {
+                variable = aroai_ongoing_constructions
+                limit = {
+                    aroai_current_ongoing_constructions_element_1 = $id$
+                }
+                aroai_add_to_local_variable = {
+                    name = aroai_total_constructions
+                    value = aroai_current_ongoing_constructions_element_4
+                }
+            }
+        }
+        root = {
+            if = {
+                limit = {
+                    has_local_variable = aroai_total_constructions
+                }
+                aroai_add_to_building_counter = {
+                    counter = $counter$
+                    value = local_var:aroai_total_constructions
+                }
+                remove_local_variable = aroai_total_constructions
+            }
+            else = {
+                aroai_add_to_building_counter = {
+                    counter = $counter$
+                    value = 1
+                }
+            }
+        }
+    }
+}
+
+# If bt_workforce, then calculate shortages, profitability, productivity and check abandonement
+# If not, then
+# If government/infrastructure buildings except railways, calculate shortages only
+# Else calculate shortages, profitability, productivity
+aroai_collect_building_level_data_1 = {
+    if = {
+        limit = {
+            $workforce$ = 1
+        }
+        set_local_variable = {
+            name = aroai_building_object_count
+            value = 0
+        }
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+            else = {
+                aroai_count_ongoing_constructions = {
+                    id = $id$
+                    counter = $counter$
+                }
+                if = {
+                    limit = {
+                        level > 0
+                    }
+                    aroai_check_production_methods = {
+                        id = $id$
+                    }
+                    if = {
+                        limit = {
+                            state.market_access >= 0.80
+                        }
+                        aroai_collect_building_shortages = {
+                            id = $id$
+                        }
+                        root = {
+                            change_local_variable = {
+                                name = aroai_building_object_count
+                                add = 1
+                            }
+                            add_to_variable_list = {
+                                name = aroai_building_object_list
+                                target = prev
+                            }
+                        }
+                    }
+                    aroai_is_excessive_or_abandoned = {
+                        id = $id$
+                    }
+                }
+            }
+        }
+        if = {
+            limit = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+            aroai_transform_building_shortages = {
+                id = $id$
+            }
+            aroai_determine_building_medians = {
+                id = $id$
+            }
+        }
+        remove_local_variable = aroai_building_object_count
+        clear_variable_list = aroai_building_object_list
+    }
+    else = {
+        aroai_collect_building_level_data_2 = {
+            key = $key$
+            id = $id$
+            counter = $counter$
+        }
+    }
+}
+
+# If government/infrastructure buildings except railways, calculate shortages only
+# Else calculate shortages, profitability, productivity
+aroai_collect_building_level_data_2 = {
+    # Collect only shortages data
+    # Construction sector shortages are collected beforehand
+    
+    if = {
+        limit = {
+            $id$ < 7
+            NOT = {
+                $id$ = 4
+            }
+        }
+        if = {
+            limit = {
+                NOR = {
+                    $id$ = 1
+                    $id$ = 3
+                    $id$ = 5
+                }
+            }
+            every_scope_building = {
+                limit = {
+                    is_building_type = $key$
+                }
+                if = {
+                    limit = {
+                        level <= 0
+                        is_under_construction = no
+                    }
+                    state = {
+                        remove_building = $key$
+                    }
+                }
+                else = {
+                    aroai_count_ongoing_constructions = {
+                        id = $id$
+                        counter = $counter$
+                    }
+                    if = {
+                        limit = {
+                            aroai_occupied_levels > 0
+                            state.market_access >= 0.80
+                        }
+                        aroai_collect_building_shortages = {
+                            id = $id$
+                        }
+                    }
+                }
+            }
+            if = {
+                limit = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+                aroai_transform_building_shortages = {
+                    id = $id$
+                }
+            }
+        }
+    }
+    else = {
+        set_local_variable = {
+            name = aroai_building_object_count
+            value = 0
+        }
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+            else = {
+                aroai_count_ongoing_constructions = {
+                    id = $id$
+                    counter = $counter$
+                }
+                if = {
+                    limit = {
+                        level > 0
+                    }
+                    aroai_check_production_methods = {
+                        id = $id$
+                    }
+                    if = {
+                        limit = {
+                            aroai_occupied_levels > 0
+                            state.market_access >= 0.80
+                        }
+                        aroai_collect_building_shortages = {
+                            id = $id$
+                        }
+                        root = {
+                            change_local_variable = {
+                                name = aroai_building_object_count
+                                add = 1
+                            }
+                            add_to_variable_list = {
+                                name = aroai_building_object_list
+                                target = prev
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if = {
+            limit = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+            aroai_transform_building_shortages = {
+                id = $id$
+            }
+            aroai_determine_building_medians = {
+                id = $id$
+            }
+        }
+        remove_local_variable = aroai_building_object_count
+        clear_variable_list = aroai_building_object_list
+    }
+}
+
+aroai_collect_building_level_data_3 = {
+    # If bt_workforce, then check abandonement
+    if = {
+        limit = {
+            $workforce$ = 1
+        }
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+            else_if = {
+                limit = {
+                    level > 0
+                }
+                aroai_is_excessive_or_abandoned = {
+                    id = $id$
+                }
+            }
+        }
+    }
+}
+
+aroai_collect_building_shortages = {
+    root = {
+        if = {
+            limit = {
+                NOT = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+            }
+            set_variable = {
+                name = aroai_building_type_$id$_collected_data
+                value = 0
+            }
+        }
+        if = {
+            limit = {
+                var:aroai_building_type_$id$_collected_data < aroai_building_data_overflow_protection
+            }
+            change_variable = {
+                name = aroai_building_type_$id$_collected_data
+                add = {
+                    value = prev.aroai_occupied_levels
+                    round = yes
+                    multiply = 100
+                }
+            }
+            if = {
+                limit = {
+                    prev = {
+                        building_has_goods_shortage = yes
+                    }
+                }
+                change_variable = {
+                    name = aroai_building_type_$id$_collected_data
+                    add = {
+                        value = prev.aroai_occupied_levels
+                        round = yes
+                        divide = 100
+                    }
+                }
+            }
+        }
+    }
+}
+
+aroai_is_excessive_or_abandoned = {
+    state = {
+        if = {
+            limit = {
+                OR = {
+                    NOT = {
+                        has_variable = aroai_building_conscription_center_occupancy
+                    }
+                    var:aroai_building_conscription_center_occupancy = 0
+                }
+            }
+            if = {
+                limit = {
+                    prev = {
+                        aroai_building_is_abandoned = yes
+                    }
+                }
+                if = {
+                    limit = {
+                        NOT = {
+                            has_variable = aroai_building_type_$id$ia
+                        }
+                    }
+                    set_variable = {
+                        name = aroai_building_type_$id$ia
+                        value = prev.aroai_occupied_levels
+                        days = aroai_days_to_keep_ia_variable
+                    }
+                }
+                else = {
+                    set_local_variable = {
+                        name = aroai_cycles_of_observation
+                        value = {
+                            value = var:aroai_building_type_$id$ia
+                            divide = 10000000
+                            floor = yes
+                        }
+                    }
+                    set_local_variable = {
+                        name = aroai_previous_with_margin
+                        value = {
+                            value = var:aroai_building_type_$id$ia
+                            subtract = {
+                                value = local_var:aroai_cycles_of_observation
+                                multiply = 10000000
+                            }
+                            add = {
+                                value = prev.level
+                                multiply = define:NEconomy|HIRING_RATE
+                                multiply = {
+                                    value = 0.50
+                                    multiply = root.var:aroai_cycles_since_production_downsizing
+                                    add = 1
+                                }
+                            }
+                        }
+                    }
+                    if = {
+                        limit = {
+                            local_var:aroai_previous_with_margin >= prev.aroai_occupied_levels
+                        }
+                        set_local_variable = {
+                            name = aroai_cycles_of_observation
+                            value = {
+                                value = local_var:aroai_cycles_of_observation
+                                add = root.var:aroai_cycles_since_production_downsizing
+                                max = 6
+                            }
+                        }
+                        set_variable = {
+                            name = aroai_building_type_$id$ia
+                            value = {
+                                value = prev.aroai_occupied_levels
+                                add = {
+                                    value = local_var:aroai_cycles_of_observation
+                                    multiply = 10000000
+                                }
+                            }
+                            days = aroai_days_to_keep_ia_variable
+                        }
+                        if = {
+                            limit = {
+                                local_var:aroai_cycles_of_observation >= 6
+                            }
+                            root = {
+                                set_variable = {
+                                    name = aroai_building_type_$id$ia
+                                    value = yes
+                                    days = aroai_days_to_keep_short_variables
+                                }
+                            }
+                        }
+                    }
+                    else = {
+                        remove_variable = aroai_building_type_$id$ia
+                    }
+                    remove_local_variable = aroai_cycles_of_observation
+                    remove_local_variable = aroai_previous_with_margin
+                }
+            }
+            else_if = {
+                limit = {
+                    has_variable = aroai_building_type_$id$ia
+                }
+                remove_variable = aroai_building_type_$id$ia
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        has_variable = aroai_building_type_$id$ia
+                    }
+                    prev = {
+                        aroai_building_is_excessive = yes
+                    }
+                }
+                change_variable = {
+                    name = aroai_available_workforce
+                    add = {
+                        value = prev.aroai_occupied_levels
+                        multiply = 1250
+                    }
+                }
+            }
+        }
+    }
+}
+
+aroai_transform_building_shortages = {
+    set_variable = {
+        name = aroai_building_type_$id$_collected_data
+        value = {
+            value = 1
+            subtract = {
+                value = var:aroai_building_type_$id$_collected_data
+                subtract = {
+                    value = var:aroai_building_type_$id$_collected_data
+                    divide = 100
+                    floor = yes
+                    multiply = 100
+                }
+                multiply = 100
+                floor = yes
+                divide = {
+                    value = var:aroai_building_type_$id$_collected_data
+                    subtract = {
+                        value = var:aroai_building_type_$id$_collected_data
+                        divide = 1000000
+                        floor = yes
+                        multiply = 1000000
+                    }
+                    divide = 100
+                    floor = yes
+                    min = 1
+                }
+            }
+            min = 0.00
+            max = 0.99
+            add = {
+                value = var:aroai_building_type_$id$_collected_data
+                divide = 1000000
+                floor = yes
+                multiply = 1000000
+            }
+        }
+    }
+}
+
+aroai_determine_building_medians = {
+    if = {
+        limit = {
+            local_var:aroai_building_object_count > 0
+        }
+        set_local_variable = {
+            name = aroai_building_object_count
+            value = {
+                value = local_var:aroai_building_object_count
+                divide = 2
+                floor = yes
+            }
+        }
+        ordered_in_list = {
+            variable = aroai_building_object_list
+            order_by = aroai_profit_per_occupied_level
+            position = local_var:aroai_building_object_count
+            root = {
+                change_variable = {
+                    name = aroai_building_type_$id$_collected_data
+                    add = {
+                        value = prev.aroai_profit_per_occupied_level
+                        divide = {
+                            value = aroai_median_building_profitability
+                            min = 0.01
+                        }
+                        multiply = 100
+                        floor = yes
+                        min = 0
+                        max = 99
+                    }
+                }
+            }
+        }
+        ordered_in_list = {
+            variable = aroai_building_object_list
+            order_by = aroai_productivity_without_scaling
+            position = local_var:aroai_building_object_count
+            root = {
+                change_variable = {
+                    name = aroai_building_type_$id$_collected_data
+                    add = {
+                        value = prev.aroai_productivity_without_scaling
+                        multiply = 10
+                        floor = yes
+                        max = 9998
+                        multiply = 100
+                    }
+                }
+            }
+        }
+    }
+    else = {
+        change_variable = {
+            name = aroai_building_type_$id$_collected_data
+            add = 9999999
+        }
+    }
+}
+
+### COLLECT STATES THAT BELONG TO A CERTAIN PART OF THE MARKET
+aroai_collect_country_coastlines = {
+    
+    # Collect coastlines of market capital and outer lands
+    if = {
+        limit = {
+            any_scope_state = {
+                is_coastal = yes
+            }
+        }
+        if = {
+            limit = {
+                market.owner = root
+            }
+            market_capital = {
+                root = {
+                    add_to_variable_list = {
+                        name = aroai_current_ring_of_states
+                        target = prev
+                    }
+                }
+            }
+            aroai_collect_market_part_states = yes
+            every_in_list = {
+                variable = aroai_states_of_current_part
+                if = {
+                    limit = {
+                        is_coastal = yes
+                    }
+                    root = {
+                        add_to_variable_list = {
+                            name = aroai_market_capital_coastline
+                            target = prev
+                        }
+                    }
+                }
+            }
+            set_variable = {
+                name = aroai_capital_coastline_states
+                value = 0
+            }
+            every_in_list = {
+                variable = aroai_market_capital_coastline
+                root = {
+                    change_variable = {
+                        name = aroai_capital_coastline_states
+                        add = 1
+                    }
+                }
+            }
+            clear_variable_list = aroai_states_of_current_part
+        }
+        every_scope_state = {
+            limit = {
+                is_coastal = yes
+                root = {
+                    NOT = {
+                        aroai_is_target_in_variable_list = {
+                            name = aroai_market_capital_coastline
+                            target = prev
+                        }
+                    }
+                }
+            }
+            root = {
+                add_to_variable_list = {
+                    name = aroai_coastline_of_outer_lands
+                    target = prev
+                }
+                if = {
+                    limit = {
+                        prev.var:aroai_building_port_level > 0
+                        NOT = {
+                            aroai_is_target_in_variable_list = {
+                                name = aroai_safe_to_delete_ports_in_outer_lands
+                                target = prev
+                            }
+                        }
+                    }
+                    add_to_variable_list = {
+                        name = aroai_current_ring_of_states
+                        target = prev
+                    }
+                    aroai_collect_market_part_states = yes
+                    if = {
+                        limit = {
+                            any_in_list = {
+                                variable = aroai_states_of_current_part
+                                var:aroai_building_port_level > 0
+                                count > 1
+                            }
+                        }
+                        every_in_list = {
+                            variable = aroai_states_of_current_part
+                            if = {
+                                limit = {
+                                    var:aroai_building_port_level > 0
+                                }
+                                root = {
+                                    add_to_variable_list = {
+                                        name = aroai_safe_to_delete_ports_in_outer_lands
+                                        target = prev
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    clear_variable_list = aroai_states_of_current_part
+                }
+            }
+        }
+    }
+}
+
+aroai_collect_market_part_states = {
+    while = {
+        limit = {
+            aroai_has_variable_list = {
+                name = aroai_current_ring_of_states
+            }
+        }
+        random_in_list = {
+            variable = aroai_current_ring_of_states
+            root = {
+                add_to_variable_list = {
+                    name = aroai_states_of_current_part
+                    target = prev
+                }
+            }
+            every_neighbouring_state = {
+                limit = {
+                    owner = root
+                    root = {
+                        NOR = {
+                            aroai_is_target_in_variable_list = {
+                                name = aroai_states_of_current_part
+                                target = prev
+                            }
+                            aroai_is_target_in_variable_list = {
+                                name = aroai_current_ring_of_states
+                                target = prev
+                            }
+                            aroai_is_target_in_variable_list = {
+                                name = aroai_waiting_ring_of_states
+                                target = prev
+                            }
+                        }
+                    }
+                }
+                root = {
+                    add_to_variable_list = {
+                        name = aroai_waiting_ring_of_states
+                        target = prev
+                    }
+                }
+            }
+            root = {
+                remove_list_variable = {
+                    name = aroai_current_ring_of_states
+                    target = prev
+                }
+                if = {
+                    limit = {
+                        NOT = {
+                            aroai_has_variable_list = {
+                                name = aroai_current_ring_of_states
+                            }
+                        }
+                    }
+                    if = {
+                        limit = {
+                            aroai_has_variable_list = {
+                                name = aroai_waiting_ring_of_states
+                            }
+                        }
+                        every_in_list = {
+                            variable = aroai_waiting_ring_of_states
+                            root = {
+                                add_to_variable_list = {
+                                    name = aroai_current_ring_of_states
+                                    target = prev
+                                }
+                            }
+                        }
+                        clear_variable_list = aroai_waiting_ring_of_states
+                    }
+                    else = {
+                        clear_variable_list = aroai_current_ring_of_states
+                    }
+                }
+            }
+        }
+    }
+}
