@@ -12,3 +12,5 @@ Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=288015207
 Paradox Mods: https://mods.paradoxplaza.com/mods/51961/Any
 
 Paradox Forum: https://forum.paradoxplaza.com/forum/threads/anbeelds-revision-of-ai.1551230/
+
+Further development of ARoAI is suspended. Any person or a group of people have my permission to do whatever they want with ARoAI, with the only requirement being a mention that your work is based on it.
