@@ -311,6 +311,9 @@ aroai_weekly_check_of_building_data = {
             # Railways should always be subsidized
             if = {
                 limit = {
+                    root = {
+                        is_player = no
+                    }
                     is_subsidized = no
                 }
                 set_subsidized = yes
