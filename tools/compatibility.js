@@ -27,7 +27,7 @@ classes = ['',
     ["military",          3,    2],
     ["resource",          4,    2],
     ["agriculture",       5,    2],
-    ["industry",          6,    2],
+    ["industry",          6,    1],
 ]
 
 /*
