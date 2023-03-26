@@ -172,8 +172,8 @@
                                 }
                             }
                             AND = {
-                                has_variable = aroai_unutilized_workforce
-                                var:aroai_unutilized_workforce < aroai_unutilized_workforce_total_threshold
+                                has_variable = aroai_unutilized_workforce_percent
+                                var:aroai_unutilized_workforce_percent < aroai_unutilized_workforce_percent_total_threshold
                             }
                         }
                         aroai_building_construction_sector_spending_value > aroai_building_construction_sector_spending_ceiling
@@ -186,8 +186,8 @@
                                 }
                             }
                             AND = {
-                                has_variable = aroai_unutilized_workforce
-                                var:aroai_unutilized_workforce < aroai_unutilized_workforce_total_threshold_halved
+                                has_variable = aroai_unutilized_workforce_percent
+                                var:aroai_unutilized_workforce_percent < aroai_unutilized_workforce_percent_total_threshold_halved
                             }
                         }
                         aroai_building_construction_sector_spending_value > aroai_building_construction_sector_spending_excess
@@ -245,10 +245,10 @@
                             has_local_variable = aroai_construction_is_allowed
                             NOR = {
                                 AND = {
-                                    aroai_regular_building = yes
+                                    aroai_is_regular_construction_allowed = yes
                                     aroai_free_construction_points > 0
                                 }
-                                aroai_critical_building = yes
+                                aroai_is_critical_construction_allowed = yes
                             }
                         }
                         remove_local_variable = aroai_construction_is_allowed
@@ -485,7 +485,7 @@
     
     if = {
         limit = {
-            aroai_can_downsize_production_building = yes
+            aroai_is_production_downsizing_allowed = yes
         }
         aroai_perform_for_every_building_type = {
             effect = 4 # aroai_downsize_production_building
@@ -493,6 +493,7 @@
     }
 }
 
+# Downsizing of production buildings based on variables set in aroai_check_if_building_is_excessive_or_abandoned
 aroai_downsize_production_building = {
     if = {
         limit = {
@@ -500,27 +501,29 @@ aroai_downsize_production_building = {
         }
         if = {
             limit = {
-                has_variable = aroai_building_type_$id$ia
+                has_variable = aroai_building_type_$id$_is_abandoned # Country scope flag
             }
+
+            # Get a state out of ones where a building of this type should be downsizing with the lowest occupied levels
             ordered_scope_state = {
                 limit = {
-                    has_variable = aroai_building_type_$id$ia
-                    var:aroai_building_type_$id$ia >= 60000000
+                    has_variable = aroai_building_type_$id$_is_abandoned
+                    var:aroai_building_type_$id$_is_abandoned >= 60000000 # More than 6 iterations
                 }
                 order_by = {
                     value = 70000000
-                    subtract = var:aroai_building_type_$id$ia
+                    subtract = var:aroai_building_type_$id$_is_abandoned # Variable itself looks like 60000001.42
                 }
-                position = 0
+                position = 0 # Lowest occupied levels
                 remove_building = $key$
-                remove_variable = aroai_building_type_$id$ia
+                remove_variable = aroai_building_type_$id$_is_abandoned
             }
-            remove_variable = aroai_building_type_$id$ia
+            remove_variable = aroai_building_type_$id$_is_abandoned
         }
     }
 }
 
-# Clear variables used in downsizing but not in  construction
+# Clear variables used in downsizing but not in construction
 aroai_clear_downsizing_variables = {
     every_scope_state = {
         remove_variable = aroai_building_government_administration_level

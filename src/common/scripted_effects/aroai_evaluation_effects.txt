@@ -1,11 +1,21 @@
-﻿# Perform evaluation and write result to variables.
-# Then check states for allocation.
+﻿# ---------------------------------------------------------------------------------------------------------------------
+# Array variable aroai_building_type_X_collected_data is widely used below, where X is id of building type in question.
+# Search for "Cell distribution of aroai_building_type_X_collected_data array variable" in aroai_preparation_values.txt
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Perform evaluation and write result to variables, then check states for allocation
 aroai_check_priority_of_building = {
     if = {
+
+        # Only perform evaluation if...
         limit = {
+
+            # ...a country should consider constructing this building...
             aroai_consider_$key$ = {
                 id = $id$
             }
+
+            # ...and the number of ongoing constructions of its building type is lower than max potential limit
             OR = {
                 NOT = {
                     has_variable = aroai_building_type_$counter$_collected_data
@@ -13,20 +23,28 @@ aroai_check_priority_of_building = {
                 aroai_building_type_$counter$_collected_data_5 < aroai_construction_limit_$limit$_1
             }
         }
+
+        # Perform evaluation using static data set specifically for this building type in its own effect
         aroai_evaluate_$key$ = {
             id = $id$
             crucial = $crucial$
         }
+
+        # Evaluation of government buildings is self-sufficient, while production buildings rely on the following script
         if = {
             limit = {
-                $class$ >= 4
+                $class$ >= 4 # Everything except government buildings
             }
+
+            # If building-specific evaluation has set local variables, perform further analysis
             if = {
                 limit = {
-                    has_local_variable = aroai_saved_priority
-                    has_local_variable = aroai_saved_level
-                    has_local_variable = aroai_saved_productivity
+                    has_local_variable = aroai_saved_priority_level
+                    has_local_variable = aroai_saved_supply_vs_demand_level
+                    has_local_variable = aroai_saved_productivity_requirement_level
                 }
+
+                # Set local variable if median profitability of this building type is higher than required
                 if = {
                     limit = {
                         OR = {
@@ -41,8 +59,10 @@ aroai_check_priority_of_building = {
                             aroai_building_type_$id$_collected_data_2 >= 20
                         }
                     }
-                    set_local_variable = aroai_allowed_by_profit
+                    set_local_variable = aroai_allowed_by_profitability
                 }
+
+                # Set a new version of collected data variable preserving required data if it already exists
                 if = {
                     limit = {
                         has_variable = aroai_building_type_$id$_collected_data
@@ -50,145 +70,174 @@ aroai_check_priority_of_building = {
                     set_variable = {
                         name = aroai_building_type_$id$_collected_data
                         value = {
-                            value = aroai_building_type_$id$_collected_data_3
-                            multiply = 100
+
+                            # Cell 1
+                            value = {
+                                value = local_var:aroai_saved_priority_level
+                                divide = 100
+                            }
+
+                            # Cell 2
+                            add = local_var:aroai_saved_supply_vs_demand_level
+
+                            # Cell 3
+                            add = {
+                                value = aroai_building_type_$id$_collected_data_3
+                                multiply = 100
+                            }
+
+                            # Cell 5
                             add = {
                                 value = aroai_building_type_$id$_collected_data_5
                                 multiply = 10000000
                             }
-                            add = {
-                                value = local_var:aroai_saved_priority
-                                divide = 100
-                            }
-                            add = local_var:aroai_saved_level
                         }
                     }
                 }
+
+                # Or just set it up from scratch
                 else = {
                     set_variable = {
                         name = aroai_building_type_$id$_collected_data
                         value = {
-                            value = local_var:aroai_saved_priority
+
+                            # Cell 1
+                            value = local_var:aroai_saved_priority_level
                             divide = 100
-                            add = local_var:aroai_saved_level
-                            add = 999900
+
+                            # Cell 2
+                            add = local_var:aroai_saved_supply_vs_demand_level
+
+                            # Cell 3
+                            add = 999900 # No productivity restrictions
                         }
                     }
                 }
+
+                # If cell 3 was set to 9999 at some point, meaning no productivity restrictions...
                 if = {
                     limit = {
                         aroai_building_type_$id$_collected_data_3 = 9999
                     }
+
+                    # ...set required productivity to expand buildings of this type to 0...
+                    change_variable = {
+                        name = aroai_building_type_$id$_collected_data
+                        subtract = 999900
+                    }
+
+                    # ...and allow construction of new buildings, if it's allowed by profitability
                     if = {
                         limit = {
-                            has_local_variable = aroai_allowed_by_profit
+                            has_local_variable = aroai_allowed_by_profitability
                         }
                         change_variable = {
                             name = aroai_building_type_$id$_collected_data
                             add = 1000000
                         }
                     }
-                    change_variable = {
-                        name = aroai_building_type_$id$_collected_data
-                        subtract = 999900
-                    }
                 }
+
+                # Otherwise perform various manipulations with productivity and profitability
                 else = {
 
-                    # This is hand-made, not generated.
-                    # Keep in mind that productivity is stored as x10, so multiply = 8.4 means 0.84 means 84%.
+                    # Set required productivity to expand buildings of this type as country scope median building
+                    # productivity multiplied by some factor depending on productivity level we got from evaluation.
+                    # This is hand-made, not generated. Productivity is stored as x10, so 8.4 means 0.84 means 84%.
                     switch = {
-                        trigger = local_var:aroai_saved_productivity
-                        1 = { set_local_variable = { name = aroai_saved_productivity
+                        trigger = local_var:aroai_saved_productivity_requirement_level
+                        1 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 4.2 floor = yes } } }
-                        2 = { set_local_variable = { name = aroai_saved_productivity
+                        2 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 5.4 floor = yes } } }
-                        3 = { set_local_variable = { name = aroai_saved_productivity
+                        3 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 6.2 floor = yes } } }
-                        4 = { set_local_variable = { name = aroai_saved_productivity
+                        4 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 6.8 floor = yes } } }
-                        5 = { set_local_variable = { name = aroai_saved_productivity
+                        5 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 7.4 floor = yes } } }
-                        6 = { set_local_variable = { name = aroai_saved_productivity
+                        6 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 7.9 floor = yes } } }
-                        7 = { set_local_variable = { name = aroai_saved_productivity
+                        7 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 8.4 floor = yes } } }
-                        8 = { set_local_variable = { name = aroai_saved_productivity
+                        8 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 8.8 floor = yes } } }
-                        9 = { set_local_variable = { name = aroai_saved_productivity
+                        9 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 9.2 floor = yes } } }
-                        10 = { set_local_variable = { name = aroai_saved_productivity
+                        10 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 9.6 floor = yes } } }
-                        11 = { set_local_variable = { name = aroai_saved_productivity
+                        11 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 10.0 floor = yes } } }
-                        12 = { set_local_variable = { name = aroai_saved_productivity
+                        12 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 10.3 floor = yes } } }
-                        13 = { set_local_variable = { name = aroai_saved_productivity
+                        13 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 10.6 floor = yes } } }
-                        14 = { set_local_variable = { name = aroai_saved_productivity
+                        14 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 10.9 floor = yes } } }
-                        15 = { set_local_variable = { name = aroai_saved_productivity
+                        15 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 11.2 floor = yes } } }
-                        16 = { set_local_variable = { name = aroai_saved_productivity
+                        16 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 11.5 floor = yes } } }
-                        17 = { set_local_variable = { name = aroai_saved_productivity
+                        17 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 11.7 floor = yes } } }
-                        18 = { set_local_variable = { name = aroai_saved_productivity
+                        18 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 11.9 floor = yes } } }
-                        19 = { set_local_variable = { name = aroai_saved_productivity
+                        19 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.1 floor = yes } } }
-                        20 = { set_local_variable = { name = aroai_saved_productivity
+                        20 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.3 floor = yes } } }
-                        21 = { set_local_variable = { name = aroai_saved_productivity
+                        21 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.5 floor = yes } } }
-                        22 = { set_local_variable = { name = aroai_saved_productivity
+                        22 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.6 floor = yes } } }
-                        23 = { set_local_variable = { name = aroai_saved_productivity
+                        23 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.7 floor = yes } } }
-                        24 = { set_local_variable = { name = aroai_saved_productivity
+                        24 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.8 floor = yes } } }
-                        25 = { set_local_variable = { name = aroai_saved_productivity
+                        25 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 12.9 floor = yes } } }
-                        26 = { set_local_variable = { name = aroai_saved_productivity
+                        26 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.0 floor = yes } } }
-                        27 = { set_local_variable = { name = aroai_saved_productivity
+                        27 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.1 floor = yes } } }
-                        28 = { set_local_variable = { name = aroai_saved_productivity
+                        28 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.2 floor = yes } } }
-                        29 = { set_local_variable = { name = aroai_saved_productivity
+                        29 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.3 floor = yes } } }
-                        30 = { set_local_variable = { name = aroai_saved_productivity
+                        30 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.4 floor = yes } } }
-                        31 = { set_local_variable = { name = aroai_saved_productivity
+                        31 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.5 floor = yes } } }
-                        32 = { set_local_variable = { name = aroai_saved_productivity
+                        32 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.6 floor = yes } } }
-                        33 = { set_local_variable = { name = aroai_saved_productivity
+                        33 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.7 floor = yes } } }
-                        34 = { set_local_variable = { name = aroai_saved_productivity
+                        34 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.8 floor = yes } } }
-                        35 = { set_local_variable = { name = aroai_saved_productivity
+                        35 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 13.9 floor = yes } } }
-                        36 = { set_local_variable = { name = aroai_saved_productivity
+                        36 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.0 floor = yes } } }
-                        37 = { set_local_variable = { name = aroai_saved_productivity
+                        37 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.1 floor = yes } } }
-                        38 = { set_local_variable = { name = aroai_saved_productivity
+                        38 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.2 floor = yes } } }
-                        39 = { set_local_variable = { name = aroai_saved_productivity
+                        39 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.3 floor = yes } } }
-                        40 = { set_local_variable = { name = aroai_saved_productivity
+                        40 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.4 floor = yes } } }
-                        41 = { set_local_variable = { name = aroai_saved_productivity
+                        41 = { set_local_variable = { name = aroai_saved_productivity_requirement_level
                         value = { value = aroai_median_building_productivity multiply = 14.5 floor = yes } } }
                     }
+
+                    # Divide required productivity by some factor if constructing this building type is crucial
                     if = {
                         limit = {
                             aroai_half_of_average_between_level_and_productivity <= $crucial$
                         }
                         change_local_variable = {
-                            name = aroai_saved_productivity
-                            divide = 1.20
+                            name = aroai_saved_productivity_requirement_level
+                            divide = 1.30
                         }
                     }
                     else_if = {
@@ -196,21 +245,24 @@ aroai_check_priority_of_building = {
                             aroai_average_between_level_and_productivity <= $crucial$
                         }
                         change_local_variable = {
-                            name = aroai_saved_productivity
-                            divide = 1.10
+                            name = aroai_saved_productivity_requirement_level
+                            divide = 1.15
                         }
                     }
                     
+                    # If both productivity and profitability are high enough compared to required, allow new buildings
                     if = {
                         limit = {
-                            has_local_variable = aroai_allowed_by_profit
-                            aroai_building_type_$id$_collected_data_3 >= local_var:aroai_saved_productivity
+                            has_local_variable = aroai_allowed_by_profitability
+                            aroai_building_type_$id$_collected_data_3 >= local_var:aroai_saved_productivity_requirement_level
                         }
                         change_variable = {
                             name = aroai_building_type_$id$_collected_data
                             add = 1000000
                         }
                     }
+
+                    # Empty cell 3
                     change_variable = {
                         name = aroai_building_type_$id$_collected_data
                         subtract = {
@@ -218,16 +270,20 @@ aroai_check_priority_of_building = {
                             multiply = 100
                         }
                     }
+
+                    # Write required productivity into cell 3, existing buildings will be expanded only if theirs is >=
                     change_variable = {
                         name = aroai_building_type_$id$_collected_data
                         add = {
-                            value = local_var:aroai_saved_productivity
+                            value = local_var:aroai_saved_productivity_requirement_level
                             max = 9998
                             multiply = 100
                         }
                     }
                 }
             }
+
+            # If building evaluation gave us nothing, but building type variable exists, ensure it contains only counter
             else_if = {
                 limit = {
                     has_variable = aroai_building_type_$id$_collected_data
@@ -241,12 +297,15 @@ aroai_check_priority_of_building = {
                 }
             }
             
-            remove_local_variable = aroai_saved_priority
-            remove_local_variable = aroai_saved_level
-            remove_local_variable = aroai_saved_productivity
-            remove_local_variable = aroai_allowed_by_profit
+            # Garbage collection
+            remove_local_variable = aroai_saved_priority_level
+            remove_local_variable = aroai_saved_supply_vs_demand_level
+            remove_local_variable = aroai_saved_productivity_requirement_level
+            remove_local_variable = aroai_allowed_by_profitability
         }
     }
+
+    # If building evaluation is not allowed, but building type variable exists, ensure it contains only counter
     else_if = {
         limit = {
             has_variable = aroai_building_type_$id$_collected_data
@@ -259,12 +318,14 @@ aroai_check_priority_of_building = {
             }
         }
     }
+
+    # For building types that use critical construction we need to ensure their variable exists, even if it's just 0
     if = {
         limit = {
             OR = {
-                $id$ = 1
-                $id$ = 3
-                $id$ = 5
+                $id$ = 1 # Government administration
+                $id$ = 3 # Construction sector
+                $id$ = 5 # Port
             }
             NOT = {
                 has_variable = aroai_building_type_$id$_collected_data
@@ -276,12 +337,14 @@ aroai_check_priority_of_building = {
         }
     }
     
-    # Allocation
+    # If building type has some priority, perform allocation, checking which states are best suitable for construction
     if = {
         limit = {
             has_variable = aroai_building_type_$id$_collected_data
             aroai_building_type_$id$_collected_data_1 > 0
         }
+
+        # But only if its counter is within limit, as it's first time we have the data to check it properly
         if = {
             limit = {
                 aroai_check_if_counter_is_within_limit = {
@@ -290,6 +353,8 @@ aroai_check_priority_of_building = {
                     limit = $limit$
                 }
             }
+
+            # Check every state that has required basic variables
             every_scope_state = {
                 limit = {
                     has_variable = aroai_available_workforce
@@ -297,19 +362,25 @@ aroai_check_priority_of_building = {
                         has_variable = aroai_available_agriculture_resources
                     }
                 }
+
+                # If this state...
                 if = {
                     limit = {
+
+                        # ...meets basic requirements for this building type to get constructed...
                         aroai_sanction_$key$ = {
                             id = $id$
                         }
+
+                        # ...and is either suitable, or construction of this building type is crucial...
                         root = {
                             OR = {
                                 AND = {
                                     aroai_has_variable_list = {
-                                        name = aroai_suitable_states
+                                        name = aroai_states_suitable_for_construction
                                     }
                                     is_target_in_variable_list = {
-                                        name = aroai_suitable_states
+                                        name = aroai_states_suitable_for_construction
                                         target = prev
                                     }
                                 }
@@ -317,29 +388,33 @@ aroai_check_priority_of_building = {
                             }
                         }
                     }
-                    if = { limit = { $allocate$ >= 1 aroai_allocate_$key$ = { aptitude = 1 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_1 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 2 aroai_allocate_$key$ = { aptitude = 2 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_2 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 3 aroai_allocate_$key$ = { aptitude = 3 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_3 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 4 aroai_allocate_$key$ = { aptitude = 4 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_4 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 5 aroai_allocate_$key$ = { aptitude = 5 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_5 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 6 aroai_allocate_$key$ = { aptitude = 6 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_6 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 7 aroai_allocate_$key$ = { aptitude = 7 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_7 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 8 aroai_allocate_$key$ = { aptitude = 8 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_8 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 9 aroai_allocate_$key$ = { aptitude = 9 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_9 target = prev } } }
-                    else_if = { limit = { $allocate$ >= 10 aroai_allocate_$key$ = { aptitude = 10 } }
-                    root = { add_to_variable_list = { name = aroai_building_type_$id$_allocation_10 target = prev } } } 
+
+                    # ...then check it for every condition set in allocate trigger from static data of this building
+                    # type, and add the state into a corresponding allocation list if it meets requirements in trigger.
+                    if = { limit = { $allocate$ >= 1 aroai_allocate_$key$ = { aptitude = 1 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_1 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 2 aroai_allocate_$key$ = { aptitude = 2 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_2 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 3 aroai_allocate_$key$ = { aptitude = 3 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_3 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 4 aroai_allocate_$key$ = { aptitude = 4 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_4 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 5 aroai_allocate_$key$ = { aptitude = 5 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_5 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 6 aroai_allocate_$key$ = { aptitude = 6 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_6 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 7 aroai_allocate_$key$ = { aptitude = 7 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_7 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 8 aroai_allocate_$key$ = { aptitude = 8 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_8 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 9 aroai_allocate_$key$ = { aptitude = 9 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_9 target = prev } } }
+                    else_if = { limit = { $allocate$ >= 10 aroai_allocate_$key$ = { aptitude = 10 } } root = {
+                    add_to_variable_list = { name = aroai_building_type_$id$_allocation_10 target = prev } } } 
                 }
             }
             
+            # If no allocation lists were formed, no state can host this building
             if = {
                 limit = {
                     NOR = {
@@ -375,6 +450,8 @@ aroai_check_priority_of_building = {
                         }
                     }
                 }
+
+                # Thus we set building type priority to 0 so it won't be processed
                 change_variable = {
                     name = aroai_building_type_$id$_collected_data
                     subtract = {
@@ -384,6 +461,8 @@ aroai_check_priority_of_building = {
                 }
             }
         }
+
+        # If blocked by counter, set building type priority to 0 so it won't be processed
         else = {
             change_variable = {
                 name = aroai_building_type_$id$_collected_data
@@ -396,27 +475,33 @@ aroai_check_priority_of_building = {
     }
 }
 
-# For government buildings
+# Used by government building-specific evaluation
 aroai_evaluate_with_custom_trigger = {
+
+    # Start with priority 1
     set_local_variable = {
         name = aroai_current_priority
         value = 1
     }
+
+    # Try every priority until we find a fitting one
     while = {
         limit = {
             NOT = {
                 has_local_variable = aroai_break_evaluation
             }
-            aroai_current_priority <= 12
+            aroai_current_priority <= 12 # Highest present in government triggers
         }
         if = {
             limit = {
                 OR = {
                     $crucial$ >= aroai_current_priority
                     aroai_has_variable_list = {
-                        name = aroai_suitable_states
+                        name = aroai_states_suitable_for_construction
                     }
                 }
+
+                # We're forced to make key-id pairs cause dynamic name leads to a billion startup errors
                 switch = {
                     trigger = $id$
                     1 = {
@@ -456,15 +541,25 @@ aroai_evaluate_with_custom_trigger = {
                     }
                 }
             }
+
+            # If conditions are met, re-set building type variable in a new format with this priority
             set_variable = {
                 name = aroai_building_type_$id$_collected_data
                 value = {
-                    value = aroai_current_priority
-                    add = {
+
+                    # Cell 1
+                    value = {
                         value = aroai_current_priority
                         divide = 100
                     }
+
+                    # Cell 2
+                    add = aroai_current_priority
+
+                    # Cell 4
                     add = 1000000
+
+                    # Cell 5
                     if = {
                         limit = {
                             has_variable = aroai_building_type_$id$_collected_data
@@ -476,13 +571,19 @@ aroai_evaluate_with_custom_trigger = {
                     }
                 }
             }
+
+            # Set up variable to stop while loop
             set_local_variable = aroai_break_evaluation
         }
+
+        # priority++;
         change_local_variable = {
             name = aroai_current_priority
             add = 1
         }
     }
+
+    # If building evaluation is unsuccessful, but building type variable exists, ensure it contains only counter
     if = {
         limit = {
             NOT = {
@@ -492,76 +593,101 @@ aroai_evaluate_with_custom_trigger = {
         }
         set_variable = {
             name = aroai_building_type_$id$_collected_data
-            value = 0
+            value = {
+                value = aroai_building_type_$id$_collected_data_5
+                multiply = 10000000
+            }
         }
     }
+
+    # Garbage collection
     remove_local_variable = aroai_current_priority
     remove_local_variable = aroai_break_evaluation
 }
 
 # For production buildings
 aroai_evaluate_production_building = {
+
+    # Get supply vs demand level of the good
     market = {
         $good$ = {
             set_local_variable = {
-                name = aroai_evaluated_level
-                value = aroai_price_level
+                name = aroai_evaluated_supply_vs_demand_level
+                value = aroai_supply_vs_demand_level
             }
         }
     }
     
     if = {
         limit = {
-            local_var:aroai_evaluated_level > 0
-            local_var:aroai_evaluated_level < 99
-            OR = {
+
+            # Level is valid
+            local_var:aroai_evaluated_supply_vs_demand_level > 0
+            local_var:aroai_evaluated_supply_vs_demand_level < 99
+
+            # Despite $id$ being passed, we don't need it yet, but it may be required in future versions of the effect
+            OR = { 
                 always = yes
                 $id$ = 0
             }
         }
-    
+
+        # Add weight to priority, note that min weight is 1 and min supply vs demand level is 1, so min priority is 2,
+        # cause priority 1 is actually soft-reserved for (in most cases) critical construction of government buildings.
         set_local_variable = {
-            name = aroai_evaluated_priority
+            name = aroai_evaluated_priority_level
             value = {
-                value = local_var:aroai_evaluated_level
+                value = local_var:aroai_evaluated_supply_vs_demand_level
                 add = $weight$
             }
         }
         
         if = {
             limit = {
+
+                # If construction of this building type is crucial or there are suitable states...
                 OR = {
-                    local_var:aroai_evaluated_level <= $crucial$
+                    local_var:aroai_evaluated_supply_vs_demand_level <= $crucial$
                     aroai_has_variable_list = {
-                        name = aroai_suitable_states
+                        name = aroai_states_suitable_for_construction
                     }
                 }
+
+                # ...and there's no higher saved priority, e.g. from other goods of the building
                 OR = {
                     NOT = {
-                        has_local_variable = aroai_saved_priority
+                        has_local_variable = aroai_saved_priority_level
                     }
-                    local_var:aroai_saved_priority > aroai_evaluated_priority
+                    local_var:aroai_saved_priority_level > aroai_evaluated_priority_level
                 }
             }
+
+            # Save evaluated priority
             set_local_variable = {
-                name = aroai_saved_priority
-                value = local_var:aroai_evaluated_priority
+                name = aroai_saved_priority_level
+                value = local_var:aroai_evaluated_priority_level
             }
+
+            # Save supply vs demand level
             set_local_variable = {
-                name = aroai_saved_level
-                value = local_var:aroai_evaluated_level
+                name = aroai_saved_supply_vs_demand_level
+                value = local_var:aroai_evaluated_supply_vs_demand_level
             }
+
+            # Save productivity requirement, which is supply vs demand level with productivity offset
             set_local_variable = {
-                name = aroai_saved_productivity
+                name = aroai_saved_productivity_requirement_level
                 value = {
-                    value = local_var:aroai_evaluated_level
+                    value = local_var:aroai_evaluated_supply_vs_demand_level
                     add = $offset$
                 }
             }
         }
         
-        remove_local_variable = aroai_evaluated_priority
-    
+        # Garbage collection
+        remove_local_variable = aroai_evaluated_priority_level
     }
-    remove_local_variable = aroai_evaluated_level
+
+    # Garbage collection
+    remove_local_variable = aroai_evaluated_supply_vs_demand_level
 }

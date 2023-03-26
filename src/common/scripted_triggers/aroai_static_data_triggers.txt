@@ -1,24 +1,15 @@
-﻿####################
-# ECONOMY DATABASE #
-####################
-
-##########################################################
-## GOVERNMENT ADMINISTRATION
-##########################################################
-
-# ------------------------------------------------------
-# GOVERNMENT ADMINISTRATION
-# ------------------------------------------------------
+﻿# -------------------------
+# Government administration
+# -------------------------
 
 aroai_consider_building_government_administration = {
     has_technology_researched = tech_bureaucracy
     aroai_building_is_allowed = {
-        critical = 1
+        critical = 1 # Can be constructed as critical, 1 is id of building type
     }
     aroai_consider_building = {
         id = $id$
         shortage = 0
-        profitable = 0
     }
     OR = {
         bureaucracy < aroai_bureaucracy_1
@@ -202,7 +193,9 @@ aroai_allocate_building_government_administration = {
     }
 }
 
-### UNIVERSITY
+# ----------
+# University
+# ----------
 
 aroai_consider_building_university = {
     has_technology_researched = academia
@@ -212,7 +205,6 @@ aroai_consider_building_university = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 0
     }
     trigger_if = {
         limit = {
@@ -356,17 +348,18 @@ aroai_allocate_building_university = {
     $aptitude$ = 1
 }
 
-### CONSTRUCTION SECTOR
+# -------------------
+# Construction sector
+# -------------------
 
 aroai_consider_building_construction_sector = {
     has_technology_researched = urbanization
     aroai_building_is_allowed = {
-        critical = 3
+        critical = 3 # Can be constructed as critical, 3 is id of building type
     }
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 0
     }
     OR = {
         NOT = {
@@ -480,7 +473,9 @@ aroai_allocate_building_construction_sector = {
     $aptitude$ = 1
 }
 
-### RAILWAY
+# -------
+# Railway
+# -------
 
 aroai_consider_building_railway = {
     has_technology_researched = railways
@@ -522,7 +517,6 @@ aroai_evaluate_building_railway = {
         aroai_consider_building = {
             id = 4
             shortage = 1
-            profitable = 0
         }
     }
     trigger_else_if = {
@@ -535,7 +529,6 @@ aroai_evaluate_building_railway = {
         aroai_consider_building = {
             id = 4
             shortage = 1
-            profitable = 1
         }
     }
     trigger_else = {
@@ -566,10 +559,10 @@ aroai_evaluate_building_railway = {
             }
         }
         9 = {
-            market.mg:transportation.aroai_price_level >= 5
+            market.mg:transportation.aroai_supply_vs_demand_level >= 5
         }
         16 = {
-            market.mg:transportation.aroai_price_level >= 9
+            market.mg:transportation.aroai_supply_vs_demand_level >= 9
         }
     }
 }
@@ -623,12 +616,14 @@ aroai_allocate_building_railway = {
     }
 }
 
-### PORT
+# ----
+# Port
+# ----
 
 aroai_consider_building_port = {
     has_technology_researched = navigation
     aroai_building_is_allowed = {
-        critical = 5
+        critical = 5 # Can be constructed as critical, 5 is id of building type
     }
     any_scope_state = {
         is_coastal = yes
@@ -725,7 +720,6 @@ aroai_evaluate_building_port = {
             aroai_consider_building = {
                 id = 5
                 shortage = 0
-                profitable = 0
             }
         }
         trigger_else_if = {
@@ -735,7 +729,6 @@ aroai_evaluate_building_port = {
             aroai_consider_building = {
                 id = 5
                 shortage = 1
-                profitable = 0
             }
         }
         
@@ -745,19 +738,19 @@ aroai_evaluate_building_port = {
                 OR = {
                     AND = {
                         aroai_has_variable_list = {
-                            name = aroai_market_capital_coastline
+                            name = aroai_states_of_market_capital_coastline
                         }
                         aroai_overseas_connections_are_required = yes
                         NOT = {
                             any_in_list = {
-                                variable = aroai_market_capital_coastline
+                                variable = aroai_states_of_market_capital_coastline
                                 aroai_has_building = {
                                     key = building_port
                                 }
                             }
                         }
                         any_in_list = {
-                            variable = aroai_market_capital_coastline
+                            variable = aroai_states_of_market_capital_coastline
                             aroai_sanction_building_port = {
                                 id = 5
                             }
@@ -785,18 +778,18 @@ aroai_evaluate_building_port = {
             }
             2 = {
                 aroai_has_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                 }
                 aroai_overseas_connections_are_required = yes
                 any_in_list = {
-                    variable = aroai_market_capital_coastline
+                    variable = aroai_states_of_market_capital_coastline
                     aroai_has_building = {
                         key = building_port
                     }
                     count < aroai_ports_on_market_capital_coastline
                 }
                 any_in_list = {
-                    variable = aroai_market_capital_coastline
+                    variable = aroai_states_of_market_capital_coastline
                     aroai_sanction_building_port = {
                         id = 5
                     }
@@ -889,19 +882,19 @@ aroai_allocate_building_port = {
             root = {
                 aroai_building_type_5_collected_data_1 = 1
                 aroai_has_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                 }
                 aroai_overseas_connections_are_required = yes
                 NOT = {
                     any_in_list = {
-                        variable = aroai_market_capital_coastline
+                        variable = aroai_states_of_market_capital_coastline
                         aroai_has_building = {
                             key = building_port
                         }
                     }
                 }
                 is_target_in_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                     target = prev
                 }
             }
@@ -937,7 +930,7 @@ aroai_allocate_building_port = {
             root = {
                 aroai_building_type_5_collected_data_1 = 2
                 is_target_in_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                     target = prev
                 }
             }
@@ -999,7 +992,9 @@ aroai_allocate_building_port = {
     }
 }
 
-### BARRACKS
+# --------
+# Barracks
+# --------
 
 aroai_consider_building_barracks = {
     has_technology_researched = standing_army
@@ -1021,14 +1016,12 @@ aroai_consider_building_barracks = {
         aroai_consider_building = {
             id = $id$
             shortage = 0
-            profitable = 0
         }
     }
     trigger_else = {
         aroai_consider_building = {
             id = $id$
             shortage = 1
-            profitable = 0
         }
     }
     OR = {
@@ -1133,7 +1126,9 @@ aroai_allocate_building_barracks = {
     }
 }
 
-### NAVAL BASE
+# ----------
+# Naval base
+# ----------
 
 aroai_consider_building_naval_base = {
     has_technology_researched = admiralty
@@ -1155,14 +1150,12 @@ aroai_consider_building_naval_base = {
         aroai_consider_building = {
             id = $id$
             shortage = 0
-            profitable = 0
         }
     }
     trigger_else = {
         aroai_consider_building = {
             id = $id$
             shortage = 1
-            profitable = 0
         }
     }
     any_scope_state = {
@@ -1271,7 +1264,9 @@ aroai_allocate_building_naval_base = {
     }
 }
 
-### LOGGING CAMP
+# ------------
+# Logging camp
+# ------------
 
 aroai_consider_building_logging_camp = {
     aroai_building_is_allowed = {
@@ -1280,7 +1275,6 @@ aroai_consider_building_logging_camp = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1302,7 +1296,9 @@ aroai_allocate_building_logging_camp = {
     }
 }
 
-### FISHING WHARF
+# -------------
+# Fishing wharf
+# -------------
 
 aroai_consider_building_fishing_wharf = {
     aroai_building_is_allowed = {
@@ -1311,7 +1307,6 @@ aroai_consider_building_fishing_wharf = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1333,7 +1328,9 @@ aroai_allocate_building_fishing_wharf = {
     }
 }
 
-### WHALING STATION
+# ---------------
+# Whaling station
+# ---------------
 
 aroai_consider_building_whaling_station = {
     has_technology_researched = navigation
@@ -1343,7 +1340,6 @@ aroai_consider_building_whaling_station = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1365,167 +1361,9 @@ aroai_allocate_building_whaling_station = {
     }
 }
 
-### COAL MINE
-
-aroai_consider_building_coal_mine = {
-    has_technology_researched = shaft_mining
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_coal_mine = {
-    aroai_sanction_resource = {
-        key = building_coal_mine
-        id = $id$
-        resource = bg_coal_mining
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_coal_mine = {
-    aroai_allocate_resource = {
-        good = g:coal
-        aptitude = $aptitude$
-    }
-}
-
-### IRON MINE
-
-aroai_consider_building_iron_mine = {
-    has_technology_researched = shaft_mining
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_iron_mine = {
-    aroai_sanction_resource = {
-        key = building_iron_mine
-        id = $id$
-        resource = bg_iron_mining
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_iron_mine = {
-    aroai_allocate_resource = {
-        good = g:iron
-        aptitude = $aptitude$
-    }
-}
-
-### LEAD MINE
-
-aroai_consider_building_lead_mine = {
-    has_technology_researched = shaft_mining
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_lead_mine = {
-    aroai_sanction_resource = {
-        key = building_lead_mine
-        id = $id$
-        resource = bg_lead_mining
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_lead_mine = {
-    aroai_allocate_resource = {
-        good = g:lead
-        aptitude = $aptitude$
-    }
-}
-
-### SULFUR MINE
-
-aroai_consider_building_sulfur_mine = {
-    has_technology_researched = shaft_mining
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_sulfur_mine = {
-    aroai_sanction_resource = {
-        key = building_sulfur_mine
-        id = $id$
-        resource = bg_sulfur_mining
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_sulfur_mine = {
-    aroai_allocate_resource = {
-        good = g:sulfur
-        aptitude = $aptitude$
-    }
-}
-
-### GOLD MINE
-
-aroai_consider_building_gold_mine = {
-    has_technology_researched = shaft_mining
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_gold_mine = {
-    aroai_sanction_resource = {
-        key = building_gold_mine
-        id = $id$
-        resource = bg_gold_mining
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_gold_mine = {
-    aroai_allocate_resource = {
-        good = g:gold
-        aptitude = $aptitude$
-    }
-}
-
-### RUBBER PLANTATION
+# -----------------
+# Rubber plantation
+# -----------------
 
 aroai_consider_building_rubber_plantation = {
     has_technology_researched = rubber_mastication
@@ -1535,7 +1373,6 @@ aroai_consider_building_rubber_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1557,7 +1394,9 @@ aroai_allocate_building_rubber_plantation = {
     }
 }
 
-### OIL RIG
+# -------
+# Oil rig
+# -------
 
 aroai_consider_building_oil_rig = {
     has_technology_researched = pumpjacks
@@ -1567,7 +1406,6 @@ aroai_consider_building_oil_rig = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1589,7 +1427,174 @@ aroai_allocate_building_oil_rig = {
     }
 }
 
-### RYE FARM
+# ---------
+# Coal mine
+# ---------
+
+aroai_consider_building_coal_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_coal_mine = {
+    aroai_sanction_resource = {
+        key = building_coal_mine
+        id = $id$
+        resource = bg_coal_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_coal_mine = {
+    aroai_allocate_resource = {
+        good = g:coal
+        aptitude = $aptitude$
+    }
+}
+
+# ---------
+# Iron mine
+# ---------
+
+aroai_consider_building_iron_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_iron_mine = {
+    aroai_sanction_resource = {
+        key = building_iron_mine
+        id = $id$
+        resource = bg_iron_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_iron_mine = {
+    aroai_allocate_resource = {
+        good = g:iron
+        aptitude = $aptitude$
+    }
+}
+
+# ---------
+# Lead mine
+# ---------
+
+aroai_consider_building_lead_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_lead_mine = {
+    aroai_sanction_resource = {
+        key = building_lead_mine
+        id = $id$
+        resource = bg_lead_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_lead_mine = {
+    aroai_allocate_resource = {
+        good = g:lead
+        aptitude = $aptitude$
+    }
+}
+
+# -----------
+# Sulfur mine
+# -----------
+
+aroai_consider_building_sulfur_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_sulfur_mine = {
+    aroai_sanction_resource = {
+        key = building_sulfur_mine
+        id = $id$
+        resource = bg_sulfur_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_sulfur_mine = {
+    aroai_allocate_resource = {
+        good = g:sulfur
+        aptitude = $aptitude$
+    }
+}
+
+# ---------
+# Gold mine
+# ---------
+
+aroai_consider_building_gold_mine = {
+    has_technology_researched = shaft_mining
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_gold_mine = {
+    aroai_sanction_resource = {
+        key = building_gold_mine
+        id = $id$
+        resource = bg_gold_mining
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_gold_mine = {
+    aroai_allocate_resource = {
+        good = g:gold
+        aptitude = $aptitude$
+    }
+}
+
+# --------
+# Rye farm
+# --------
 
 aroai_consider_building_rye_farm = {
     has_technology_researched = enclosure
@@ -1599,7 +1604,6 @@ aroai_consider_building_rye_farm = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1622,7 +1626,9 @@ aroai_allocate_building_rye_farm = {
     }
 }
 
-### WHEAT FARM
+# ----------
+# Wheat farm
+# ----------
 
 aroai_consider_building_wheat_farm = {
     has_technology_researched = enclosure
@@ -1632,7 +1638,6 @@ aroai_consider_building_wheat_farm = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1655,7 +1660,9 @@ aroai_allocate_building_wheat_farm = {
     }
 }
 
-### RICE FARM
+# ---------
+# Rice farm
+# ---------
 
 aroai_consider_building_rice_farm = {
     has_technology_researched = enclosure
@@ -1665,7 +1672,6 @@ aroai_consider_building_rice_farm = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1688,7 +1694,9 @@ aroai_allocate_building_rice_farm = {
     }
 }
 
-### MAIZE FARM
+# ----------
+# Maize farm
+# ----------
 
 aroai_consider_building_maize_farm = {
     has_technology_researched = enclosure
@@ -1698,7 +1706,6 @@ aroai_consider_building_maize_farm = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1721,7 +1728,9 @@ aroai_allocate_building_maize_farm = {
     }
 }
 
-### MILLET FARM
+# -----------
+# Millet farm
+# -----------
 
 aroai_consider_building_millet_farm = {
     has_technology_researched = enclosure
@@ -1731,7 +1740,6 @@ aroai_consider_building_millet_farm = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1754,7 +1762,9 @@ aroai_allocate_building_millet_farm = {
     }
 }
 
-### LIVESTOCK RANCH
+# ---------------
+# Livestock ranch
+# ---------------
 
 aroai_consider_building_livestock_ranch = {
     has_technology_researched = enclosure
@@ -1764,7 +1774,6 @@ aroai_consider_building_livestock_ranch = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1787,7 +1796,9 @@ aroai_allocate_building_livestock_ranch = {
     }
 }
 
-### COTTON PLANTATION
+# -----------------
+# Cotton plantation
+# -----------------
 
 aroai_consider_building_cotton_plantation = {
     has_technology_researched = enclosure
@@ -1797,7 +1808,6 @@ aroai_consider_building_cotton_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1820,7 +1830,9 @@ aroai_allocate_building_cotton_plantation = {
     }
 }
 
-### DYE PLANTATION
+# --------------
+# Dye plantation
+# --------------
 
 aroai_consider_building_dye_plantation = {
     has_technology_researched = enclosure
@@ -1830,7 +1842,6 @@ aroai_consider_building_dye_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1853,7 +1864,9 @@ aroai_allocate_building_dye_plantation = {
     }
 }
 
-### SILK PLANTATION
+# ---------------
+# Silk plantation
+# ---------------
 
 aroai_consider_building_silk_plantation = {
     has_technology_researched = enclosure
@@ -1863,7 +1876,6 @@ aroai_consider_building_silk_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1886,7 +1898,9 @@ aroai_allocate_building_silk_plantation = {
     }
 }
 
-### BANANA PLANTATION
+# -----------------
+# Banana plantation
+# -----------------
 
 aroai_consider_building_banana_plantation = {
     has_technology_researched = enclosure
@@ -1896,7 +1910,6 @@ aroai_consider_building_banana_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1919,7 +1932,9 @@ aroai_allocate_building_banana_plantation = {
     }
 }
 
-### SUGAR PLANTATION
+# ----------------
+# Sugar plantation
+# ----------------
 
 aroai_consider_building_sugar_plantation = {
     has_technology_researched = enclosure
@@ -1929,7 +1944,6 @@ aroai_consider_building_sugar_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1952,7 +1966,9 @@ aroai_allocate_building_sugar_plantation = {
     }
 }
 
-### TEA PLANTATION
+# --------------
+# Tea plantation
+# --------------
 
 aroai_consider_building_tea_plantation = {
     has_technology_researched = enclosure
@@ -1962,7 +1978,6 @@ aroai_consider_building_tea_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -1985,7 +2000,9 @@ aroai_allocate_building_tea_plantation = {
     }
 }
 
-### COFFEE PLANTATION
+# -----------------
+# Coffee plantation
+# -----------------
 
 aroai_consider_building_coffee_plantation = {
     has_technology_researched = enclosure
@@ -1995,7 +2012,6 @@ aroai_consider_building_coffee_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2018,7 +2034,9 @@ aroai_allocate_building_coffee_plantation = {
     }
 }
 
-### TOBACCO PLANTATION
+# ------------------
+# Tobacco plantation
+# ------------------
 
 aroai_consider_building_tobacco_plantation = {
     has_technology_researched = enclosure
@@ -2028,7 +2046,6 @@ aroai_consider_building_tobacco_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2051,7 +2068,9 @@ aroai_allocate_building_tobacco_plantation = {
     }
 }
 
-### OPIUM PLANTATION
+# ----------------
+# Opium plantation
+# ----------------
 
 aroai_consider_building_opium_plantation = {
     has_technology_researched = enclosure
@@ -2061,7 +2080,6 @@ aroai_consider_building_opium_plantation = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
     NOT = {
         is_banning_goods = g:opium
@@ -2087,7 +2105,9 @@ aroai_allocate_building_opium_plantation = {
     }
 }
 
-### FOOD INDUSTRY
+# -------------
+# Food industry
+# -------------
 
 aroai_consider_building_food_industry = {
     has_technology_researched = manufacturies
@@ -2097,7 +2117,6 @@ aroai_consider_building_food_industry = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2115,35 +2134,9 @@ aroai_allocate_building_food_industry = {
     $aptitude$ = 1
 }
 
-### ARTS ACADEMY
-
-aroai_consider_building_arts_academy = {
-    has_technology_researched = romanticism
-    aroai_building_is_allowed = {
-        critical = 0
-    }
-    aroai_consider_building = {
-        id = $id$
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_sanction_building_arts_academy = {
-    aroai_sanction_industry = {
-        key = building_arts_academy
-        id = $id$
-        conditions = 0
-        shortage = 1
-        profitable = 1
-    }
-}
-
-aroai_allocate_building_arts_academy = {
-    $aptitude$ = 1
-}
-
-### TEXTILE MILLS
+# -------------
+# Textile mills
+# -------------
 
 aroai_consider_building_textile_mills = {
     has_technology_researched = manufacturies
@@ -2153,7 +2146,6 @@ aroai_consider_building_textile_mills = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2171,7 +2163,9 @@ aroai_allocate_building_textile_mills = {
     $aptitude$ = 1
 }
 
-### FURNITURE MANUFACTURIES
+# -----------------------
+# Furniture manufacturies
+# -----------------------
 
 aroai_consider_building_furniture_manufacturies = {
     has_technology_researched = manufacturies
@@ -2181,7 +2175,6 @@ aroai_consider_building_furniture_manufacturies = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2199,7 +2192,9 @@ aroai_allocate_building_furniture_manufacturies = {
     $aptitude$ = 1
 }
 
-### GLASSWORKS
+# ----------
+# Glassworks
+# ----------
 
 aroai_consider_building_glassworks = {
     has_technology_researched = manufacturies
@@ -2209,7 +2204,6 @@ aroai_consider_building_glassworks = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2227,7 +2221,9 @@ aroai_allocate_building_glassworks = {
     $aptitude$ = 1
 }
 
-### TOOLING WORKSHOPS
+# -----------------
+# Tooling workshops
+# -----------------
 
 aroai_consider_building_tooling_workshops = {
     has_technology_researched = manufacturies
@@ -2237,7 +2233,6 @@ aroai_consider_building_tooling_workshops = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2255,7 +2250,9 @@ aroai_allocate_building_tooling_workshops = {
     $aptitude$ = 1
 }
 
-### PAPER MILLS
+# -----------
+# Paper mills
+# -----------
 
 aroai_consider_building_paper_mills = {
     has_technology_researched = manufacturies
@@ -2265,7 +2262,6 @@ aroai_consider_building_paper_mills = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2283,7 +2279,9 @@ aroai_allocate_building_paper_mills = {
     $aptitude$ = 1
 }
 
-### CHEMICAL PLANTS
+# ---------------
+# Chemical plants
+# ---------------
 
 aroai_consider_building_chemical_plants = {
     has_technology_researched = intensive_agriculture
@@ -2293,7 +2291,6 @@ aroai_consider_building_chemical_plants = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2311,7 +2308,9 @@ aroai_allocate_building_chemical_plants = {
     $aptitude$ = 1
 }
 
-### SYNTHETICS PLANTS
+# ----------------
+# Synthetic plants
+# ----------------
 
 aroai_consider_building_synthetics_plants = {
     has_technology_researched = aniline
@@ -2321,7 +2320,6 @@ aroai_consider_building_synthetics_plants = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2339,7 +2337,9 @@ aroai_allocate_building_synthetics_plants = {
     $aptitude$ = 1
 }
 
-### STEEL MILLS
+# -----------
+# Steel mills
+# -----------
 
 aroai_consider_building_steel_mills = {
     has_technology_researched = steelworking
@@ -2349,7 +2349,6 @@ aroai_consider_building_steel_mills = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2367,7 +2366,9 @@ aroai_allocate_building_steel_mills = {
     $aptitude$ = 1
 }
 
-### MOTOR INDUSTRY
+# --------------
+# Motor industry
+# --------------
 
 aroai_consider_building_motor_industry = {
     has_technology_researched = atmospheric_engine
@@ -2377,7 +2378,6 @@ aroai_consider_building_motor_industry = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2395,7 +2395,9 @@ aroai_allocate_building_motor_industry = {
     $aptitude$ = 1
 }
 
-### SHIPYARDS
+# ---------
+# Shipyards
+# ---------
 
 aroai_consider_building_shipyards = {
     has_technology_researched = navigation
@@ -2408,7 +2410,6 @@ aroai_consider_building_shipyards = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2427,7 +2428,9 @@ aroai_allocate_building_shipyards = {
     $aptitude$ = 1
 }
 
-### POWER PLANT
+# -----------
+# Power plant
+# -----------
 
 aroai_consider_building_power_plant = {
     has_technology_researched = electrical_generation
@@ -2437,7 +2440,6 @@ aroai_consider_building_power_plant = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2455,7 +2457,9 @@ aroai_allocate_building_power_plant = {
     $aptitude$ = 1
 }
 
-### ELECTRICS INDUSTRY
+# ------------------
+# Electrics industry
+# ------------------
 
 aroai_consider_building_electrics_industry = {
     has_technology_researched = telephone
@@ -2465,7 +2469,6 @@ aroai_consider_building_electrics_industry = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2483,7 +2486,9 @@ aroai_allocate_building_electrics_industry = {
     $aptitude$ = 1
 }
 
-### ARMS INDUSTRY
+# -------------
+# Arms industry
+# -------------
 
 aroai_consider_building_arms_industry = {
     has_technology_researched = gunsmithing
@@ -2493,7 +2498,6 @@ aroai_consider_building_arms_industry = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2511,7 +2515,9 @@ aroai_allocate_building_arms_industry = {
     $aptitude$ = 1
 }
 
-### MUNITION PLANTS
+# ---------------
+# Munition plants
+# ---------------
 
 aroai_consider_building_munition_plants = {
     has_technology_researched = percussion_cap
@@ -2521,7 +2527,6 @@ aroai_consider_building_munition_plants = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2539,7 +2544,9 @@ aroai_allocate_building_munition_plants = {
     $aptitude$ = 1
 }
 
-### WAR MACHINE INDUSTRY
+# --------------------
+# War machine industry
+# --------------------
 
 aroai_consider_building_war_machine_industry = {
     has_technology_researched = military_aviation
@@ -2549,7 +2556,6 @@ aroai_consider_building_war_machine_industry = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 
@@ -2571,6 +2577,35 @@ aroai_is_using_compatibility_patches = {
     aroai_has_global_variable_list = {
         name = aroai_compatibility_patches
     }
+}
+
+# ------------
+# Arts academy
+# ------------
+
+aroai_consider_building_arts_academy = {
+    has_technology_researched = romanticism
+    aroai_building_is_allowed = {
+        critical = 0
+    }
+    aroai_consider_building = {
+        id = $id$
+        shortage = 1
+    }
+}
+
+aroai_sanction_building_arts_academy = {
+    aroai_sanction_industry = {
+        key = building_arts_academy
+        id = $id$
+        conditions = 0
+        shortage = 1
+        profitable = 1
+    }
+}
+
+aroai_allocate_building_arts_academy = {
+    $aptitude$ = 1
 }
 
 # ------------------------------------------------------------------------------------
@@ -2644,39 +2679,39 @@ aroai_is_true_for_any_building_type = {
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_opium_plantation id = 32
         class = 5 counter = 32 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_food_industry id = 33
-        class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_textile_mills id = 34
-        class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_furniture_manufacturies id = 35
-        class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_glassworks id = 36
-        class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_tooling_workshops id = 37
-        class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_paper_mills id = 38
-        class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_chemical_plants id = 39
-        class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_synthetics_plants id = 40
-        class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_steel_mills id = 41
-        class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_motor_industry id = 42
-        class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_shipyards id = 43
-        class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_power_plant id = 44
-        class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_electrics_industry id = 45
-        class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_arms_industry id = 46
-        class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_munition_plants id = 47
-        class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_war_machine_industry id = 48
-        class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         aroai_is_true_for_building_type = { trigger = $trigger$ key = building_arts_academy id = 49
-        class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+        class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
         AND = {
             aroai_is_using_compatibility_patches = yes
             aroai_is_true_for_any_building_type_compatibility = { trigger = $trigger$ }

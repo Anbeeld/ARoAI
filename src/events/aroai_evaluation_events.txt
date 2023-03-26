@@ -1,5 +1,6 @@
 ﻿namespace = aroai_evaluation_events
 
+# Called by aroai_preparation_events.1
 aroai_evaluation_events.1 = {
     type = country_event
     hidden = yes

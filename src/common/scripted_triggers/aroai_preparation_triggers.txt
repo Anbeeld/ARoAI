@@ -14,10 +14,10 @@ aroai_is_construction_allowed = {
     OR = {
         aroai_day_of_ongoing_iteration = 1
         AND = {
-            aroai_regular_building = yes
+            aroai_is_regular_construction_allowed = yes
             aroai_free_construction_points > 0
         }
-        aroai_critical_building = yes
+        aroai_is_critical_construction_allowed = yes
     }
     OR = {
         is_player = no
@@ -28,7 +28,7 @@ aroai_is_construction_allowed = {
     }
 }
 
-aroai_regular_building = {
+aroai_is_regular_construction_allowed = {
     OR = {
         is_player = yes
         scaled_debt < 0.45
@@ -36,9 +36,14 @@ aroai_regular_building = {
     }
 }
 
-aroai_critical_building = {
+# Certain buildings can be constructed as critical, meaning it will bypass any construction points and debt limitations.
+# Data about ongoing constructions, shortages etc. for these building types must be collected in weekly loop on day one
+# of main loop iteration instead of the usual preparation effects. Priority 1 is soft-reserved for critical constuction
+# as well, non-critical government buildings can use it too, but for production buildings minimum priority level is 2.
+aroai_is_critical_construction_allowed = {
     OR = {
-    
+        
+        # Government administration
         trigger_if = {
             limit = {
                 aroai_day_of_ongoing_iteration >= 3
@@ -76,6 +81,7 @@ aroai_critical_building = {
             }
         }
         
+        # Construction sector
         trigger_if = {
             limit = {
                 aroai_day_of_ongoing_iteration >= 3
@@ -139,6 +145,7 @@ aroai_critical_building = {
             }
         }
         
+        # Port
         trigger_if = {
             limit = {
                 aroai_day_of_ongoing_iteration >= 3
@@ -195,18 +202,17 @@ aroai_has_no_construction_sectors = {
     }
 }
 
-# Are there any free construction points?
 aroai_has_free_construction_points = {
     OR = {
         aroai_free_construction_points > 0
-        aroai_critical_building = yes
+        aroai_is_critical_construction_allowed = yes
     }
 }
 
 aroai_overseas_connections_are_required = {
     OR = {
         aroai_has_variable_list = {
-            name = aroai_coastline_of_outer_lands
+            name = aroai_coastline_of_overseas_lands
         }
         any_country = {
             NOT = {
@@ -253,19 +259,21 @@ aroai_building_is_excessive = {
 
 # Building is almost empty and thus unneeded
 aroai_building_is_abandoned = {
-    is_under_construction = no
     level > 0
     occupancy < 0.40
 }
 
-aroai_can_downsize_production_building = {
+aroai_is_production_downsizing_allowed = {
+    NOT = {
+        has_law = law_type:law_laissez_faire
+    }
     has_local_variable = aroai_downsizing_is_allowed
     OR = {
         has_local_variable = aroai_construction_is_allowed
         AND = {
-            has_variable = aroai_cycles_since_production_downsizing
-            var:aroai_cycles_since_production_downsizing >= 5
+            has_variable = aroai_iterations_since_production_downsizing
+            var:aroai_iterations_since_production_downsizing >= aroai_max_iterations_since_production_downsizing
         }
     }
-    var:aroai_unutilized_workforce < aroai_unutilized_workforce_total_threshold
+    var:aroai_unutilized_workforce_percent < aroai_unutilized_workforce_percent_total_threshold
 }

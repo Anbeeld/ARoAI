@@ -19,6 +19,9 @@ aroai_days_since_construction_modifiers_were_applied = {
     subtract = global_var:aroai_date_of_last_applying_of_construction_modifiers
 }
 
+aroai_max_iterations_since_production_downsizing = 5
+
+# TODO get it from countries with no construction sectors yearly or monthly instead
 aroai_base_construction_points = 5
 
 aroai_construction_points_per_building = {
@@ -56,10 +59,11 @@ aroai_construction_points_per_building = {
 
 aroai_construction_points_current = {
     value = modifier:country_construction_add
-    #multiply = {
-    #    value = modifier:country_construction_mult
-    #    add = 1
-    #}
+    # Is not in the game yet
+    # multiply = {
+    #     value = modifier:country_construction_mult
+    #     add = 1
+    # }
     min = aroai_base_construction_points
 }
 
@@ -72,7 +76,6 @@ aroai_construction_points_from_sectors_current = {
 aroai_constructions_possible_with_current_points = {
     value = aroai_construction_points_current
     divide = aroai_construction_points_per_building
-    #ceiling = yes
 }
 
 aroai_usage_of_construction_points_value = {
@@ -793,8 +796,8 @@ aroai_current_priority = {
     value = local_var:aroai_current_priority
 }
 
-aroai_evaluated_priority = {
-    value = local_var:aroai_evaluated_priority
+aroai_evaluated_priority_level = {
+    value = local_var:aroai_evaluated_priority_level
 }
 
 aroai_current_aroai_building_type_occupied_levels = {
@@ -857,7 +860,7 @@ aroai_state_naval_base_limit = {
     value = modifier:state_building_naval_base_max_level_add
 }
 
-aroai_buildings_with_highest_priority_order = {
+aroai_order_of_current_element = {
     value = this
     subtract = {
         value = this
@@ -873,15 +876,15 @@ aroai_buildings_with_highest_priority_id = {
 }
 
 aroai_average_between_level_and_productivity = {
-    value = local_var:aroai_saved_level
-    add = local_var:aroai_saved_productivity
+    value = local_var:aroai_saved_supply_vs_demand_level
+    add = local_var:aroai_saved_productivity_requirement_level
     divide = 2
     floor = yes
 }
 
 aroai_half_of_average_between_level_and_productivity = {
-    value = local_var:aroai_saved_level
-    add = local_var:aroai_saved_productivity
+    value = local_var:aroai_saved_supply_vs_demand_level
+    add = local_var:aroai_saved_productivity_requirement_level
     divide = 4
     ceiling = yes
 }
@@ -956,12 +959,40 @@ aroai_available_agriculture_resources_6 = {
 }
 
 aroai_building_data_overflow_protection = {
-    value = 1000000000
+    value = 10000
     subtract = {
         value = prev.aroai_occupied_levels
         round = yes
     }
 }
+
+# Cell distribution of aroai_building_type_X_collected_data array variable
+#
+# During shortage data collection
+# dddcbbbbaa.aa
+# aaaa | multiply = 100    | ? | levels of building type with shortage
+# bbbb | divide = 100      | 3 | total levels of building type
+# c    | divide = 1000000  | 4 | usage of production methods, see aroai_check_production_methods_of_building_type
+# ddd  | divide = 10000000 | 5 | counter of ongoing constructions (max 213)
+# Note that aaaa cell doesn't align with how cells are distributed in other stages, so you can't get it with value
+#
+# After data collection is completed
+# eeedccccbb.aa
+# aa   | multiply = 100    | 1 | percent of buildings without shortage
+# bb   | no modification   | 2 | median profitability of building type compared to average in percent
+# cccc | divide = 100      | 3 | median productivity of building type with economy of scale removed (x10, 23.6 = 236)
+# d    | divide = 1000000  | 4 | usage of production methods, see aroai_check_production_methods_of_building_type
+# eee  | divide = 10000000 | 5 | counter of ongoing constructions (max 213)
+# Note that data in cells 1 and 2 is capped to 99%, but it's not a problem due to how these cells are used
+#
+# After building type priority is evaluated
+# eeedccccbb.aa
+# aa   | multiply = 100    | 1 | priority of building type
+# bb   | no modification   | 2 | supply vs demand level used for priority
+# cccc | divide = 100      | 3 | productivity that a building of this type must have to get expanded (x10, 23.6 = 236)
+# d    | divide = 1000000  | 4 | is construction of new buildings of this type allowed (0 = false, 1 = true)
+# eee  | divide = 10000000 | 5 | counter of ongoing constructions (max 213)
+# Note that 1 and 2 are capped to 99%, but it's not a problem due to how these cells are used
 
 aroai_building_type_1_collected_data_1 = { value = var:aroai_building_type_1_collected_data
 subtract = { value = var:aroai_building_type_1_collected_data floor = yes } multiply = 100 }

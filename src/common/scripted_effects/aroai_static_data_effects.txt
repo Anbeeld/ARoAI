@@ -1,4 +1,5 @@
-﻿aroai_check_production_methods = {
+﻿# Check if a building uses a certain production method and write data into variable
+aroai_check_production_methods_of_building_type = {
     root = {
         switch = {
             trigger = $id$
@@ -289,25 +290,6 @@
                     }
                 }
             }
-            # 20 = {
-                # if = {
-                    # limit = {
-                        # OR = {
-                            # NOT = {
-                                # has_variable = aroai_building_type_$id$_collected_data
-                            # }
-                            # aroai_building_type_$id$_collected_data_4 = 0
-                        # }
-                        # prev = {
-                            # has_active_production_method = pm_fig_orchards
-                        # }
-                    # }
-                    # aroai_add_to_variable = {
-                        # name = aroai_building_type_$id$_collected_data
-                        # value = 1000000
-                    # }
-                # }
-            # }
             21 = {
                 if = {
                     limit = {
@@ -354,25 +336,6 @@
                     }
                 }
             }
-            # 22 = {
-                # if = {
-                    # limit = {
-                        # OR = {
-                            # NOT = {
-                                # has_variable = aroai_building_type_$id$_collected_data
-                            # }
-                            # aroai_building_type_$id$_collected_data_4 = 0
-                        # }
-                        # prev = {
-                            # has_active_production_method = pm_fig_orchards
-                        # }
-                    # }
-                    # aroai_add_to_variable = {
-                        # name = aroai_building_type_$id$_collected_data
-                        # value = 1000000
-                    # }
-                # }
-            # }
             33 = {
                 if = {
                     limit = {
@@ -640,12 +603,20 @@
     }
 }
 
+# -------------------------
+# Government administration
+# -------------------------
+
 aroai_evaluate_building_government_administration = {
     aroai_evaluate_with_custom_trigger = {
         id = $id$
         crucial = $crucial$
     }
 }
+
+# ----------
+# University
+# ----------
 
 aroai_evaluate_building_university = {
     aroai_evaluate_with_custom_trigger = {
@@ -654,12 +625,20 @@ aroai_evaluate_building_university = {
     }
 }
 
+# -------------------
+# Construction sector
+# -------------------
+
 aroai_evaluate_building_construction_sector = {
     aroai_evaluate_with_custom_trigger = {
         id = $id$
         crucial = $crucial$
     }
 }
+
+# -------
+# Railway
+# -------
 
 aroai_evaluate_building_railway = {
     aroai_evaluate_with_custom_trigger = {
@@ -668,12 +647,20 @@ aroai_evaluate_building_railway = {
     }
 }
 
+# ----
+# Port
+# ----
+
 aroai_evaluate_building_port = {
     aroai_evaluate_with_custom_trigger = {
         id = $id$
         crucial = $crucial$
     }
 }
+
+# --------
+# Barracks
+# --------
 
 aroai_evaluate_building_barracks = {
     aroai_evaluate_with_custom_trigger = {
@@ -682,12 +669,20 @@ aroai_evaluate_building_barracks = {
     }
 }
 
+# ----------
+# Naval base
+# ----------
+
 aroai_evaluate_building_naval_base = {
     aroai_evaluate_with_custom_trigger = {
         id = $id$
         crucial = $crucial$
     }
 }
+
+# ------------
+# Logging camp
+# ------------
 
 aroai_evaluate_building_logging_camp = {
     aroai_evaluate_production_building = {
@@ -716,6 +711,10 @@ aroai_evaluate_building_logging_camp = {
     }
 }
 
+# -------------
+# Fishing wharf
+# -------------
+
 aroai_evaluate_building_fishing_wharf = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -732,6 +731,10 @@ aroai_evaluate_building_fishing_wharf = {
         offset = 4
     }
 }
+
+# ---------------
+# Whaling station
+# ---------------
 
 aroai_evaluate_building_whaling_station = {
     aroai_evaluate_production_building = {
@@ -750,6 +753,10 @@ aroai_evaluate_building_whaling_station = {
     }
 }
 
+# -----------------
+# Rubber plantation
+# -----------------
+
 aroai_evaluate_building_rubber_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -759,6 +766,10 @@ aroai_evaluate_building_rubber_plantation = {
         offset = 0
     }
 }
+
+# -------
+# Oil rig
+# -------
 
 aroai_evaluate_building_oil_rig = {
     if = {
@@ -771,15 +782,15 @@ aroai_evaluate_building_oil_rig = {
             }
         }
         set_local_variable = {
-            name = aroai_saved_priority
+            name = aroai_saved_priority_level
             value = 2
         }
         set_local_variable = {
-            name = aroai_saved_level
+            name = aroai_saved_supply_vs_demand_level
             value = 1
         }
         set_local_variable = {
-            name = aroai_saved_productivity
+            name = aroai_saved_productivity_requirement_level
             value = 1
         }
     }
@@ -794,6 +805,10 @@ aroai_evaluate_building_oil_rig = {
     }
 }
 
+# ---------
+# Coal mine
+# ---------
+
 aroai_evaluate_building_coal_mine = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -803,6 +818,10 @@ aroai_evaluate_building_coal_mine = {
         offset = 0
     }
 }
+
+# ---------
+# Iron mine
+# ---------
 
 aroai_evaluate_building_iron_mine = {
     aroai_evaluate_production_building = {
@@ -814,6 +833,10 @@ aroai_evaluate_building_iron_mine = {
     }
 }
 
+# ---------
+# Lead mine
+# ---------
+
 aroai_evaluate_building_lead_mine = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -823,6 +846,10 @@ aroai_evaluate_building_lead_mine = {
         offset = 0
     }
 }
+
+# -----------
+# Sulfur mine
+# -----------
 
 aroai_evaluate_building_sulfur_mine = {
     aroai_evaluate_production_building = {
@@ -834,17 +861,21 @@ aroai_evaluate_building_sulfur_mine = {
     }
 }
 
+# ---------
+# Gold mine
+# ---------
+
 aroai_evaluate_building_gold_mine = {
     set_local_variable = {
-        name = aroai_saved_priority
+        name = aroai_saved_priority_level
         value = 6
     }
     set_local_variable = {
-        name = aroai_saved_level
+        name = aroai_saved_supply_vs_demand_level
         value = 5
     }
     set_local_variable = {
-        name = aroai_saved_productivity
+        name = aroai_saved_productivity_requirement_level
         value = 5
     }
     if = {
@@ -857,6 +888,10 @@ aroai_evaluate_building_gold_mine = {
         }
     }
 }
+
+# --------
+# Rye farm
+# --------
 
 aroai_evaluate_building_rye_farm = {
     aroai_evaluate_production_building = {
@@ -884,32 +919,11 @@ aroai_evaluate_building_rye_farm = {
             offset = 6
         }
     }
-    # if = {
-        # limit = {
-            # OR = {
-                # NOT = {
-                    # has_variable = aroai_building_type_$id$_collected_data
-                # }
-                # aroai_building_type_$id$_collected_data_4 = 2
-                # aroai_building_type_$id$_collected_data_4 >= 3
-            # }
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:fruit
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:sugar
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-    # }
 }
+
+# ----------
+# Wheat farm
+# ----------
 
 aroai_evaluate_building_wheat_farm = {
     aroai_evaluate_production_building = {
@@ -919,31 +933,6 @@ aroai_evaluate_building_wheat_farm = {
         weight = aroai_agriculture_weight_2
         offset = 0
     }
-    # if = {
-        # limit = {
-            # OR = {
-                # NOT = {
-                    # has_variable = aroai_building_type_$id$_collected_data
-                # }
-                # aroai_building_type_$id$_collected_data_4 = 1
-                # aroai_building_type_$id$_collected_data_4 >= 3
-            # }
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:fruit
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:sugar
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-    # }
     if = {
         limit = {
             OR = {
@@ -963,6 +952,10 @@ aroai_evaluate_building_wheat_farm = {
         }
     }
 }
+
+# ---------
+# Rice farm
+# ---------
 
 aroai_evaluate_building_rice_farm = {
     aroai_evaluate_production_building = {
@@ -972,32 +965,11 @@ aroai_evaluate_building_rice_farm = {
         weight = aroai_agriculture_weight_2
         offset = 0
     }
-    # if = {
-        # limit = {
-            # OR = {
-                # NOT = {
-                    # has_variable = aroai_building_type_$id$_collected_data
-                # }
-                # aroai_building_type_$id$_collected_data_4 = 1
-                # aroai_building_type_$id$_collected_data_4 >= 3
-            # }
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:fruit
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:sugar
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-    # }
 }
+
+# ----------
+# Maize farm
+# ----------
 
 aroai_evaluate_building_maize_farm = {
     aroai_evaluate_production_building = {
@@ -1007,31 +979,6 @@ aroai_evaluate_building_maize_farm = {
         weight = aroai_agriculture_weight_2
         offset = 0
     }
-    # if = {
-        # limit = {
-            # OR = {
-                # NOT = {
-                    # has_variable = aroai_building_type_$id$_collected_data
-                # }
-                # aroai_building_type_$id$_collected_data_4 = 1
-                # aroai_building_type_$id$_collected_data_4 >= 3
-            # }
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:fruit
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:sugar
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-    # }
     if = {
         limit = {
             OR = {
@@ -1052,6 +999,10 @@ aroai_evaluate_building_maize_farm = {
     }
 }
 
+# -----------
+# Millet farm
+# -----------
+
 aroai_evaluate_building_millet_farm = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1060,32 +1011,11 @@ aroai_evaluate_building_millet_farm = {
         weight = aroai_agriculture_weight_2
         offset = 0
     }
-    # if = {
-        # limit = {
-            # OR = {
-                # NOT = {
-                    # has_variable = aroai_building_type_$id$_collected_data
-                # }
-                # aroai_building_type_$id$_collected_data_4 = 1
-                # aroai_building_type_$id$_collected_data_4 >= 3
-            # }
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:fruit
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-        # aroai_evaluate_production_building = {
-            # id = $id$
-            # crucial = $crucial$
-            # good = mg:sugar
-            # weight = aroai_agriculture_weight_4
-            # offset = 4
-        # }
-    # }
 }
+
+# ---------------
+# Livestock ranch
+# ---------------
 
 aroai_evaluate_building_livestock_ranch = {
     aroai_evaluate_production_building = {
@@ -1104,6 +1034,10 @@ aroai_evaluate_building_livestock_ranch = {
     }
 }
 
+# -----------------
+# Cotton plantation
+# -----------------
+
 aroai_evaluate_building_cotton_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1113,6 +1047,10 @@ aroai_evaluate_building_cotton_plantation = {
         offset = 0
     }
 }
+
+# --------------
+# Dye plantation
+# --------------
 
 aroai_evaluate_building_dye_plantation = {
     aroai_evaluate_production_building = {
@@ -1124,6 +1062,10 @@ aroai_evaluate_building_dye_plantation = {
     }
 }
 
+# ---------------
+# Silk plantation
+# ---------------
+
 aroai_evaluate_building_silk_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1133,6 +1075,10 @@ aroai_evaluate_building_silk_plantation = {
         offset = 0
     }
 }
+
+# -----------------
+# Banana plantation
+# -----------------
 
 aroai_evaluate_building_banana_plantation = {
     aroai_evaluate_production_building = {
@@ -1151,6 +1097,10 @@ aroai_evaluate_building_banana_plantation = {
     }
 }
 
+# ----------------
+# Sugar plantation
+# ----------------
+
 aroai_evaluate_building_sugar_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1160,6 +1110,10 @@ aroai_evaluate_building_sugar_plantation = {
         offset = 0
     }
 }
+
+# --------------
+# Tea plantation
+# --------------
 
 aroai_evaluate_building_tea_plantation = {
     aroai_evaluate_production_building = {
@@ -1185,6 +1139,10 @@ aroai_evaluate_building_tea_plantation = {
     }
 }
 
+# -----------------
+# Coffee plantation
+# -----------------
+
 aroai_evaluate_building_coffee_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1208,6 +1166,10 @@ aroai_evaluate_building_coffee_plantation = {
         offset = 4
     }
 }
+
+# ------------------
+# Tobacco plantation
+# ------------------
 
 aroai_evaluate_building_tobacco_plantation = {
     aroai_evaluate_production_building = {
@@ -1240,6 +1202,10 @@ aroai_evaluate_building_tobacco_plantation = {
     }
 }
 
+# ----------------
+# Opium plantation
+# ----------------
+
 aroai_evaluate_building_opium_plantation = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1263,6 +1229,10 @@ aroai_evaluate_building_opium_plantation = {
         offset = 4
     }
 }
+
+# -------------
+# Food industry
+# -------------
 
 aroai_evaluate_building_food_industry = {
     aroai_evaluate_production_building = {
@@ -1313,6 +1283,10 @@ aroai_evaluate_building_food_industry = {
     }
 }
 
+# -------------
+# Textile mills
+# -------------
+
 aroai_evaluate_building_textile_mills = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1339,6 +1313,10 @@ aroai_evaluate_building_textile_mills = {
         }
     }
 }
+
+# -----------------------
+# Furniture manufacturies
+# -----------------------
 
 aroai_evaluate_building_furniture_manufacturies = {
     aroai_evaluate_production_building = {
@@ -1367,6 +1345,10 @@ aroai_evaluate_building_furniture_manufacturies = {
     }
 }
 
+# ----------
+# Glassworks
+# ----------
+
 aroai_evaluate_building_glassworks = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1394,6 +1376,10 @@ aroai_evaluate_building_glassworks = {
     }
 }
 
+# -----------------
+# Tooling workshops
+# -----------------
+
 aroai_evaluate_building_tooling_workshops = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1404,6 +1390,10 @@ aroai_evaluate_building_tooling_workshops = {
     }
 }
 
+# -----------
+# Paper mills
+# -----------
+
 aroai_evaluate_building_paper_mills = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1413,6 +1403,10 @@ aroai_evaluate_building_paper_mills = {
         offset = 0
     }
 }
+
+# ---------------
+# Chemical plants
+# ---------------
 
 aroai_evaluate_building_chemical_plants = {
     aroai_evaluate_production_building = {
@@ -1441,6 +1435,10 @@ aroai_evaluate_building_chemical_plants = {
     }
 }
 
+# ----------------
+# Synthetic plants
+# ----------------
+
 aroai_evaluate_building_synthetics_plants = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1468,6 +1466,10 @@ aroai_evaluate_building_synthetics_plants = {
     }
 }
 
+# -----------
+# Steel mills
+# -----------
+
 aroai_evaluate_building_steel_mills = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1477,6 +1479,10 @@ aroai_evaluate_building_steel_mills = {
         offset = 0
     }
 }
+
+# --------------
+# Motor industry
+# --------------
 
 aroai_evaluate_building_motor_industry = {
     aroai_evaluate_production_building = {
@@ -1506,6 +1512,10 @@ aroai_evaluate_building_motor_industry = {
     }
 }
 
+# ---------
+# Shipyards
+# ---------
+
 aroai_evaluate_building_shipyards = {
     if = {
         limit = {
@@ -1528,7 +1538,7 @@ aroai_evaluate_building_shipyards = {
             limit = {
                 OR = {
                     aroai_is_using_military_forces = no
-                    market.mg:manowars.aroai_price_level >= aroai_floor_when_using_military_forces
+                    market.mg:manowars.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
                 }
             }
             aroai_evaluate_production_building = {
@@ -1561,7 +1571,7 @@ aroai_evaluate_building_shipyards = {
             limit = {
                 OR = {
                     aroai_is_using_military_forces = no
-                    market.mg:ironclads.aroai_price_level >= aroai_floor_when_using_military_forces
+                    market.mg:ironclads.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
                 }
             }
             aroai_evaluate_production_building = {
@@ -1575,6 +1585,10 @@ aroai_evaluate_building_shipyards = {
     }
 }
 
+# -----------
+# Power plant
+# -----------
+
 aroai_evaluate_building_power_plant = {
     if = {
         limit = {
@@ -1583,15 +1597,15 @@ aroai_evaluate_building_power_plant = {
             }
         }
         set_local_variable = {
-            name = aroai_saved_priority
+            name = aroai_saved_priority_level
             value = 2
         }
         set_local_variable = {
-            name = aroai_saved_level
+            name = aroai_saved_supply_vs_demand_level
             value = 1
         }
         set_local_variable = {
-            name = aroai_saved_productivity
+            name = aroai_saved_productivity_requirement_level
             value = 1
         }
     }
@@ -1605,6 +1619,10 @@ aroai_evaluate_building_power_plant = {
         }
     }
 }
+
+# ------------------
+# Electrics industry
+# ------------------
 
 aroai_evaluate_building_electrics_industry = {
     aroai_evaluate_production_building = {
@@ -1634,12 +1652,16 @@ aroai_evaluate_building_electrics_industry = {
     }
 }
 
+# -------------
+# Arms industry
+# -------------
+
 aroai_evaluate_building_arms_industry = {
     if = {
         limit = {
             OR = {
                 aroai_is_using_military_forces = no
-                market.mg:small_arms.aroai_price_level >= aroai_floor_when_using_military_forces
+                market.mg:small_arms.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
             }
         }
         aroai_evaluate_production_building = {
@@ -1661,7 +1683,7 @@ aroai_evaluate_building_arms_industry = {
             }
             OR = {
                 aroai_is_using_military_forces = no
-                market.mg:artillery.aroai_price_level >= aroai_floor_when_using_military_forces
+                market.mg:artillery.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
             }
         }
         aroai_evaluate_production_building = {
@@ -1674,12 +1696,16 @@ aroai_evaluate_building_arms_industry = {
     }
 }
 
+# ---------------
+# Munition plants
+# ---------------
+
 aroai_evaluate_building_munition_plants = {
     if = {
         limit = {
             OR = {
                 aroai_is_using_military_forces = no
-                market.mg:ammunition.aroai_price_level >= aroai_floor_when_using_military_forces
+                market.mg:ammunition.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
             }
         }
         aroai_evaluate_production_building = {
@@ -1692,12 +1718,16 @@ aroai_evaluate_building_munition_plants = {
     }
 }
 
+# --------------------
+# War machine industry
+# --------------------
+
 aroai_evaluate_building_war_machine_industry = {
     if = {
         limit = {
             OR = {
                 aroai_is_using_military_forces = no
-                market.mg:aeroplanes.aroai_price_level >= aroai_floor_when_using_military_forces
+                market.mg:aeroplanes.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
             }
         }
         aroai_evaluate_production_building = {
@@ -1719,7 +1749,7 @@ aroai_evaluate_building_war_machine_industry = {
             }
             OR = {
                 aroai_is_using_military_forces = no
-                market.mg:tanks.aroai_price_level >= aroai_floor_when_using_military_forces
+                market.mg:tanks.aroai_supply_vs_demand_level <= aroai_max_level_when_using_military_forces
             }
         }
         aroai_evaluate_production_building = {
@@ -1732,6 +1762,10 @@ aroai_evaluate_building_war_machine_industry = {
     }
 }
 
+# ------------
+# Arts academy
+# ------------
+
 aroai_evaluate_building_arts_academy = {
     aroai_evaluate_production_building = {
         id = $id$
@@ -1741,6 +1775,10 @@ aroai_evaluate_building_arts_academy = {
         offset = 0
     }
 }
+
+# -----------------
+# Special buildings
+# -----------------
 
 aroai_construct_special_buildings = {
     set_variable = aroai_tried_special_buildings
@@ -2239,39 +2277,39 @@ aroai_perform_for_every_building_type = {
     aroai_perform_for_building_type = { effect = $effect$ key = building_opium_plantation id = 32
     class = 5 counter = 32 order = 11 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_food_industry id = 33
-    class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 33 order = 14 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_textile_mills id = 34
-    class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 34 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_furniture_manufacturies id = 35
-    class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 35 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_glassworks id = 36
-    class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 36 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_tooling_workshops id = 37
-    class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 37 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_paper_mills id = 38
-    class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 38 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_chemical_plants id = 39
-    class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 39 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_synthetics_plants id = 40
-    class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 25 order = 12 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_steel_mills id = 41
-    class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 41 order = 6 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_motor_industry id = 42
-    class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 42 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_shipyards id = 43
-    class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 43 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_power_plant id = 44
-    class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 44 order = 4 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_electrics_industry id = 45
-    class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 45 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_arms_industry id = 46
-    class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 46 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_munition_plants id = 47
-    class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 47 order = 7 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_war_machine_industry id = 48
-    class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 48 order = 8 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     aroai_perform_for_building_type = { effect = $effect$ key = building_arts_academy id = 49
-    class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 2 branching = 1 scaling = 1 }
+    class = 6 counter = 49 order = 15 limit = 5 crucial = 5 workforce = 1 allocate = 1 branching = 1 scaling = 1 }
     if = {
         limit = {
             aroai_is_using_compatibility_patches = yes

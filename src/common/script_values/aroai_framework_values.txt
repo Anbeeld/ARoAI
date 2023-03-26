@@ -25,13 +25,11 @@ aroai_days_in_building_cooldown = 70
 
 aroai_max_iterations_to_ignore_downsizing = 5
 
-aroai_days_to_keep_ia_variable = {
+aroai_days_to_keep_abandoned_variable = {
     value = aroai_days_in_the_iteration
-    multiply = {
-        value = aroai_max_iterations_to_ignore_downsizing
-        add = 0.50
-    }
+    multiply = aroai_max_iterations_to_ignore_downsizing
     ceiling = yes
+    add = 7
 }
 
 aroai_days_to_keep_short_variables = 3

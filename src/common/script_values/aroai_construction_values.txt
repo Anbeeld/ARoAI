@@ -1,7 +1,10 @@
 ﻿aroai_simultaneous_constructions = {
     value = aroai_construction_points_current
     divide = aroai_construction_points_per_building
-    max = aroai_millions_of_minus_half_unincorporated_population
+    max = {
+        value = aroai_millions_of_minus_half_unincorporated_population
+        multiply = 1.15
+    }
 }
 
 aroai_simultaneously_developed = {
@@ -18,7 +21,7 @@ aroai_states_for_new_buildings = {
     min = 2
 }
 
-# aroai_ongoing_construction is an array variable, and aroai_ongoing_constructions is a list of them
+# Cell distribution of aroai_ongoing_construction array variable from aroai_ongoing_constructions list
 # dddcbbbbaa.aa
 # aaaa | multiply = 100    | 1 | building type id
 # bbbb | divide = 100      | 2 | points left (c = 1) or weeks passed (c > 1)

@@ -1,7 +1,7 @@
 ﻿# There's no way to affect AI prioritization of technologies as of 1.2.2, so workaround system is used.
 # We set country innovation to zero through _mult modifier, then we take innovation it produces through _add modifier
 # and add this value to a tech of our choice.
-# TODO 1.2.3 introduced tech weights, you can probably remove this system and use weights instead if they work good.
+# TODO 1.2.3 introduced tech weights, you can probably remove this system and use weights instead if they work well.
 aroai_choose_technology_for_innovation_redirection = {
     if = {
         limit = {

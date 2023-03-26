@@ -1,31 +1,32 @@
-﻿#
+﻿# Effects of weekly loop iterarion
 aroai_perform_iteration_of_weekly_loop = {
 
-    #
+    # Add a week of progress to elements of aroai_ongoing_constructions
     aroai_add_progress_to_ongoing_constructions = yes
 
-    #
+    # Collect expenses data from buildings and perform a bunch of calculations and transformations using it, with
+    # total levels, shortages and ongoing constructions also being collected on day 1 of economy cycle iteration.
     aroai_weekly_check_of_building_data = {
         day_1_of_main_loop = $day_1_of_main_loop$
     }
 
-    # Contains initial budget surplus calculation
+    # Calculate current investment pool transfer, contains initial calculation of budget surplus that is required later
     aroai_calculate_investment_pool_transfer = {
         day_1_of_main_loop = $day_1_of_main_loop$
     }
     
-    #
+    # Calculate percent of construction points used by buildings in the queue
     aroai_calculate_usage_of_construction_points = yes
 
-    #
+    # Track how many iterations of weekly loop were performed in this main iteration and schedule next if needed
     aroai_count_and_schedule_iterations_of_weekly_loop = {
         day_1_of_main_loop = $day_1_of_main_loop$
     }
 
-    #
+    # Calculate per point expenses of construction sectors
     aroai_calculate_building_construction_sector_expenses_per_point = yes
 
-    # 
+    # Calculate budget surplus with the assumption that construction sectors are fully used
     aroai_calculate_budget_surplus = yes
 
     # Garbage collection
@@ -167,10 +168,11 @@ aroai_add_progress_to_ongoing_constructions = {
     }
 }
 
-# Costs, shortages, ongoings
+# Collect expenses data from buildings and perform a bunch of calculations and transformations using it, with
+# total levels, shortages and ongoing constructions also being collected on day 1 of economy cycle iteration.
 aroai_weekly_check_of_building_data = {
     
-    # Set up estimate variables
+    # Set up local variables
     set_local_variable = {
         name = aroai_building_government_administration_expenses
         value = 0
@@ -199,6 +201,8 @@ aroai_weekly_check_of_building_data = {
         name = aroai_building_conscription_center_expenses
         value = 0
     }
+
+    # Set up variables for country scope building levels
     if = {
         limit = {
             $day_1_of_main_loop$ = yes
@@ -217,8 +221,8 @@ aroai_weekly_check_of_building_data = {
         }
     }
     
-    # Collect expenses data from buildings, with total levels, shortages and counters also being collected
-    # on day 1 of economy cycle iteration.
+    # Collect expenses data from buildings, with total levels, shortages and ongoing constructions also being collected
+    # on day 1 of economy cycle iteration for buildings that may be constructed as critical.
     every_scope_building = {
         if = {
             limit = {
@@ -237,20 +241,13 @@ aroai_weekly_check_of_building_data = {
                         level > 0
                         state.market_access >= 0.80
                     }
-                    aroai_collect_building_shortages = {
+                    aroai_collect_total_and_shortage_building_levels = {
                         id = 1
                     }
                 }
-                if = {
-                    limit = {
-                        is_under_construction = yes
-                    }
-                    root = {
-                        aroai_add_to_building_counter = {
-                            counter = 1
-                            value = 1
-                        }
-                    }
+                aroai_add_ongoing_constructions_to_counter = {
+                    id = 1
+                    counter = 1
                 }
             }
         }
@@ -286,20 +283,13 @@ aroai_weekly_check_of_building_data = {
                         level > 0
                         state.market_access >= 0.80
                     }
-                    aroai_collect_building_shortages = {
+                    aroai_collect_total_and_shortage_building_levels = {
                         id = 3
                     }
                 }
-                if = {
-                    limit = {
-                        is_under_construction = yes
-                    }
-                    root = {
-                        aroai_add_to_building_counter = {
-                            counter = 3
-                            value = 1
-                        }
-                    }
+                aroai_add_ongoing_constructions_to_counter = {
+                    id = 3
+                    counter = 3
                 }
             }
         }
@@ -336,20 +326,13 @@ aroai_weekly_check_of_building_data = {
                         level > 0
                         state.market_access >= 0.80
                     }
-                    aroai_collect_building_shortages = {
+                    aroai_collect_total_and_shortage_building_levels = {
                         id = 5
                     }
                 }
-                if = {
-                    limit = {
-                        is_under_construction = yes
-                    }
-                    root = {
-                        aroai_add_to_building_counter = {
-                            counter = 5
-                            value = 1
-                        }
-                    }
+                aroai_add_ongoing_constructions_to_counter = {
+                    id = 5
+                    counter = 5
                 }
             }
         }
@@ -404,8 +387,8 @@ aroai_weekly_check_of_building_data = {
         }
     }
     
-    # We need to ensure that collected data variabled of selected building is set even if there are no such buildings
-    # We also need to make them temporary because if cycle breaks hard enough they'll be just left in memory
+    # We need to ensure that collected data variabled of selected building is set even if there are no such buildings.
+    # We also need to make them temporary because if cycle breaks hard enough they'll be just left in memory.
     if = {
         limit = {
             $day_1_of_main_loop$ = yes
@@ -414,7 +397,7 @@ aroai_weekly_check_of_building_data = {
             limit = {
                 has_variable = aroai_building_type_1_collected_data
             }
-            aroai_transform_building_shortages = {
+            aroai_calculate_percent_of_building_type_levels_without_shortage = {
                 id = 1
             }
         }
@@ -437,7 +420,7 @@ aroai_weekly_check_of_building_data = {
             limit = {
                 has_variable = aroai_building_type_3_collected_data
             }
-            aroai_transform_building_shortages = {
+            aroai_calculate_percent_of_building_type_levels_without_shortage = {
                 id = 3
             }
         }
@@ -460,7 +443,7 @@ aroai_weekly_check_of_building_data = {
             limit = {
                 has_variable = aroai_building_type_5_collected_data
             }
-            aroai_transform_building_shortages = {
+            aroai_calculate_percent_of_building_type_levels_without_shortage = {
                 id = 5
             }
         }
@@ -609,7 +592,7 @@ aroai_weekly_check_of_building_data = {
     }
 }
 
-#
+# Calculate current investment pool transfer, contains initial calculation of budget surplus that is required later
 aroai_calculate_investment_pool_transfer = {
 
     # First get raw budget surplus required to calculate investment pool transfer
@@ -641,7 +624,7 @@ aroai_calculate_investment_pool_transfer = {
         }
     }
 
-    # TODO fallback
+    # TODO proper fallback
     else = {
         set_local_variable = {
             name = aroai_country_budget_surplus
@@ -650,47 +633,6 @@ aroai_calculate_investment_pool_transfer = {
             }
         }
     }
-    # else = {
-    #     set_local_variable = {
-    #         name = aroai_country_budget_surplus
-    #         value = {
-    #             if = {
-    #                 limit = {
-    #                     has_local_variable = aroai_total_building_expenses
-    #                     local_var:aroai_total_building_expenses > 0
-    #                     has_local_variable = aroai_building_construction_sector_expenses
-    #                     local_var:aroai_building_construction_sector_expenses > 0
-    #                 }
-    #                 value = income
-    #                 subtract = local_var:aroai_total_building_expenses
-    #                 if = {
-    #                     limit = {
-    #                         is_non_customs_union_subject = yes
-    #                     }
-    #                     add = weekly_net_fixed_income
-    #                     subtract = {
-    #                         value = local_var:aroai_building_construction_sector_expenses
-    #                         multiply = 0.90
-    #                     }
-    #                     divide = 2
-    #                 }
-    #             }
-    #             else = {
-    #                 value = weekly_net_fixed_income
-    #                 if = {
-    #                     limit = {
-    #                         has_local_variable = aroai_building_construction_sector_expenses
-    #                         local_var:aroai_building_construction_sector_expenses > 0
-    #                     }
-    #                     subtract = {
-    #                         value = local_var:aroai_building_construction_sector_expenses
-    #                         multiply = 0.90
-    #                     }
-    #                 }
-    #             }
-    #         }
-    #     }
-    # }
 
     # Investment pool transfer = construction goods + raw budget surplus - fixed surplus.
     # It is assumed that construction expenses were already collected in this iteration of weekly loop,
@@ -739,6 +681,7 @@ aroai_calculate_investment_pool_transfer = {
         cleanup = no
     }
 
+    # Expected investment pool is average over $elements$ months widely used to make budget management more stable
     if = {
         limit = {
             $day_1_of_main_loop$ = yes
@@ -760,6 +703,7 @@ aroai_calculate_investment_pool_transfer = {
     }
 }
 
+# Calculate percent of construction points used by buildings in the queue
 aroai_calculate_usage_of_construction_points = {
     set_local_variable = {
         name = aroai_usage_of_construction_points_percent
@@ -852,7 +796,10 @@ aroai_calculate_usage_of_construction_points = {
     }
 }
 
+# Track how many iterations of weekly loop were performed in this main iteration and schedule next if needed
 aroai_count_and_schedule_iterations_of_weekly_loop = {
+
+    # Track average usage of construction points to prohibit queueing more sectors if it's low
     if = {
         limit = {
             $day_1_of_main_loop$ = yes
@@ -888,12 +835,14 @@ aroai_count_and_schedule_iterations_of_weekly_loop = {
         remove_variable = aroai_average_usage_of_construction_points
     }
     aroai_add_to_variable = {
-        name = aroai_performed_iterations_of_weekly_loop
-        value = 1
-    }
-    aroai_add_to_variable = {
         name = aroai_average_usage_of_construction_points
         value = local_var:aroai_usage_of_construction_points_percent
+    }
+
+    # Track number of performed weekly loop iterations and schedule next if it's not last week of main iteration
+    aroai_add_to_variable = {
+        name = aroai_performed_iterations_of_weekly_loop
+        value = 1
     }
     if = {
         limit = {
@@ -906,11 +855,11 @@ aroai_count_and_schedule_iterations_of_weekly_loop = {
     }
 }
 
-#
+# Calculate per point expenses of construction sectors
 aroai_calculate_building_construction_sector_expenses_per_point = {
     
-    # If this week's data is fine, we perform some wonky calculations to roughly account for sector usage and wages level
-    # Due to no access to actual wages data and stuff, these calculations just assume that wages are 1/5 of sector expenses
+    # If this week's data is ok, we perform some wonky calculations to roughly account for sector usage and wages level.
+    # Due to no access to real world wage data, these calculations just assume that wages are 1/10 of sector expenses.
     if = {
         limit = {
             OR = {
@@ -930,10 +879,9 @@ aroai_calculate_building_construction_sector_expenses_per_point = {
             name = aroai_building_construction_sector_expenses_per_point
             value = {
 
-                # First we take the material 4/5 part but the exact ration will be changed if usage is lower than 100%
-                # The reason is if usage is not full, less materials are being used but wages stay the same
-                # For example at 50% usage the ratio shifts from 4/5 to 2/3 with wages being what's left
-                # We then divide it by usage because our goal with construction costs is for AI to always assume 100% of points are used
+                # First we take the material 9/10 part, but the exact ratio will be changed if usage is lower than 100%.
+                # The reason is if usage is not full, less materials are being used but wages stay the same. Then divide
+                # it by usage cause the AI should always assume 100% of points are used for budget management stability.
                 value = {
                     value = local_var:aroai_building_construction_sector_expenses
                     multiply = {
@@ -950,8 +898,8 @@ aroai_calculate_building_construction_sector_expenses_per_point = {
                     divide = local_var:aroai_usage_of_construction_points_percent
                 }
 
-                # Then we add wages part, again usage is in the formula so we take 1/3 instead of 1/5 of expenses as wages at 50% usage
-                # We then divide it by government wages multiplier, because AI should assume normal level wages in budget distribution
+                # Add wage part, again usage is in the formula so we use right ratio. Then divide it by government wages
+                # multiplier, because AI should assume normal wage level is set for again budget management stability.
                 add = {
                     value = local_var:aroai_building_construction_sector_expenses
                     multiply = {
@@ -968,8 +916,8 @@ aroai_calculate_building_construction_sector_expenses_per_point = {
                     }
                 }
 
-                # Basically we went from raw real world data to all the factors being at 100%
-                # Then we divide total costs by points from sectors to get cost per point
+                # Basically we went from raw real world data to all the factors being at 100%.
+                # Then we divide total costs by points from sectors to get cost per point.
                 divide = aroai_construction_points_from_sectors_current
             }
         }

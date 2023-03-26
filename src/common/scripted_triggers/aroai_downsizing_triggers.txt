@@ -2,20 +2,9 @@
 aroai_downsize_government_administration = {
     var:aroai_building_government_administration_level > 0
     var:aroai_building_government_administration_level <= aroai_building_government_administration_downsizing_threshold
-    OR = {
-        root = {
-            OR = {
-                AND = {
-                    aroai_building_government_administration_spending_value >= aroai_building_government_administration_spending_ceiling
-                    bureaucracy >= aroai_bureaucracy_excess
-                }
-                bureaucracy >= aroai_bureaucracy_ceiling
-            }
-        }
-        any_scope_building = {
-            is_building_type = building_government_administration
-            prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
-        }
+    any_scope_building = {
+        is_building_type = building_government_administration
+        prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
     }
     save_temporary_scope_as = aroai_current_state
     NOT = {
@@ -23,20 +12,9 @@ aroai_downsize_government_administration = {
             any_scope_state = {
                 var:aroai_building_government_administration_level > 0
                 var:aroai_building_government_administration_level < aroai_current_government_administration_level
-                OR = {
-                    root = {
-                        OR = {
-                            AND = {
-                                aroai_building_government_administration_spending_value >= aroai_building_government_administration_spending_ceiling
-                                bureaucracy >= aroai_bureaucracy_excess
-                            }
-                            bureaucracy >= aroai_bureaucracy_ceiling
-                        }
-                    }
-                    any_scope_building = {
-                        is_building_type = building_government_administration
-                        prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
-                    }
+                any_scope_building = {
+                    is_building_type = building_government_administration
+                    prev.aroai_tax_capacity_balance_value >= aroai_tax_capacity_from_government_administration
                 }
             }
         }
@@ -138,14 +116,14 @@ aroai_downsize_port = {
             }
             root = {
                 aroai_has_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                 }
                 is_target_in_variable_list = {
-                    name = aroai_market_capital_coastline
+                    name = aroai_states_of_market_capital_coastline
                     target = prev
                 }
                 any_in_list = {
-                    variable = aroai_market_capital_coastline
+                    variable = aroai_states_of_market_capital_coastline
                     aroai_has_building = {
                         key = building_port
                     }
@@ -155,7 +133,7 @@ aroai_downsize_port = {
         }
         root = {
             is_target_in_variable_list = {
-                name = aroai_safe_to_delete_ports_in_outer_lands
+                name = aroai_safe_to_delete_ports_in_overseas_lands
                 target = prev
             }
         }
@@ -176,14 +154,14 @@ aroai_downsize_port = {
                         }
                         root = {
                             aroai_has_variable_list = {
-                                name = aroai_market_capital_coastline
+                                name = aroai_states_of_market_capital_coastline
                             }
                             is_target_in_variable_list = {
-                                name = aroai_market_capital_coastline
+                                name = aroai_states_of_market_capital_coastline
                                 target = prev
                             }
                             any_in_list = {
-                                variable = aroai_market_capital_coastline
+                                variable = aroai_states_of_market_capital_coastline
                                 aroai_has_building = {
                                     key = building_port
                                 }
@@ -193,7 +171,7 @@ aroai_downsize_port = {
                     }
                     root = {
                         is_target_in_variable_list = {
-                            name = aroai_safe_to_delete_ports_in_outer_lands
+                            name = aroai_safe_to_delete_ports_in_overseas_lands
                             target = prev
                         }
                     }

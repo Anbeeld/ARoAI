@@ -937,7 +937,7 @@ aroai_apply_accelerated_construction_modifiers = {
 
 # $zero$ parameter controls behaviour between input and array when either of them have value equal to 0.
 # 1 = add, same behaviour as if it was any other value, input is just added to array as usual.
-# 2 - overwrite, input value of 0 will erase all the other values in array, and non-0 input will overwrite array if it's 0.
+# 2 - overwrite, input value of 0 will erase all other values in array, and non-0 input will overwrite array if it's 0.
 # 3 = ignore, array is untouched, potentially even stays uninitialized.
 aroai_add_local_variable_to_array_variable = {
 
@@ -1167,15 +1167,15 @@ aroai_clear_country_iteration_variables = {
     remove_variable = aroai_chinese_population
     remove_variable = aroai_indian_population
     
-    remove_variable = aroai_unutilized_workforce
+    remove_variable = aroai_unutilized_workforce_percent
 
     remove_variable = aroai_median_building_profitability
     remove_variable = aroai_median_building_productivity
     
-    remove_variable = aroai_capital_coastline_states
-    clear_variable_list = aroai_market_capital_coastline
-    clear_variable_list = aroai_coastline_of_outer_lands
-    clear_variable_list = aroai_safe_to_delete_ports_in_outer_lands
+    remove_variable = aroai_num_states_of_market_capital_coastline
+    clear_variable_list = aroai_states_of_market_capital_coastline
+    clear_variable_list = aroai_coastline_of_overseas_lands
+    clear_variable_list = aroai_safe_to_delete_ports_in_overseas_lands
     
     # Variables from downsizing that are used in building as well
     remove_variable = aroai_building_government_administration_total
@@ -1186,11 +1186,14 @@ aroai_clear_country_iteration_variables = {
     #remove_variable = aroai_building_barracks_total
     remove_variable = aroai_building_naval_base_total
     
-    clear_variable_list = aroai_suitable_states
+    clear_variable_list = aroai_states_suitable_for_construction
     
     remove_variable = aroai_tried_special_buildings
     
-    aroai_clear_technical_variables = yes
+    aroai_perform_for_every_building_type = {
+        effect = 9 # aroai_clear_building_type_variables
+    }
+
     every_scope_state = {
         remove_variable = aroai_available_workforce
         remove_variable = aroai_building_construction_sector_level
@@ -1201,7 +1204,21 @@ aroai_clear_country_iteration_variables = {
     }
 }
 
-aroai_add_to_building_counter = {
+aroai_clear_building_type_variables = {
+    remove_variable = aroai_building_type_$id$_collected_data
+    clear_variable_list = aroai_building_type_$id$_allocation_1
+    clear_variable_list = aroai_building_type_$id$_allocation_2
+    clear_variable_list = aroai_building_type_$id$_allocation_3
+    clear_variable_list = aroai_building_type_$id$_allocation_4
+    clear_variable_list = aroai_building_type_$id$_allocation_5
+    clear_variable_list = aroai_building_type_$id$_allocation_6
+    clear_variable_list = aroai_building_type_$id$_allocation_7
+    clear_variable_list = aroai_building_type_$id$_allocation_8
+    clear_variable_list = aroai_building_type_$id$_allocation_9
+    clear_variable_list = aroai_building_type_$id$_allocation_10
+}
+
+aroai_add_to_building_type_counter = {
     if = {
         limit = {
             NOT = {
@@ -1227,31 +1244,11 @@ aroai_add_to_building_counter = {
     }
 }
 
-aroai_clear_technical_variables = {
-    aroai_perform_for_every_building_type = {
-        effect = 9 # aroai_clear_building_technicals
-    }
-}
-
-aroai_clear_building_technicals = {
-    remove_variable = aroai_building_type_$id$_collected_data
-    clear_variable_list = aroai_building_type_$id$_allocation_1
-    clear_variable_list = aroai_building_type_$id$_allocation_2
-    clear_variable_list = aroai_building_type_$id$_allocation_3
-    clear_variable_list = aroai_building_type_$id$_allocation_4
-    clear_variable_list = aroai_building_type_$id$_allocation_5
-    clear_variable_list = aroai_building_type_$id$_allocation_6
-    clear_variable_list = aroai_building_type_$id$_allocation_7
-    clear_variable_list = aroai_building_type_$id$_allocation_8
-    clear_variable_list = aroai_building_type_$id$_allocation_9
-    clear_variable_list = aroai_building_type_$id$_allocation_10
-}
-
 aroai_perform_for_building_type = {
     switch = {
         trigger = $effect$
         1 = {
-            aroai_collect_building_level_data_1 = {
+            aroai_collect_data_for_all_buildings_of_type = {
                 key = $key$
                 id = $id$
                 counter = $counter$
@@ -1259,14 +1256,14 @@ aroai_perform_for_building_type = {
             }
         }
         2 = {
-            aroai_collect_building_level_data_2 = {
+            aroai_collect_data_except_workforce_for_all_buildings_of_type = {
                 key = $key$
                 id = $id$
                 counter = $counter$
             }
         }
         3 = {
-            aroai_collect_building_level_data_3 = {
+            aroai_collect_only_workforce_data_for_all_buildings_of_type = {
                 key = $key$
                 id = $id$
                 workforce = $workforce$
@@ -1323,7 +1320,7 @@ aroai_perform_for_building_type = {
             }
         }
         9 = {
-            aroai_clear_building_technicals = {
+            aroai_clear_building_type_variables = {
                 id = $id$
             }
         }

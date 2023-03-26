@@ -40,23 +40,23 @@ aroai_evaluate_building_synthetic_oil_plants = { # Paste building key in the nam
 # Both weight and offset are high for meat here, meaning it's much less important than oil when we evaluate whaling
 # station, as it's basically a byproduct in terms of building economy and what affects if it's productive or not.
 # 
-# However, you are free to set any amount of goods with various weights and offsets, e.g. two equal or similar in
-# priority goods. Usually this is done with checking if buildings in the country are using required production methods,
-# as in aroai_evaluate_building_logging_camp for example, but compatibility patches do not support this, so can just do
-# something like:
-# aroai_evaluate_building_logging_camp = {
+# However, you are free to set any amount of goods with various weights and offsets, e.g. two or more equal or similarly
+# important goods. Usually this is done with checking if buildings in the country use required production methods, as in
+# aroai_evaluate_building_logging_camp in /src/common/scripted_effects/aroai_static_data_effects.txt, but compatibility
+# patches do not support this. Instead do it in a straight way, for example how it's done for vanilla livestock ranch:
+# aroai_evaluate_building_livestock_ranch = {
 #     aroai_evaluate_production_building = {
 #         id = $id$
 #         crucial = $crucial$
-#         good = mg:wood
-#         weight = aroai_resource_weight_1
+#         good = mg:fabric
+#         weight = aroai_agriculture_weight_1
 #         offset = 0
 #     }
 #     aroai_evaluate_production_building = {
 #         id = $id$
 #         crucial = $crucial$
-#         good = mg:hardwood
-#         weight = aroai_resource_weight_3
+#         good = mg:meat
+#         weight = aroai_agriculture_weight_4
 #         offset = 0
 #     }
 # }
@@ -72,6 +72,45 @@ aroai_evaluate_building_synthetic_rubber_plants = {
         good = mg:rubber
         weight = aroai_industry_weight_2
         offset = 0
+    }
+}
+
+# -----------------
+# Special buildings
+# -----------------
+
+aroai_construct_special_buildings_1 = {
+    
+    # Eiffel Tower [which is a vanilla special building, it's here just as an example]
+    if = {
+        limit = {
+            has_technology_researched = steel_frame_buildings
+            s:STATE_ILE_DE_FRANCE = {
+                any_scope_state = {
+                    owner = root
+                }
+                NOT = {
+                    any_scope_state = {
+                        any_scope_building = {
+                            is_building_type = building_eiffel_tower
+                        }
+                    }
+                }
+            }
+        }
+        set_local_variable = {
+            name = aroai_started_building_construction
+            value = yes
+            days = aroai_days_to_keep_short_variables
+        }
+        s:STATE_ILE_DE_FRANCE = {
+            random_scope_state = {
+                limit = {
+                    owner = root
+                }
+                start_building_construction = building_eiffel_tower
+            }
+        }
     }
 }
 

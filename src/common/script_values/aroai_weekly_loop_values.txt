@@ -1,5 +1,7 @@
-﻿# aroai_ongoing_construction is an array variable, and aroai_ongoing_constructions is a list of them.
-# Check aroai_construction_values.txt for cell distribution.
+﻿# ---------------------------------------------------------------------------------------------------
+# aroai_ongoing_construction is an array variable, and aroai_ongoing_constructions is a list of them.
+# Search for "Cell distribution of aroai_ongoing_construction" in aroai_construction_values.txt
+# ---------------------------------------------------------------------------------------------------
 
 aroai_modified_current_ongoing_constructions_element_1 = {
     value = local_var:aroai_modified_current_ongoing_constructions_element

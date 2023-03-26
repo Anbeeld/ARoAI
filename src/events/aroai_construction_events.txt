@@ -1,5 +1,6 @@
 ﻿namespace = aroai_construction_events
 
+# Called by aroai_preparation_events.1 and aroai_choose_building_type_to_construct effect
 aroai_construction_events.1 = {
     type = country_event
     hidden = yes

@@ -1,4 +1,10 @@
-﻿aroai_price_level = {
+﻿# How supplied a market is with a good. Lower levels means undersupply.
+# Using default price formula to illustrate:
+# Level 1 is shortage >75%
+# Levels 2-11 go from +75% to 0%
+# Levels 12-21 go from 0% to -75%
+# Level 22 is excess <-75%
+aroai_supply_vs_demand_level = {
     if = {
         limit = {
             market_goods_buy_orders <= 0
@@ -162,6 +168,61 @@ aroai_resource_weight_10 = {
     min = 1
 }
 
+aroai_resource_weight_11 = {
+    value = 11
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_12 = {
+    value = 12
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_13 = {
+    value = 13
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_14 = {
+    value = 14
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
+aroai_resource_weight_15 = {
+    value = 15
+    if = {
+        limit = {
+            has_variable = aroai_resource_weight_factor
+        }
+        add = var:aroai_resource_weight_factor
+    }
+    min = 1
+}
+
 aroai_agriculture_weight_1 = {
     value = 1
     if = {
@@ -283,6 +344,50 @@ aroai_agriculture_weight_11 = {
     min = 1
 }
 
+aroai_agriculture_weight_12 = {
+    value = 12
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_13 = {
+    value = 13
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_14 = {
+    value = 14
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
+aroai_agriculture_weight_15 = {
+    value = 15
+    if = {
+        limit = {
+            has_variable = aroai_agriculture_weight_factor
+        }
+        add = var:aroai_agriculture_weight_factor
+    }
+    min = 1
+}
+
 aroai_industry_weight_1 = {
     value = 1
     if = {
@@ -382,10 +487,106 @@ aroai_industry_weight_9 = {
     min = 1
 }
 
-aroai_floor_when_using_military_forces = 6
+aroai_industry_weight_10 = {
+    value = 10
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
 
-### SCALING OF TARGETS WITH GDP PER CAPITA
+aroai_industry_weight_11 = {
+    value = 11
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
 
+aroai_industry_weight_12 = {
+    value = 12
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_13 = {
+    value = 13
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_14 = {
+    value = 14
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+aroai_industry_weight_15 = {
+    value = 15
+    if = {
+        limit = {
+            has_variable = aroai_industry_weight_factor
+        }
+        add = var:aroai_industry_weight_factor
+    }
+    min = 1
+}
+
+# When military forces are being used, we limit construction of military buildings case demand is higher than usual
+aroai_max_level_when_using_military_forces = 6
+
+# ----------------------------------------------
+# General info about government building targets
+# ----------------------------------------------
+
+# Government buildings don't produce goods in most cases, so you can't judge them by productivity or whatever, you need
+# to establish some special measure of how important are they and how much of them a country needs. To solve this two
+# values are introduced for each government building, share and target.
+
+# Share is % of budget income of a country that it can spend on this building weekly to pay for wages and input good.
+# Usually it's pretty rigid, roughly set to what works the best, but with some dynamic factors added in more cases.
+# For example, government administration share is higher when tax capacity is low country-wide. Construction sector
+# is special in a sense that it has no base or fixed share, instead it just takes all what's left after other shares.
+# Please note that for AI shares are always calculated for normal tax and wage level, otherwise it would be unstable.
+# Again consruction sector are special here, they always assume high tax level at the beginning for faster development
+# of economy, but when a country won't have much free workforce left, sector will demand less and less money, down to
+# normal tax level and even a bit below it.
+
+# Target is arbitrary value on how much stuff a country wants to have, be it spare bureaucracy, innovation, battalions,
+# convoys, everything. Except construction sectors, of course. They have no target. Anyways, targets are calculated by
+# some random ass formulas, most of the time in some form of population multiplied by some form of GDP per capita, with
+# a bunch of other factors thrown in. If country is below target, but expenses already exceed share, it won't construct
+# more in most cases, so share acts as a limiter. If country reached target but not share, it may build some more of
+# this building cause why not if they are rich enough for that.
+
+# --------------------------------------------------------------
+# Various common factors that affect government building targets
+# --------------------------------------------------------------
+
+# Square GDP per capita of incorporated population + half unincorporated population multiplied by some factor. This is
+# basically what we believe to be a relation between growth of GDP per capita and government building targets, in other
+# words a factor of us being a rich or not so rich country vs how much good stuff we want to have.
 aroai_target_minus_half_unincorporated_gdp_per_capita_scaling = {
     value = var:aroai_square_root_of_minus_half_unincorporated_gdp_per_capita
     multiply = 3
@@ -396,6 +597,7 @@ aroai_target_minus_half_unincorporated_gdp_per_capita_scaling = {
     }
 }
 
+# If a country is forced to spend most of its money on government administrations, we need to lower other shares
 aroai_target_multiplier_with_high_government_spending = {
     value = 1
     subtract = {
@@ -413,6 +615,8 @@ aroai_target_multiplier_with_high_government_spending = {
     }
 }
 
+
+# If construction is largely sponsored by investment pool, we want to raise non-construction shares
 aroai_target_multiplier_with_investment_pool = {
     value = 1.00
     add = {
@@ -427,7 +631,9 @@ aroai_target_multiplier_with_investment_pool = {
     }
 }
 
+# ------------------
 # Bureaucracy target
+# ------------------
 
 aroai_building_government_administration_spending_share = {
     value = 0.20
@@ -690,7 +896,9 @@ aroai_bureaucracy_ceiling = {
     max = 1000000
 }
 
+# -----------------
 # Innovation target
+# -----------------
 
 aroai_innovation_5 = {
     value = aroai_innovation_target
@@ -807,7 +1015,9 @@ aroai_innovation_current = {
     # }
 }
 
+# -----------------
 # University target
+# -----------------
 
 aroai_building_university_spending_share = {
     value = 0.10
@@ -979,41 +1189,43 @@ aroai_building_university_ceiling = {
     }
 }
 
-# Сonstruction target
+# --------------------------
+# Construction points target
+# --------------------------
 
-aroai_unutilized_workforce_higher_threshold = {
+aroai_unutilized_workforce_percent_higher_threshold = {
     value = 0.125
 }
 
-aroai_unutilized_workforce_lower_threshold = {
+aroai_unutilized_workforce_percent_lower_threshold = {
     value = 0.050
 }
 
-aroai_unutilized_workforce_total_threshold = {
-    value = aroai_unutilized_workforce_higher_threshold
-    add = aroai_unutilized_workforce_lower_threshold
+aroai_unutilized_workforce_percent_total_threshold = {
+    value = aroai_unutilized_workforce_percent_higher_threshold
+    add = aroai_unutilized_workforce_percent_lower_threshold
 }
 
-aroai_unutilized_workforce_total_threshold_halved = {
-    value = aroai_unutilized_workforce_higher_threshold
+aroai_unutilized_workforce_percent_total_threshold_halved = {
+    value = aroai_unutilized_workforce_percent_higher_threshold
     divide = 2
-    add = aroai_unutilized_workforce_lower_threshold
+    add = aroai_unutilized_workforce_percent_lower_threshold
 }
 
-aroai_unutilized_workforce_multiplier = { # = 1 when no workforce, 0 when workforce >= threshold
+aroai_unutilized_workforce_percent_multiplier = { # = 1 when no workforce, 0 when workforce >= threshold
     if = {
         limit = {
-            has_variable = aroai_unutilized_workforce
+            has_variable = aroai_unutilized_workforce_percent
         }
         value = 1.00
         subtract = {
-            value = var:aroai_unutilized_workforce
-            subtract = aroai_unutilized_workforce_lower_threshold
+            value = var:aroai_unutilized_workforce_percent
+            subtract = aroai_unutilized_workforce_percent_lower_threshold
             min = 0.00
             multiply = {
                 value = 1
                 divide = {
-                    value = aroai_unutilized_workforce_higher_threshold
+                    value = aroai_unutilized_workforce_percent_higher_threshold
                     min = 0.01
                 }
             }
@@ -1031,7 +1243,7 @@ aroai_building_construction_sector_spending_factor = {
     add = {
         value = 1.00
         subtract = aroai_high_tax_level_factor
-        multiply = aroai_unutilized_workforce_multiplier
+        multiply = aroai_unutilized_workforce_percent_multiplier
     }
 }
 
@@ -1141,7 +1353,7 @@ aroai_building_construction_sector_spending_government = {
                 value = 0.325
                 multiply = {
                     value = 1.00
-                    subtract = aroai_unutilized_workforce_multiplier
+                    subtract = aroai_unutilized_workforce_percent_multiplier
                 }
             }
         }
@@ -1257,7 +1469,9 @@ aroai_building_construction_sector_spending_expected = {
     }
 }
 
+# ---------------------
 # Infrastructure target
+# ---------------------
 
 aroai_infrastructure_1 = {
     value = 0.60
@@ -1287,7 +1501,9 @@ aroai_infrastructure_7 = {
     value = 1.20
 }
 
+# -------------
 # Convoy target
+# -------------
 
 aroai_building_port_spending_share = {
     value = 0.10
@@ -1383,12 +1599,13 @@ aroai_building_port_spending_expected = {
 }
 
 aroai_ports_on_market_capital_coastline = {
+    value = 1
     if = {
         limit = {
-            has_variable = aroai_capital_coastline_states
+            has_variable = aroai_num_states_of_market_capital_coastline
         }
         add = {
-            value = var:aroai_capital_coastline_states
+            value = var:aroai_num_states_of_market_capital_coastline
             divide = 6
             floor = yes
         }
@@ -1519,7 +1736,9 @@ aroai_convoys_current = {
     }
 }
 
+# ----------------
 # Battalion target
+# ----------------
 
 aroai_military_spending_share = {
     value = 0.30
@@ -2081,7 +2300,9 @@ aroai_battalion_floor = {
     multiply = 0.25
 }
 
+# ---------------
 # Flotilla target
+# ---------------
 
 aroai_building_naval_base_spending_share = {
     value = aroai_military_spending_share

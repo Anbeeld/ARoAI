@@ -1,6 +1,6 @@
 ﻿namespace = aroai_framework_events
 
-# Called by on_monthly_pulse_country, but scope that called it doesn't matter, as there's no dependency on root scope.
+# Called by on_monthly_pulse_country, but scope that called it doesn't matter, as there's no dependency on root scope
 aroai_framework_events.1 = {
     type = country_event
     hidden = yes
@@ -19,7 +19,7 @@ aroai_framework_events.1 = {
 
     immediate = {
         
-        # ...that contains date of the last execution of this event.
+        # ...that contains date of the last execution of this event
         set_global_variable = {
             name = aroai_date_of_last_event_execution
             value = game_date
@@ -51,9 +51,9 @@ aroai_framework_events.1 = {
         # Country-specific actions happen in cycle with each iteration being (aroai_weeks_in_iteration * 7) days long.
         # Iteration start dates are distributed randomly and are not synchonized between different countries.
         # Here's what iteration main sequence looks like:
-        # Day 1 = check research assitance, collect economy data.
-        # Day 2 = evaluate economy data.
-        # Days 3-(aroai_half_of_days_in_iteration_rounded_down) = construct new buildings one type per day.
+        # Day 1 = check research assitance, collect economy data (preparation).
+        # Day 2 = evaluate economy data (evaluation).
+        # Days 3-aroai_half_of_days_in_iteration_rounded_down = construct new buildings one type per day (construction).
         # Days >aroai_half_of_days_in_iteration_rounded_down = unused.
         # In addition, there are weekly loop iterations on day 1 and then every 7 days.
         every_country = {

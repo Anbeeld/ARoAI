@@ -1,6 +1,7 @@
 ﻿# Find army and navy average and biggest threat numbers
 aroai_determine_highest_and_average_military_threat = {
     
+    # Set up variables
     set_variable = {
         name = aroai_army_size_equal_to_average_threat
         value = 0
@@ -18,6 +19,7 @@ aroai_determine_highest_and_average_military_threat = {
         value = 0
     }
     
+    # Get 6 countries with highest army power projection and find an average of their army power projections
     ordered_country = {
         order_by = aroai_army_power_projection_with_conscription
         max = 6
@@ -27,6 +29,8 @@ aroai_determine_highest_and_average_military_threat = {
                 add = prev.aroai_army_power_projection_with_conscription
             }
         }
+
+        # Find the highest army power projection out of all countries except root
         if = {
             limit = {
                 NOT = {
@@ -42,6 +46,12 @@ aroai_determine_highest_and_average_military_threat = {
             }
         }
     }
+    change_variable = {
+        name = aroai_army_size_equal_to_average_threat
+        divide = 6
+    }
+
+    # Get 6 countries with highest navy power projection and find an average of their navy power projections
     ordered_country = {
         order_by = aroai_navy_power_projection
         max = 6
@@ -51,6 +61,8 @@ aroai_determine_highest_and_average_military_threat = {
                 add = prev.aroai_navy_power_projection
             }
         }
+
+        # Find the highest navy power projection out of all countries except root
         if = {
             limit = {
                 NOT = {
@@ -67,14 +79,12 @@ aroai_determine_highest_and_average_military_threat = {
         }
     }
     change_variable = {
-        name = aroai_army_size_equal_to_average_threat
-        divide = 6
-    }
-    change_variable = {
         name = aroai_navy_size_equal_to_average_threat
         divide = 6
     }
     
+    # Transform every variable from power projection to the amount of barracks and naval bases
+    # we need to have in our country in order to match this power projection.
     set_variable = {
         name = aroai_army_size_equal_to_average_threat
         value = {
@@ -147,21 +157,24 @@ aroai_determine_highest_and_average_military_threat = {
 
 # Set up variables for roleplay offset
 aroai_determine_roleplay_building_priorities = {
-    
     if = {
         limit = {
             is_player = no
             has_game_rule = aroai_building_priorities_roleplay
         }
+
+        # Subjects and junior market partners
         if = {
             limit = {
                 NOT = {
                     market.owner = this
                 }
             }
+
+            # Weak economies are forced into some additional focus on agriculture and resources
             if = {
                 limit = {
-                    aroai_gdp_per_capita < 3
+                    aroai_gdp_per_capita < 2.50
                 }
                 set_variable = {
                     name = aroai_resource_weight_factor
@@ -172,65 +185,81 @@ aroai_determine_roleplay_building_priorities = {
                     value = -1
                 }
             }
+
+            # Industry is significantly less important, leading to higher emphasis on agriculture and resources
             set_variable = {
                 name = aroai_industry_weight_factor
                 value = 2
             }
         }
+
+        # Traditionalism
         else_if = {
             limit = {
                 OR = {
                     has_law = law_type:law_traditionalism
                     AND = {
                         country_rank <= 3
-                        aroai_gdp_per_capita < 3
+                        aroai_gdp_per_capita < 5.00
                     }
                 }
             }
+
+            # Resources are slightly less important
             set_variable = {
                 name = aroai_resource_weight_factor
                 value = 1
             }
+
+            # Agriculture is slightly more important
             set_variable = {
                 name = aroai_agriculture_weight_factor
                 value = -1
             }
+
+            # Industry is significantly less important
             set_variable = {
                 name = aroai_industry_weight_factor
                 value = 2
             }
         }
+
+        # Agrarianism
         else_if = {
             limit = {
                 OR = {
                     has_law = law_type:law_agrarianism
                     AND = {
                         country_rank <= 3
-                        aroai_gdp_per_capita < 6
+                        aroai_gdp_per_capita < 5.00
                     }
                     AND = {
                         country_rank <= 5
-                        aroai_gdp_per_capita < 3
+                        aroai_gdp_per_capita < 2.50
                     }
                 }
             }
+
+            # Agriculture is slightly more important
             set_variable = {
                 name = aroai_agriculture_weight_factor
                 value = -1
             }
+
+            # Industry is slightly less important
             set_variable = {
                 name = aroai_industry_weight_factor
                 value = 1
             }
         }
     }
-    
 }
 
-#
+# A huge mess of different stuff combined together for performance reasons mostly in a form of
+# reducing calls of stuff like every_scope_state and every_scope_building to the minimum possible.
 aroai_collect_data_for_construction_and_downsizing = {
     
-    # Calculate incorporated and coastal values: set variables
+    # Set up variables to calculate incorporated and coastal values
     set_variable = {
         name = aroai_total_coastal_population
         value = 0
@@ -248,20 +277,22 @@ aroai_collect_data_for_construction_and_downsizing = {
         value = 0
     }
     
-    # Calculate desired bureaucracy: set variables
+    # Set up variables to calculate desired bureaucracy
     set_variable = {
         name = aroai_surplus_bureaucracy_target
         value = 0
     }
     
+    # Set up variables to calculate median construction efficiency
     set_local_variable = {
-        name = aroai_amount_of_elements_in_construction_list
+        name = aroai_num_construction_efficiency_values
         value = 0
     }
     
+    # Get a whole bunch of different data in every state of the country
     every_scope_state = {
         
-        #
+        # Calculate total coastal population
         if = {
             limit = {
                 is_coastal = yes
@@ -273,6 +304,8 @@ aroai_collect_data_for_construction_and_downsizing = {
                 }
             }
         }
+
+        # Calculate incorporated population
         if = {
             limit = {
                 is_incorporated = yes
@@ -287,6 +320,8 @@ aroai_collect_data_for_construction_and_downsizing = {
                     add = prev.gdp
                 }
             }
+
+            # Calculate coastal incorporated population
             if = {
                 limit = {
                     is_coastal = yes
@@ -299,6 +334,8 @@ aroai_collect_data_for_construction_and_downsizing = {
                 }
             }
         }
+
+        # States that are currently being incorporated are counted as well, but multiplied by % incorporation progress
         else_if = {
             limit = {
                 incorporation_progress > 0
@@ -335,7 +372,7 @@ aroai_collect_data_for_construction_and_downsizing = {
             }
         }
         
-        # Calculate desired bureaucracy: find the most expensive state
+        # Find the biggest unincorporated state to calculate desired bureaucracy
         if = {
             limit = {
                 is_incorporated = no
@@ -350,13 +387,13 @@ aroai_collect_data_for_construction_and_downsizing = {
             }
         }
         
-        #
+        # Base for available workforce is unemployed population, subsistence and excessive buildings are added later
         set_variable = {
             name = aroai_available_workforce
             value = aroai_unemployed_population
         }
 
-        #
+        # Calculate Chinese and Indian population of a country for respective AI Power Level game rules
         if = {
             limit = {
                 OR = {
@@ -418,7 +455,8 @@ aroai_collect_data_for_construction_and_downsizing = {
             }
         }
 
-        #
+        # To calculate median construction efficiency a value of the state is added to the list multiple times
+        # depending on how big it is, so that small states have much less influence on the median.
         set_local_variable = {
             name = aroai_state_weight_in_construction
             value = {
@@ -428,11 +466,12 @@ aroai_collect_data_for_construction_and_downsizing = {
                 add = 1
             }
         }
-
         while = {
             limit = {
                 local_var:aroai_state_weight_in_construction > 0
             }
+
+            # You can't add same value to a list multiple times, so we add id to it that we'll throw away later
             set_local_variable = {
                 name = aroai_state_construction_efficiency
                 value = {
@@ -444,17 +483,17 @@ aroai_collect_data_for_construction_and_downsizing = {
                     max = 21460
                     multiply = 100000
                     add = {
-                        value = local_var:aroai_amount_of_elements_in_construction_list
+                        value = local_var:aroai_num_construction_efficiency_values
                         divide = 100
                     }
                 }
             }
             add_to_local_variable_list = {
-                name = aroai_construction_efficiency_records
+                name = aroai_construction_efficiency_values
                 target = local_var:aroai_state_construction_efficiency
             }
             change_local_variable = {
-                name = aroai_amount_of_elements_in_construction_list
+                name = aroai_num_construction_efficiency_values
                 add = 1
             }
             change_local_variable = {
@@ -463,12 +502,12 @@ aroai_collect_data_for_construction_and_downsizing = {
             }
         }
         
-        # Set up state level counters of government building
-        set_variable = { # D/O
+        # Set up state scope variables with government building levels
+        set_variable = { # Downsizing only
             name = aroai_building_government_administration_level
             value = 0
         }
-        set_variable = { # D/O
+        set_variable = { # Downsizing only
             name = aroai_building_university_level
             value = 0
         }
@@ -476,6 +515,7 @@ aroai_collect_data_for_construction_and_downsizing = {
             name = aroai_building_construction_sector_level
             value = 0
         }
+        # Not needed as of now
         #set_variable = {
         #    name = aroai_railway_level
         #    value = 0
@@ -498,24 +538,23 @@ aroai_collect_data_for_construction_and_downsizing = {
         }
     }
 
-
+    # Get median value from the list of construction efficiency values
     if = {
         limit = {
-            local_var:aroai_amount_of_elements_in_construction_list > 0
+            local_var:aroai_num_construction_efficiency_values > 0
         }
-        
         set_local_variable = {
-            name = aroai_amount_of_elements_in_construction_list
+            name = aroai_num_construction_efficiency_values
             value = {
-                value = local_var:aroai_amount_of_elements_in_construction_list
+                value = local_var:aroai_num_construction_efficiency_values
                 divide = 2
                 floor = yes
             }
         }
         ordered_in_local_list = {
-            variable = aroai_construction_efficiency_records
+            variable = aroai_construction_efficiency_values
             order_by = this
-            position = local_var:aroai_amount_of_elements_in_construction_list
+            position = local_var:aroai_num_construction_efficiency_values
             root = {
                 set_variable = {
                     name = aroai_median_construction_efficiency
@@ -528,20 +567,20 @@ aroai_collect_data_for_construction_and_downsizing = {
                 }
             }
         }
-        
     }
+    remove_local_variable = aroai_num_construction_efficiency_values
+    clear_local_variable_list = aroai_construction_efficiency_values
 
-    remove_local_variable = aroai_amount_of_elements_in_construction_list
-    clear_local_variable_list = aroai_construction_efficiency_records
-
-    # Calculate desired bureau, aroai_surplus_bureaucracy_target = the most expensive state to integrate
+    # Calculate desired bureaucracy, aroai_surplus_bureaucracy_target = the most expensive state to integrate
     change_variable = {
         name = aroai_surplus_bureaucracy_target
-        divide = 5000
+        divide = 5000 # Divide state population by a very approximate divisor to get incorporation bureaucracy cost
     }
+
+    # Set variable to institution bureaucracy cost if it is higher than state incorporation cost
     if = {
         limit = {
-            var:aroai_surplus_bureaucracy_target < aroai_institution_bureaucracy_cost # If institution is more expensive, then change variable to institution
+            var:aroai_surplus_bureaucracy_target < aroai_institution_bureaucracy_cost
         }
         set_variable = {
             name = aroai_surplus_bureaucracy_target
@@ -549,7 +588,7 @@ aroai_collect_data_for_construction_and_downsizing = {
         }
     }
     
-    # Set up country level counters of government building
+    # Set up country scope variables with government building levels
     set_variable = {
         name = aroai_building_government_administration_total
         value = 0
@@ -558,32 +597,37 @@ aroai_collect_data_for_construction_and_downsizing = {
         name = aroai_building_university_total
         value = 0
     }
+    # Counted in weekly loop
     # set_variable = {
         # name = aroai_building_construction_sector_total
         # value = 0
     # }
-    #set_variable = {
-    #    name = aroai_railway_total
-    #    value = 0
-    #}
+    # Not needed as of now
+    # set_variable = {
+    #     name = aroai_railway_total
+    #     value = 0
+    # }
     set_variable = {
         name = aroai_building_port_total
         value = 0
     }
-    #set_variable = {
-    #    name = aroai_building_barracks_total
-    #    value = 0
-    #}
+    # Counted in weekly loop
+    # set_variable = {
+    #     name = aroai_building_barracks_total
+    #     value = 0
+    # }
     set_variable = {
         name = aroai_building_naval_base_total
         value = 0
     }
     
-    #
+    # Get various data for every building in the country
     every_scope_building = {
         limit = {
-            level > 0
+            level > 0 # Active buildings only
         }
+
+        # Add occupation of subsistence building to available workforce in its state
         if = {
             limit = {
                 is_subsistence_building = yes
@@ -599,220 +643,248 @@ aroai_collect_data_for_construction_and_downsizing = {
                                     is_building_type = building_subsistence_rice_paddies
                                 }
                             }
-                            multiply = 9000
+                            multiply = 10000 # Rice paddies have ~10k workers per level
                         }
                         else = {
-                            multiply = 4500
+                            multiply = 5000 # All the other ones have ~5k workers per level
                         }
+                        multiply = 0.90 # But not all of them are peasants
                     }
                 }
             }
         }
-        else = {
-            if = {
-                limit = {
-                    is_building_type = building_government_administration
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_government_administration_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_government_administration_cooldown
-                            days = aroai_days_in_building_cooldown
+
+        # Government administration
+        else_if = {
+            limit = {
+                is_building_type = building_government_administration
+            }
+            root = {
+
+                # Renew cooldown if there's government administration under construction
+                if = {
+                    limit = {
+                        has_variable = aroai_building_government_administration_cooldown
+                        prev = {
+                            is_under_construction = yes
                         }
                     }
-                    change_variable = {
-                        name = aroai_building_government_administration_total
-                        add = prev.level
+                    aroai_renew_variable = {
+                        name = aroai_building_government_administration_cooldown
+                        days = aroai_days_in_building_cooldown
                     }
                 }
-                state = {
-                    change_variable = {
-                        name = aroai_building_government_administration_level
-                        add = prev.level
-                    }
+
+                # Add level to country scope variable
+                change_variable = {
+                    name = aroai_building_government_administration_total
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_university
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_university_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_university_cooldown
-                            days = aroai_days_in_building_cooldown
-                        }
-                    }
-                    change_variable = {
-                        name = aroai_building_university_total
-                        add = prev.level
-                    }
-                }
-                state = {
-                    change_variable = {
-                        name = aroai_building_university_level
-                        add = prev.level
-                    }
+
+            # Add level to state scope variable
+            state = {
+                change_variable = {
+                    name = aroai_building_government_administration_level
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_construction_sector
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_construction_sector_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_construction_sector_cooldown
-                            days = aroai_days_in_building_cooldown
+        }
+
+        # University
+        else_if = {
+            limit = {
+                is_building_type = building_university
+            }
+            root = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_university_cooldown
+                        prev = {
+                            is_under_construction = yes
                         }
                     }
-                    # change_variable = {
-                        # name = aroai_building_construction_sector_total
-                        # add = prev.level
-                    # }
-                }
-                state = {
-                    change_variable = {
-                        name = aroai_building_construction_sector_level
-                        add = prev.level
+                    aroai_renew_variable = {
+                        name = aroai_building_university_cooldown
+                        days = aroai_days_in_building_cooldown
                     }
+                }
+                change_variable = {
+                    name = aroai_building_university_total
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_railway
-                }
-                #
-            }
-            else_if = {
-                limit = {
-                    is_building_type = building_port
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_port_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_port_cooldown
-                            days = aroai_days_in_building_cooldown
-                        }
-                    }
-                    change_variable = {
-                        name = aroai_building_port_total
-                        add = prev.level
-                    }
-                }
-                state = {
-                    change_variable = {
-                        name = aroai_building_port_level
-                        add = prev.level
-                    }
+            state = {
+                change_variable = {
+                    name = aroai_building_university_level
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_naval_base
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_naval_base_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_naval_base_cooldown
-                            days = aroai_days_in_building_cooldown
+        }
+
+        # Construction sector
+        else_if = {
+            limit = {
+                is_building_type = building_construction_sector
+            }
+            root = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_construction_sector_cooldown
+                        prev = {
+                            is_under_construction = yes
                         }
                     }
-                    change_variable = {
-                        name = aroai_building_naval_base_total
-                        add = prev.level
+                    aroai_renew_variable = {
+                        name = aroai_building_construction_sector_cooldown
+                        days = aroai_days_in_building_cooldown
                     }
                 }
-                state = {
-                    change_variable = {
-                        name = aroai_building_naval_base_level
-                        add = prev.level
-                    }
+                # Counted in weekly loop
+                # change_variable = {
+                    # name = aroai_building_construction_sector_total
+                    # add = prev.level
+                # }
+            }
+            state = {
+                change_variable = {
+                    name = aroai_building_construction_sector_level
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_barracks
-                }
-                root = {
-                    if = {
-                        limit = {
-                            has_variable = aroai_building_barracks_cooldown
-                            prev = {
-                                is_under_construction = yes
-                            }
-                        }
-                        aroai_renew_variable = {
-                            name = aroai_building_barracks_cooldown
-                            days = aroai_days_in_building_cooldown
+        }
+
+        # Railway
+        else_if = {
+            limit = {
+                is_building_type = building_railway
+            }
+            # Nothing as of now
+        }
+
+        # Port
+        else_if = {
+            limit = {
+                is_building_type = building_port
+            }
+            root = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_port_cooldown
+                        prev = {
+                            is_under_construction = yes
                         }
                     }
-                }
-                state = {
-                    change_variable = {
-                        name = aroai_building_barracks_level
-                        add = prev.level
+                    aroai_renew_variable = {
+                        name = aroai_building_port_cooldown
+                        days = aroai_days_in_building_cooldown
                     }
+                }
+                change_variable = {
+                    name = aroai_building_port_total
+                    add = prev.level
                 }
             }
-            else_if = {
-                limit = {
-                    is_building_type = building_conscription_center
-                }
-                state = {
-                    change_variable = {
-                        name = aroai_building_conscription_center_occupancy
-                        add = prev.occupancy
-                    }
+            state = {
+                change_variable = {
+                    name = aroai_building_port_level
+                    add = prev.level
                 }
             }
-            
+        }
+
+        # Naval base
+        else_if = {
+            limit = {
+                is_building_type = building_naval_base
+            }
+            root = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_naval_base_cooldown
+                        prev = {
+                            is_under_construction = yes
+                        }
+                    }
+                    aroai_renew_variable = {
+                        name = aroai_building_naval_base_cooldown
+                        days = aroai_days_in_building_cooldown
+                    }
+                }
+                change_variable = {
+                    name = aroai_building_naval_base_total
+                    add = prev.level
+                }
+            }
+            state = {
+                change_variable = {
+                    name = aroai_building_naval_base_level
+                    add = prev.level
+                }
+            }
+        }
+
+        # Barracks
+        else_if = {
+            limit = {
+                is_building_type = building_barracks
+            }
+            root = {
+                if = {
+                    limit = {
+                        has_variable = aroai_building_barracks_cooldown
+                        prev = {
+                            is_under_construction = yes
+                        }
+                    }
+                    aroai_renew_variable = {
+                        name = aroai_building_barracks_cooldown
+                        days = aroai_days_in_building_cooldown
+                    }
+                }
+                # Counted in weekly loop
+                # change_variable = {
+                    # name = aroai_building_barracks_total
+                    # add = prev.level
+                # }
+            }
+            state = {
+                change_variable = {
+                    name = aroai_building_barracks_level
+                    add = prev.level
+                }
+            }
+        }
+
+        # Conscription center
+        else_if = {
+            limit = {
+                is_building_type = building_conscription_center
+            }
+            state = {
+                change_variable = {
+                    name = aroai_building_conscription_center_occupancy
+                    add = prev.occupancy
+                }
+            }
         }
     }
     
-    # Calculate free workforce that is available in the state
+    # Set up variables to calculate unutilized workforce ratio
     set_variable = {
-        name = aroai_unutilized_workforce
+        name = aroai_unutilized_workforce_percent
         value = 0
     }
     set_local_variable = {
         name = aroai_potential_workforce
         value = 0
     }
+
+    # For every state add available workforce to unutilized and working adult population to potential
     every_scope_state = {
         root = {
             change_variable = {
-                name = aroai_unutilized_workforce
+                name = aroai_unutilized_workforce_percent
                 add = prev.aroai_available_workforce
             }
             change_local_variable = {
@@ -829,11 +901,11 @@ aroai_collect_data_for_construction_and_downsizing = {
         }
     }
     
-    # Calculate unutilized workforce which is ratio of unused
+    # Calculate unutilized workforce percent
     set_variable = {
-        name = aroai_unutilized_workforce
+        name = aroai_unutilized_workforce_percent
         value = {
-            value = var:aroai_unutilized_workforce
+            value = var:aroai_unutilized_workforce_percent
             divide = {
                 value = local_var:aroai_potential_workforce
                 min = 1
@@ -842,35 +914,37 @@ aroai_collect_data_for_construction_and_downsizing = {
             max = 1
         }
     }
+    remove_local_variable = aroai_potential_workforce
     
-    # Some square root we'll need
-    aroai_calculate_square_root = { # Root of minus half unincorporated GDP per capita
+    # Some square root calculations that are required
+    aroai_calculate_square_root = {
         precision = 2
         input = aroai_minus_half_unincorporated_gdp_per_capita
         output = aroai_square_root_of_minus_half_unincorporated_gdp_per_capita
     }
-    aroai_calculate_square_root = { # Root of construction points
+    aroai_calculate_square_root = {
         precision = 1
         input = aroai_construction_points_current
         output = aroai_square_root_of_construction_points
     }
     
-    #
+    # Recheck if we actually should construct new buildings with all the new data.
+    # There's some good reason for this that I can't recall now.
     if = {
         limit = {
             has_local_variable = aroai_construction_is_allowed
             NOR = {
                 AND = {
-                    aroai_regular_building = yes
+                    aroai_is_regular_construction_allowed = yes
                     aroai_free_construction_points > 0
                 }
-                aroai_critical_building = yes
+                aroai_is_critical_construction_allowed = yes
             }
         }
         remove_local_variable = aroai_construction_is_allowed
     }
     
-    # Set up variables
+    # Set up variables for median productivity and profitability
     set_variable = {
         name = aroai_median_building_productivity
         value = 0
@@ -880,26 +954,34 @@ aroai_collect_data_for_construction_and_downsizing = {
         value = 0
     }
     
+    # Calculate median productivity and profitability
     if = {
+
+        # But only if we have something else allowed other than critical construction and government downsizing
         limit = {
             OR = {
                 AND = {
                     has_local_variable = aroai_construction_is_allowed
-                    aroai_regular_building = yes
+                    aroai_is_regular_construction_allowed = yes
                 }
-                aroai_can_downsize_production_building = yes
+                aroai_is_production_downsizing_allowed = yes
             }
         }
         
+        # Set variables to track lists of values
         set_local_variable = {
-            name = aroai_productivity_value_count
+            name = aroai_num_productivity_values
             value = 0
         }
         set_local_variable = {
-            name = aroai_building_object_count
+            name = aroai_num_profitability_values
             value = 0
         }
         
+        # Add positive values of production building to lists. Non-positive productivity and profitability are ignored,
+        # as these medians are used only to evaluate if a new building is worthy of being constructed, if it will be on
+        # par and competitive in general economy of a country, so we want to compare it only against other productive
+        # buildings, thus non-positive productivity and profitability values are excluded from median calculations.
         every_scope_building = {
             limit = {
                 aroai_occupied_levels > 0
@@ -913,13 +995,14 @@ aroai_collect_data_for_construction_and_downsizing = {
                 }
             }
             
+            # Productivity
             if = {
                 limit = {
                     earnings > 0
                 }
-                
                 root = {
-                    
+
+                    # You can't add same value to a list multiple times, so we add id to it that we'll throw away later
                     set_local_variable = {
                         name = aroai_formatted_productivity
                         value = {
@@ -929,14 +1012,17 @@ aroai_collect_data_for_construction_and_downsizing = {
                             max = 99999
                             multiply = 10000
                             add = {
-                                value = local_var:aroai_productivity_value_count
+                                value = local_var:aroai_num_productivity_values
                                 divide = 100
                             }
                         }
                     }
                     
+                    # Productivity value of a building is added to the list once for every X levels of this buildings,
+                    # as we actually want to get median productivity of building level rather than entire building, but
+                    # it would be a bit too expensive, thus we use some divisor that doesn't affect results too much.
                     set_local_variable = {
-                        name = aroai_level_counter
+                        name = aroai_num_times_to_add_value_to_list
                         value = {
                             value = prev.aroai_occupied_levels
                             divide = 4
@@ -944,10 +1030,10 @@ aroai_collect_data_for_construction_and_downsizing = {
                     }
                     while = {
                         limit = {
-                            local_var:aroai_level_counter > 0
+                            local_var:aroai_num_times_to_add_value_to_list > 0
                         }
                         add_to_variable_list = {
-                            name = aroai_productivity_value_list
+                            name = aroai_productivity_values
                             target = local_var:aroai_formatted_productivity
                         }
                         change_local_variable = {
@@ -955,30 +1041,33 @@ aroai_collect_data_for_construction_and_downsizing = {
                             add = 0.01
                         }
                         change_local_variable = {
-                            name = aroai_productivity_value_count
+                            name = aroai_num_productivity_values
                             add = 1
                         }
                         change_local_variable = {
-                            name = aroai_level_counter
+                            name = aroai_num_times_to_add_value_to_list
                             subtract = 1
                         }
                     }
-                    
                     remove_local_variable = aroai_formatted_productivity
-                    remove_local_variable = aroai_level_counter
+                    remove_local_variable = aroai_num_times_to_add_value_to_list
                 }
                 
+                # Profitability
                 if = {
                     limit = {
                         weekly_profit > 0
                     }
                     root = {
+
+                        # For profitability we don't need any fancy transformations, just old good get value from
+                        # a scope using a trigger, thus we'll just add a building itself to the list to do it later.
                         add_to_variable_list = {
-                            name = aroai_building_object_list
+                            name = aroai_profitability_values
                             target = prev
                         }
                         change_local_variable = {
-                            name = aroai_building_object_count
+                            name = aroai_num_profitability_values
                             add = 1
                         }
                     }
@@ -986,24 +1075,23 @@ aroai_collect_data_for_construction_and_downsizing = {
             }
         }
         
-        #
+        # Find median productivity
         if = {
             limit = {
-                local_var:aroai_productivity_value_count > 0
+                local_var:aroai_num_productivity_values > 0
             }
-            
             set_local_variable = {
-                name = aroai_productivity_value_count
+                name = aroai_num_productivity_values
                 value = {
-                    value = local_var:aroai_productivity_value_count
+                    value = local_var:aroai_num_productivity_values
                     divide = 2
                     floor = yes
                 }
             }
             ordered_in_list = {
-                variable = aroai_productivity_value_list
+                variable = aroai_productivity_values
                 order_by = this
-                position = local_var:aroai_productivity_value_count
+                position = local_var:aroai_num_productivity_values
                 root = {
                     set_variable = {
                         name = aroai_median_building_productivity
@@ -1016,28 +1104,27 @@ aroai_collect_data_for_construction_and_downsizing = {
                     }
                 }
             }
-            
         }
+        clear_variable_list = aroai_productivity_values
+        remove_local_variable = aroai_num_productivity_values
         
-        clear_variable_list = aroai_productivity_value_list
-        
+        # Find median profitability
         if = {
             limit = {
-                local_var:aroai_building_object_count > 0
+                local_var:aroai_num_profitability_values > 0
             }
-            
             set_local_variable = {
-                name = aroai_building_object_count
+                name = aroai_num_profitability_values
                 value = {
-                    value = local_var:aroai_building_object_count
+                    value = local_var:aroai_num_profitability_values
                     divide = 2
                     floor = yes
                 }
             }
             ordered_in_list = {
-                variable = aroai_building_object_list
+                variable = aroai_profitability_values
                 order_by = aroai_profit_per_occupied_level
-                position = local_var:aroai_building_object_count
+                position = local_var:aroai_num_profitability_values
                 root = {
                     set_variable = {
                         name = aroai_median_building_profitability
@@ -1045,23 +1132,22 @@ aroai_collect_data_for_construction_and_downsizing = {
                     }
                 }
             }
-            
         }
-        
-        clear_variable_list = aroai_building_object_list
+        clear_variable_list = aroai_profitability_values
+        remove_local_variable = aroai_num_profitability_values
     }
     
-    #
+    # Collect building data type by type, collected data depends on what actions are allowed for performance reasons
     if = {
         limit = {
             has_local_variable = aroai_construction_is_allowed
-            aroai_can_downsize_production_building = yes
+            aroai_is_production_downsizing_allowed = yes
         }
         aroai_perform_for_every_building_type = {
-            effect = 1 # aroai_collect_building_level_data_1
+            effect = 1 # aroai_collect_data_for_all_buildings_of_type
         }
         set_variable = {
-            name = aroai_cycles_since_production_downsizing
+            name = aroai_iterations_since_production_downsizing
             value = 0
         }
     }
@@ -1070,23 +1156,23 @@ aroai_collect_data_for_construction_and_downsizing = {
             has_local_variable = aroai_construction_is_allowed
         }
         aroai_perform_for_every_building_type = {
-            effect = 2 # aroai_collect_building_level_data_2
+            effect = 2 # aroai_collect_data_except_workforce_for_all_buildings_of_type
         }
     }
     else_if = {
         limit = {
-            aroai_can_downsize_production_building = yes
+            aroai_is_production_downsizing_allowed = yes
         }
         aroai_perform_for_every_building_type = {
-            effect = 3 # aroai_collect_building_level_data_3
+            effect = 3 # aroai_collect_only_workforce_data_for_all_buildings_of_type
         }
         set_variable = {
-            name = aroai_cycles_since_production_downsizing
+            name = aroai_iterations_since_production_downsizing
             value = 0
         }
     }
     
-    # Check if the state meets requirements of being suitable for building
+    # Collect states that meet requirements of being suitable for construction
     every_scope_state = {
         limit = {
             aroai_has_enough_infrastructure = yes
@@ -1094,18 +1180,349 @@ aroai_collect_data_for_construction_and_downsizing = {
         }
         root = {
             add_to_variable_list = {
-                name = aroai_suitable_states
+                name = aroai_states_suitable_for_construction
                 target = prev
             }
         }
     }
 }
 
-aroai_count_ongoing_constructions = {
+# ---------------------------------------------------------------------------------------------------------------------
+# Array variable aroai_building_type_X_collected_data is widely used below, where X is id of building type in question.
+# Search for "Cell distribution of aroai_building_type_X_collected_data array variable" in aroai_preparation_values.txt
+# ---------------------------------------------------------------------------------------------------------------------
+
+# If workforce is true, calculate shortages, profitability, productivity and check if building is excessive
+aroai_collect_data_for_all_buildings_of_type = {
+    if = {
+        limit = {
+            $workforce$ = 1
+        }
+
+        # Set up building counter variable
+        set_local_variable = {
+            name = aroai_num_buildings_of_current_type
+            value = 0
+        }
+
+        # Get every building of the type in the country
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+
+            # Remove level 0 buildings that are not under construction as it's just a junk that happens to survive
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+            else = {
+
+                # Add ongoing constructions to counter
+                aroai_add_ongoing_constructions_to_counter = {
+                    id = $id$
+                    counter = $counter$
+                }
+
+                # Further data collection makes sense only for active buildings
+                if = {
+                    limit = {
+                        level > 0
+                    }
+
+                    # Check if the building uses certain important production methods
+                    aroai_check_production_methods_of_building_type = {
+                        id = $id$
+                    }
+
+                    # Further data collection makes sense only for buildings with workers and reasonable market access
+                    if = {
+                        limit = {
+                            aroai_occupied_levels > 0
+                            state.market_access >= 0.80
+                        }
+
+                        # Check if the building has input good shortages
+                        aroai_collect_total_and_shortage_building_levels = {
+                            id = $id$
+                        }
+
+                        # Add the building to the list of current type to perform country scope calculations later
+                        root = {
+                            change_local_variable = {
+                                name = aroai_num_buildings_of_current_type
+                                add = 1
+                            }
+                            add_to_variable_list = {
+                                name = aroai_buildings_of_current_type
+                                target = prev
+                            }
+                        }
+                    }
+
+                    # Check if building is not productive but has a lot of workers or if it is nearly empty
+                    aroai_check_if_building_is_excessive_or_abandoned = {
+                        id = $id$
+                    }
+                }
+            }
+        }
+
+        # Country scope calculations for this building type
+        if = {
+            limit = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+
+            # Process shortage data in array variable of this building type to form its final cell distribution
+            aroai_calculate_percent_of_building_type_levels_without_shortage = {
+                id = $id$
+            }
+
+            # Find median productivity and profitability of this building type using country scope list
+            aroai_find_building_type_median_productivity_and_profitability = {
+                id = $id$
+            }
+        }
+        remove_local_variable = aroai_num_buildings_of_current_type
+        clear_variable_list = aroai_buildings_of_current_type
+    }
+
+    # If workforce is false, collect all the data except the one related to it
+    else = {
+        aroai_collect_data_except_workforce_for_all_buildings_of_type = {
+            key = $key$
+            id = $id$
+            counter = $counter$
+        }
+    }
+}
+
+# Сalculate shortages, profitability and productivity
+aroai_collect_data_except_workforce_for_all_buildings_of_type = {
+    
+    # For government building we don't need anything except shortages
+    if = {
+        limit = {
+            $id$ < 7 # Government buildings
+            NOT = {
+                $id$ = 4 # Except railways as they are productive
+            }
+        }
+
+        # For some building shortages are already calculated in weekly loop, so we don't need to redo it
+        if = {
+            limit = {
+                NOR = {
+                    $id$ = 1 # Government administration
+                    $id$ = 3 # Construction sector
+                    $id$ = 5 # Port
+                }
+            }
+
+            # Get every building of the type in the country
+            every_scope_building = {
+                limit = {
+                    is_building_type = $key$
+                }
+
+                # Remove level 0 buildings that are not under construction as it's just a junk that happens to survive
+                if = {
+                    limit = {
+                        level <= 0
+                        is_under_construction = no
+                    }
+                    state = {
+                        remove_building = $key$
+                    }
+                }
+                else = {
+
+                    # Add ongoing constructions to counter
+                    aroai_add_ongoing_constructions_to_counter = {
+                        id = $id$
+                        counter = $counter$
+                    }
+
+                    # Further data collection makes sense only for buildings with workers and reasonable market access
+                    if = {
+                        limit = {
+                            aroai_occupied_levels > 0
+                            state.market_access >= 0.80
+                        }
+
+                        # Check if the building has input good shortages
+                        aroai_collect_total_and_shortage_building_levels = {
+                            id = $id$
+                        }
+                    }
+                }
+            }
+
+            # Country scope calculations for this building type
+            if = {
+                limit = {
+                    has_variable = aroai_building_type_$id$_collected_data
+                }
+
+                # Process shortage data in array variable of this building type to form its final cell distribution
+                aroai_calculate_percent_of_building_type_levels_without_shortage = {
+                    id = $id$
+                }
+            }
+        }
+    }
+
+    # Production buildings
+    else = {
+
+        # Set up building counter variable
+        set_local_variable = {
+            name = aroai_num_buildings_of_current_type
+            value = 0
+        }
+
+        # Get every building of the type in the country
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+
+            # Remove level 0 buildings that are not under construction as it's just a junk that happens to survive
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+            else = {
+
+                # Add ongoing constructions to counter
+                aroai_add_ongoing_constructions_to_counter = {
+                    id = $id$
+                    counter = $counter$
+                }
+
+                # Further data collection makes sense only for active buildings
+                if = {
+                    limit = {
+                        level > 0
+                    }
+
+                    # Check if the building uses certain important production methods
+                    aroai_check_production_methods_of_building_type = {
+                        id = $id$
+                    }
+
+                    # Further data collection makes sense only for buildings with workers and reasonable market access
+                    if = {
+                        limit = {
+                            aroai_occupied_levels > 0
+                            state.market_access >= 0.80
+                        }
+
+                        # Check if the building has input good shortages
+                        aroai_collect_total_and_shortage_building_levels = {
+                            id = $id$
+                        }
+
+                        # Add the building to the list of current type to perform country scope calculations later
+                        root = {
+                            change_local_variable = {
+                                name = aroai_num_buildings_of_current_type
+                                add = 1
+                            }
+                            add_to_variable_list = {
+                                name = aroai_buildings_of_current_type
+                                target = prev
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        # Country scope calculations for this building type
+        if = {
+            limit = {
+                has_variable = aroai_building_type_$id$_collected_data
+            }
+
+            # Process shortage data in array variable of this building type to form its final cell distribution
+            aroai_calculate_percent_of_building_type_levels_without_shortage = {
+                id = $id$
+            }
+
+            # Find median productivity and profitability of this building type using country scope list
+            aroai_find_building_type_median_productivity_and_profitability = {
+                id = $id$
+            }
+        }
+        remove_local_variable = aroai_num_buildings_of_current_type
+        clear_variable_list = aroai_buildings_of_current_type
+    }
+}
+
+# Check if building is excessive or abandoned
+aroai_collect_only_workforce_data_for_all_buildings_of_type = {
+
+    # But only is workforce is true, of course
+    if = {
+        limit = {
+            $workforce$ = 1
+        }
+
+        # Get every building of the type in the country
+        every_scope_building = {
+            limit = {
+                is_building_type = $key$
+            }
+
+            # Remove level 0 buildings that are not under construction as it's just a junk that happens to survive
+            if = {
+                limit = {
+                    level <= 0
+                    is_under_construction = no
+                }
+                state = {
+                    remove_building = $key$
+                }
+            }
+
+            # This data collection makes sense only for active buildings
+            else_if = {
+                limit = {
+                    level > 0
+                }
+
+                # Check if building is not productive but has a lot of workers or if it is nearly empty
+                aroai_check_if_building_is_excessive_or_abandoned = {
+                    id = $id$
+                }
+            }
+        }
+    }
+}
+
+# Add the number of levels currently under construction to counter in array variable of the building type
+aroai_add_ongoing_constructions_to_counter = {
+
+    # Only if the building is actually under construction
     if = {
         limit = {
             is_under_construction = yes
         }
+
+        # We can't check number of levels under construction natively, so the script includes custom tracking solution.
+        # Get count from array variables of the required building type in ongoing construction list if they exist.
         state = {
             every_in_list = {
                 variable = aroai_ongoing_constructions
@@ -1118,19 +1535,21 @@ aroai_count_ongoing_constructions = {
                 }
             }
         }
+
+        # If we found something in the list of ongoing constructions, add it to counter, otherwise just add 1
         root = {
             if = {
                 limit = {
                     has_local_variable = aroai_total_constructions
                 }
-                aroai_add_to_building_counter = {
+                aroai_add_to_building_type_counter = {
                     counter = $counter$
                     value = local_var:aroai_total_constructions
                 }
                 remove_local_variable = aroai_total_constructions
             }
             else = {
-                aroai_add_to_building_counter = {
+                aroai_add_to_building_type_counter = {
                     counter = $counter$
                     value = 1
                 }
@@ -1139,252 +1558,11 @@ aroai_count_ongoing_constructions = {
     }
 }
 
-# If bt_workforce, then calculate shortages, profitability, productivity and check abandonement
-# If not, then
-# If government/infrastructure buildings except railways, calculate shortages only
-# Else calculate shortages, profitability, productivity
-aroai_collect_building_level_data_1 = {
-    if = {
-        limit = {
-            $workforce$ = 1
-        }
-        set_local_variable = {
-            name = aroai_building_object_count
-            value = 0
-        }
-        every_scope_building = {
-            limit = {
-                is_building_type = $key$
-            }
-            if = {
-                limit = {
-                    level <= 0
-                    is_under_construction = no
-                }
-                state = {
-                    remove_building = $key$
-                }
-            }
-            else = {
-                aroai_count_ongoing_constructions = {
-                    id = $id$
-                    counter = $counter$
-                }
-                if = {
-                    limit = {
-                        level > 0
-                    }
-                    aroai_check_production_methods = {
-                        id = $id$
-                    }
-                    if = {
-                        limit = {
-                            state.market_access >= 0.80
-                        }
-                        aroai_collect_building_shortages = {
-                            id = $id$
-                        }
-                        root = {
-                            change_local_variable = {
-                                name = aroai_building_object_count
-                                add = 1
-                            }
-                            add_to_variable_list = {
-                                name = aroai_building_object_list
-                                target = prev
-                            }
-                        }
-                    }
-                    aroai_is_excessive_or_abandoned = {
-                        id = $id$
-                    }
-                }
-            }
-        }
-        if = {
-            limit = {
-                has_variable = aroai_building_type_$id$_collected_data
-            }
-            aroai_transform_building_shortages = {
-                id = $id$
-            }
-            aroai_determine_building_medians = {
-                id = $id$
-            }
-        }
-        remove_local_variable = aroai_building_object_count
-        clear_variable_list = aroai_building_object_list
-    }
-    else = {
-        aroai_collect_building_level_data_2 = {
-            key = $key$
-            id = $id$
-            counter = $counter$
-        }
-    }
-}
-
-# If government/infrastructure buildings except railways, calculate shortages only
-# Else calculate shortages, profitability, productivity
-aroai_collect_building_level_data_2 = {
-    # Collect only shortages data
-    # Construction sector shortages are collected beforehand
-    
-    if = {
-        limit = {
-            $id$ < 7
-            NOT = {
-                $id$ = 4
-            }
-        }
-        if = {
-            limit = {
-                NOR = {
-                    $id$ = 1
-                    $id$ = 3
-                    $id$ = 5
-                }
-            }
-            every_scope_building = {
-                limit = {
-                    is_building_type = $key$
-                }
-                if = {
-                    limit = {
-                        level <= 0
-                        is_under_construction = no
-                    }
-                    state = {
-                        remove_building = $key$
-                    }
-                }
-                else = {
-                    aroai_count_ongoing_constructions = {
-                        id = $id$
-                        counter = $counter$
-                    }
-                    if = {
-                        limit = {
-                            aroai_occupied_levels > 0
-                            state.market_access >= 0.80
-                        }
-                        aroai_collect_building_shortages = {
-                            id = $id$
-                        }
-                    }
-                }
-            }
-            if = {
-                limit = {
-                    has_variable = aroai_building_type_$id$_collected_data
-                }
-                aroai_transform_building_shortages = {
-                    id = $id$
-                }
-            }
-        }
-    }
-    else = {
-        set_local_variable = {
-            name = aroai_building_object_count
-            value = 0
-        }
-        every_scope_building = {
-            limit = {
-                is_building_type = $key$
-            }
-            if = {
-                limit = {
-                    level <= 0
-                    is_under_construction = no
-                }
-                state = {
-                    remove_building = $key$
-                }
-            }
-            else = {
-                aroai_count_ongoing_constructions = {
-                    id = $id$
-                    counter = $counter$
-                }
-                if = {
-                    limit = {
-                        level > 0
-                    }
-                    aroai_check_production_methods = {
-                        id = $id$
-                    }
-                    if = {
-                        limit = {
-                            aroai_occupied_levels > 0
-                            state.market_access >= 0.80
-                        }
-                        aroai_collect_building_shortages = {
-                            id = $id$
-                        }
-                        root = {
-                            change_local_variable = {
-                                name = aroai_building_object_count
-                                add = 1
-                            }
-                            add_to_variable_list = {
-                                name = aroai_building_object_list
-                                target = prev
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if = {
-            limit = {
-                has_variable = aroai_building_type_$id$_collected_data
-            }
-            aroai_transform_building_shortages = {
-                id = $id$
-            }
-            aroai_determine_building_medians = {
-                id = $id$
-            }
-        }
-        remove_local_variable = aroai_building_object_count
-        clear_variable_list = aroai_building_object_list
-    }
-}
-
-aroai_collect_building_level_data_3 = {
-    # If bt_workforce, then check abandonement
-    if = {
-        limit = {
-            $workforce$ = 1
-        }
-        every_scope_building = {
-            limit = {
-                is_building_type = $key$
-            }
-            if = {
-                limit = {
-                    level <= 0
-                    is_under_construction = no
-                }
-                state = {
-                    remove_building = $key$
-                }
-            }
-            else_if = {
-                limit = {
-                    level > 0
-                }
-                aroai_is_excessive_or_abandoned = {
-                    id = $id$
-                }
-            }
-        }
-    }
-}
-
-aroai_collect_building_shortages = {
+# Collect total number of building type levels and how much of them have shortages to get % shortage levels later
+aroai_collect_total_and_shortage_building_levels = {
     root = {
+
+        # Create array variable if it doesn't exist
         if = {
             limit = {
                 NOT = {
@@ -1396,10 +1574,14 @@ aroai_collect_building_shortages = {
                 value = 0
             }
         }
+
+        # Check if there's some room in array variable for more data
         if = {
             limit = {
-                var:aroai_building_type_$id$_collected_data < aroai_building_data_overflow_protection
+                aroai_building_type_$id$_collected_data_3 < aroai_building_data_overflow_protection
             }
+
+            # Add building levels to cell with total levels of building type
             change_variable = {
                 name = aroai_building_type_$id$_collected_data
                 add = {
@@ -1408,6 +1590,8 @@ aroai_collect_building_shortages = {
                     multiply = 100
                 }
             }
+
+            # If the building has shortage, add building levels to cell with shortage levels of building type
             if = {
                 limit = {
                     prev = {
@@ -1427,139 +1611,17 @@ aroai_collect_building_shortages = {
     }
 }
 
-aroai_is_excessive_or_abandoned = {
-    state = {
-        if = {
-            limit = {
-                OR = {
-                    NOT = {
-                        has_variable = aroai_building_conscription_center_occupancy
-                    }
-                    var:aroai_building_conscription_center_occupancy = 0
-                }
-            }
-            if = {
-                limit = {
-                    prev = {
-                        aroai_building_is_abandoned = yes
-                    }
-                }
-                if = {
-                    limit = {
-                        NOT = {
-                            has_variable = aroai_building_type_$id$ia
-                        }
-                    }
-                    set_variable = {
-                        name = aroai_building_type_$id$ia
-                        value = prev.aroai_occupied_levels
-                        days = aroai_days_to_keep_ia_variable
-                    }
-                }
-                else = {
-                    set_local_variable = {
-                        name = aroai_cycles_of_observation
-                        value = {
-                            value = var:aroai_building_type_$id$ia
-                            divide = 10000000
-                            floor = yes
-                        }
-                    }
-                    set_local_variable = {
-                        name = aroai_previous_with_margin
-                        value = {
-                            value = var:aroai_building_type_$id$ia
-                            subtract = {
-                                value = local_var:aroai_cycles_of_observation
-                                multiply = 10000000
-                            }
-                            add = {
-                                value = prev.level
-                                multiply = define:NEconomy|HIRING_RATE
-                                multiply = {
-                                    value = 0.50
-                                    multiply = root.var:aroai_cycles_since_production_downsizing
-                                    add = 1
-                                }
-                            }
-                        }
-                    }
-                    if = {
-                        limit = {
-                            local_var:aroai_previous_with_margin >= prev.aroai_occupied_levels
-                        }
-                        set_local_variable = {
-                            name = aroai_cycles_of_observation
-                            value = {
-                                value = local_var:aroai_cycles_of_observation
-                                add = root.var:aroai_cycles_since_production_downsizing
-                                max = 6
-                            }
-                        }
-                        set_variable = {
-                            name = aroai_building_type_$id$ia
-                            value = {
-                                value = prev.aroai_occupied_levels
-                                add = {
-                                    value = local_var:aroai_cycles_of_observation
-                                    multiply = 10000000
-                                }
-                            }
-                            days = aroai_days_to_keep_ia_variable
-                        }
-                        if = {
-                            limit = {
-                                local_var:aroai_cycles_of_observation >= 6
-                            }
-                            root = {
-                                set_variable = {
-                                    name = aroai_building_type_$id$ia
-                                    value = yes
-                                    days = aroai_days_to_keep_short_variables
-                                }
-                            }
-                        }
-                    }
-                    else = {
-                        remove_variable = aroai_building_type_$id$ia
-                    }
-                    remove_local_variable = aroai_cycles_of_observation
-                    remove_local_variable = aroai_previous_with_margin
-                }
-            }
-            else_if = {
-                limit = {
-                    has_variable = aroai_building_type_$id$ia
-                }
-                remove_variable = aroai_building_type_$id$ia
-            }
-            if = {
-                limit = {
-                    NOT = {
-                        has_variable = aroai_building_type_$id$ia
-                    }
-                    prev = {
-                        aroai_building_is_excessive = yes
-                    }
-                }
-                change_variable = {
-                    name = aroai_available_workforce
-                    add = {
-                        value = prev.aroai_occupied_levels
-                        multiply = 1250
-                    }
-                }
-            }
-        }
-    }
-}
-
-aroai_transform_building_shortages = {
+# Transform total and shortage building type levels data into single cell containing percent of levels without shortage.
+# "Without shortage" is used instead of "shortage" because otherwise we would have a cell with 0 value being desired,
+# which sounds like a bad idea when all the other cells follow the paradigm of "big number good, small number bad."
+aroai_calculate_percent_of_building_type_levels_without_shortage = {
     set_variable = {
         name = aroai_building_type_$id$_collected_data
         value = {
             value = 1
             subtract = {
+
+                # Number of shortage levels
                 value = var:aroai_building_type_$id$_collected_data
                 subtract = {
                     value = var:aroai_building_type_$id$_collected_data
@@ -1569,6 +1631,8 @@ aroai_transform_building_shortages = {
                 }
                 multiply = 100
                 floor = yes
+
+                # Divided by number of total levels
                 divide = {
                     value = var:aroai_building_type_$id$_collected_data
                     subtract = {
@@ -1584,6 +1648,8 @@ aroai_transform_building_shortages = {
             }
             min = 0.00
             max = 0.99
+
+            # Preserve data outside of cells used for shortage calculations
             add = {
                 value = var:aroai_building_type_$id$_collected_data
                 divide = 1000000
@@ -1594,23 +1660,27 @@ aroai_transform_building_shortages = {
     }
 }
 
-aroai_determine_building_medians = {
+# While country scope medians used only positive values and added them multiple times based on building levels, these
+# calculations has none of it due to actual real world data being required here and performance reasons respectively.
+aroai_find_building_type_median_productivity_and_profitability = {
     if = {
         limit = {
-            local_var:aroai_building_object_count > 0
+            local_var:aroai_num_buildings_of_current_type > 0
         }
         set_local_variable = {
-            name = aroai_building_object_count
+            name = aroai_num_buildings_of_current_type
             value = {
-                value = local_var:aroai_building_object_count
+                value = local_var:aroai_num_buildings_of_current_type
                 divide = 2
                 floor = yes
             }
         }
+
+        # Profitability
         ordered_in_list = {
-            variable = aroai_building_object_list
+            variable = aroai_buildings_of_current_type
             order_by = aroai_profit_per_occupied_level
-            position = local_var:aroai_building_object_count
+            position = local_var:aroai_num_buildings_of_current_type
             root = {
                 change_variable = {
                     name = aroai_building_type_$id$_collected_data
@@ -1628,10 +1698,12 @@ aroai_determine_building_medians = {
                 }
             }
         }
+
+        # Productivity (with economy of scale removed!)
         ordered_in_list = {
-            variable = aroai_building_object_list
+            variable = aroai_buildings_of_current_type
             order_by = aroai_productivity_without_scaling
-            position = local_var:aroai_building_object_count
+            position = local_var:aroai_num_buildings_of_current_type
             root = {
                 change_variable = {
                     name = aroai_building_type_$id$_collected_data
@@ -1646,28 +1718,200 @@ aroai_determine_building_medians = {
             }
         }
     }
+
+    # If no buildings of this type were added to the list, then we don't have the data, thus no restrictions
     else = {
         change_variable = {
             name = aroai_building_type_$id$_collected_data
-            add = 9999999
+            add = 9999999 # Cells 2, 3, 4
         }
     }
 }
 
-### COLLECT STATES THAT BELONG TO A CERTAIN PART OF THE MARKET
-aroai_collect_country_coastlines = {
-    
-    # Collect coastlines of market capital and outer lands
+# Excessive means high occupancy but is not productive, abandoned means low occupancy and can't hire more
+aroai_check_if_building_is_excessive_or_abandoned = {
+    state = {
+
+        # Don't check it in states with active conscription, as it affects things a lot
+        if = {
+            limit = {
+                OR = {
+                    NOT = {
+                        has_variable = aroai_building_conscription_center_occupancy
+                    }
+                    var:aroai_building_conscription_center_occupancy = 0
+                }
+            }
+
+            # First check if building is abandoned
+            if = {
+                limit = {
+                    prev = {
+                        aroai_building_is_abandoned = yes
+                    }
+                }
+
+                # Only start tracking abandonement with state variable if there's none of it yet
+                if = {
+                    limit = {
+                        NOT = {
+                            has_variable = aroai_building_type_$id$_is_abandoned
+                        }
+                    }
+                    set_variable = {
+                        name = aroai_building_type_$id$_is_abandoned
+                        value = prev.aroai_occupied_levels
+                        days = aroai_days_to_keep_abandoned_variable
+                    }
+                }
+
+                # Otherwise check current situation against previous record
+                else = {
+
+                    # Save tracked iterations into local variable
+                    set_local_variable = {
+                        name = aroai_iterations_of_observation
+                        value = {
+                            value = var:aroai_building_type_$id$_is_abandoned
+                            divide = 10000000
+                            floor = yes
+                        }
+                    }
+
+                    # Set occupancy requirements for the building to escape abandoned status due to hiring people
+                    set_local_variable = {
+                        name = aroai_previous_occupancy_with_margin
+                        value = {
+
+                            # Previous occupancy
+                            value = var:aroai_building_type_$id$_is_abandoned
+                            subtract = {
+                                value = local_var:aroai_iterations_of_observation
+                                multiply = 10000000
+                            }
+
+                            # Margin
+                            add = {
+                                value = prev.level
+                                multiply = define:NEconomy|HIRING_RATE
+                                multiply = {
+                                    value = 0.50
+                                    multiply = {
+                                        value = root.var:aroai_iterations_since_production_downsizing
+                                        add = 1
+                                    }
+                                    add = 1
+                                }
+                            }
+                        }
+                    }
+
+                    # If current occupancy is not higher than threshold, continue abandonment tracking
+                    if = {
+                        limit = {
+                            local_var:aroai_previous_occupancy_with_margin >= prev.aroai_occupied_levels
+                        }
+
+                        # Add to observation iterations
+                        set_local_variable = {
+                            name = aroai_iterations_of_observation
+                            value = {
+                                value = local_var:aroai_iterations_of_observation
+                                add = root.var:aroai_iterations_since_production_downsizing
+                                max = 6
+                            }
+                        }
+
+                        # Re-set the variable
+                        set_variable = {
+                            name = aroai_building_type_$id$_is_abandoned
+                            value = {
+                                value = prev.aroai_occupied_levels
+                                add = {
+                                    value = local_var:aroai_iterations_of_observation
+                                    multiply = 10000000
+                                }
+                            }
+                            days = aroai_days_to_keep_abandoned_variable
+                        }
+
+                        # The building is proved to be consistently abandoned, so we mark its building type with a
+                        # country scope variable to show that there are buildings of this type that we need to downsize.
+                        if = {
+                            limit = {
+                                local_var:aroai_iterations_of_observation >= 6
+                            }
+                            root = {
+                                set_variable = {
+                                    name = aroai_building_type_$id$_is_abandoned
+                                    value = yes
+                                    days = aroai_days_to_keep_short_variables
+                                }
+                            }
+                        }
+                    }
+
+                    # If current occupancy is higher than threshold, we no longer think that the building is abandoned
+                    else = {
+                        remove_variable = aroai_building_type_$id$_is_abandoned
+                    }
+
+                    # Garbage collection
+                    remove_local_variable = aroai_iterations_of_observation
+                    remove_local_variable = aroai_previous_occupancy_with_margin
+                }
+            }
+
+            # If building is not abandoned, but there is tracking variable, remove it
+            else_if = {
+                limit = {
+                    has_variable = aroai_building_type_$id$_is_abandoned
+                }
+                remove_variable = aroai_building_type_$id$_is_abandoned
+            }
+
+            # If the building is not abandoned, check if it is excessive
+            if = {
+                limit = {
+                    NOT = {
+                        has_variable = aroai_building_type_$id$_is_abandoned
+                    }
+                    prev = {
+                        aroai_building_is_excessive = yes
+                    }
+                }
+
+                # If it is, add a fraction of its occupancy to available workforce of a state, so the script will
+                # construct new productive buildings there to replace ineffective excessive buildings with them.
+                change_variable = {
+                    name = aroai_available_workforce
+                    add = {
+                        value = prev.aroai_occupied_levels
+                        multiply = 5000
+                        multiply = 0.25
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Collect coastlines of market capital and outer lands
+aroai_collect_coastlines_of_market_capital_and_overseas_lands = {
     if = {
         limit = {
             any_scope_state = {
                 is_coastal = yes
             }
         }
+
+        # Only market owners can have market capital coastlines, for junior partners everything is overseas lands
         if = {
             limit = {
                 market.owner = root
             }
+
+            # Set up market capital as input state
             market_capital = {
                 root = {
                     add_to_variable_list = {
@@ -1676,43 +1920,53 @@ aroai_collect_country_coastlines = {
                     }
                 }
             }
-            aroai_collect_market_part_states = yes
+
+            # Get list of all states connected to market capital by land
+            aroai_collect_states_of_same_owner_connected_by_land = yes
+
+            # Out of connected states take all the coastal ones to form market capital coastline list
             every_in_list = {
-                variable = aroai_states_of_current_part
+                variable = aroai_states_connected_to_input
                 if = {
                     limit = {
                         is_coastal = yes
                     }
                     root = {
                         add_to_variable_list = {
-                            name = aroai_market_capital_coastline
+                            name = aroai_states_of_market_capital_coastline
                             target = prev
                         }
                     }
                 }
             }
+
+            # Set up variable with number of states of market capital coastline which is needed for port conditions
             set_variable = {
-                name = aroai_capital_coastline_states
+                name = aroai_num_states_of_market_capital_coastline
                 value = 0
             }
             every_in_list = {
-                variable = aroai_market_capital_coastline
+                variable = aroai_states_of_market_capital_coastline
                 root = {
                     change_variable = {
-                        name = aroai_capital_coastline_states
+                        name = aroai_num_states_of_market_capital_coastline
                         add = 1
                     }
                 }
             }
-            clear_variable_list = aroai_states_of_current_part
+
+            # Garbage collection
+            clear_variable_list = aroai_states_connected_to_input
         }
+
+        # Every coastal state that does not belong to market capital coastline is a part of overseas lands
         every_scope_state = {
             limit = {
                 is_coastal = yes
                 root = {
                     NOT = {
                         aroai_is_target_in_variable_list = {
-                            name = aroai_market_capital_coastline
+                            name = aroai_states_of_market_capital_coastline
                             target = prev
                         }
                     }
@@ -1720,55 +1974,72 @@ aroai_collect_country_coastlines = {
             }
             root = {
                 add_to_variable_list = {
-                    name = aroai_coastline_of_outer_lands
+                    name = aroai_coastline_of_overseas_lands
                     target = prev
                 }
+
+                # Create a list of states in overseas lands where it is safe to delete ports, meaning states that are
+                # connected by land to some other state with port and thus they won't lose market access if their ports
+                # will be deleted, which is absolutely critical to track for decision making regarding port downsizing.
                 if = {
                     limit = {
                         prev.var:aroai_building_port_level > 0
                         NOT = {
                             aroai_is_target_in_variable_list = {
-                                name = aroai_safe_to_delete_ports_in_outer_lands
+                                name = aroai_safe_to_delete_ports_in_overseas_lands
                                 target = prev
                             }
                         }
                     }
+
+                    # Set up a state with port as input
                     add_to_variable_list = {
                         name = aroai_current_ring_of_states
                         target = prev
                     }
-                    aroai_collect_market_part_states = yes
+
+                    # Get list of all states connected to this state by land
+                    aroai_collect_states_of_same_owner_connected_by_land = yes
+
+                    # If there are some states with ports in output list, all of them are considered safe to delete.
+                    # Note that downsizing script only deletes one port at time; if this will be changed, you'll need
+                    # to add additional tracking to avoid deleting multiple ports that rely on each other to be safe.
                     if = {
                         limit = {
                             any_in_list = {
-                                variable = aroai_states_of_current_part
+                                variable = aroai_states_connected_to_input
                                 var:aroai_building_port_level > 0
                                 count > 1
                             }
                         }
                         every_in_list = {
-                            variable = aroai_states_of_current_part
+                            variable = aroai_states_connected_to_input
                             if = {
                                 limit = {
                                     var:aroai_building_port_level > 0
                                 }
                                 root = {
                                     add_to_variable_list = {
-                                        name = aroai_safe_to_delete_ports_in_outer_lands
+                                        name = aroai_safe_to_delete_ports_in_overseas_lands
                                         target = prev
                                     }
                                 }
                             }
                         }
                     }
-                    clear_variable_list = aroai_states_of_current_part
+
+                    # Garbage collection
+                    clear_variable_list = aroai_states_connected_to_input
                 }
             }
         }
     }
 }
 
-aroai_collect_market_part_states = {
+# Gets any amount of states as input in form of aroai_current_ring_of_states variable list, creates an output variable
+# list named aroai_states_connected_to_input that contains all the states of the same owner that are connected by land
+# through other states of this same owner to any of states from input. Don't forget about garbage collection of output.
+aroai_collect_states_of_same_owner_connected_by_land = {
     while = {
         limit = {
             aroai_has_variable_list = {
@@ -1779,7 +2050,7 @@ aroai_collect_market_part_states = {
             variable = aroai_current_ring_of_states
             root = {
                 add_to_variable_list = {
-                    name = aroai_states_of_current_part
+                    name = aroai_states_connected_to_input
                     target = prev
                 }
             }
@@ -1789,7 +2060,7 @@ aroai_collect_market_part_states = {
                     root = {
                         NOR = {
                             aroai_is_target_in_variable_list = {
-                                name = aroai_states_of_current_part
+                                name = aroai_states_connected_to_input
                                 target = prev
                             }
                             aroai_is_target_in_variable_list = {

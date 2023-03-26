@@ -10,7 +10,6 @@ aroai_consider_building_synthetic_oil_plants = { # Paste building key in the nam
     aroai_consider_building = {
         id = $id$ # Don't change, just copy
         shortage = 1 # Set 0 if you want a building to get constructed even through shortages in a country
-        profitable = 1 # Set 0 if you want a building to get constructed even when its type is unprofitable in country
     }
 }
 
@@ -20,7 +19,7 @@ aroai_sanction_building_synthetic_oil_plants = { # Paste building key in the nam
         id = $id$ # Don't change, just copy
         conditions = 0 # 0 means both new building and expanding old ones, 1 is only expanding, 2 is only new
         shortage = 1 # Same as in aroai_consider_building, but this is using local state data
-        profitable = 1 # Same as in aroai_consider_building, but this is using local state data
+        profitable = 1 # Set 0 if you want a building to get constructed even through it isn't profitable
     }
 }
 
@@ -51,7 +50,6 @@ aroai_consider_building_synthetic_rubber_plants = {
     aroai_consider_building = {
         id = $id$
         shortage = 1
-        profitable = 1
     }
 }
 

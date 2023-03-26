@@ -1,4 +1,118 @@
-﻿aroai_compare_building_priority_with_current_highest = {
+﻿# Find a building type with highest priority + order pair and try to construct it
+aroai_choose_building_type_to_construct = {
+
+    # Set local variable that equals to highest priority, note that highest means lower number
+    aroai_perform_for_every_building_type = {
+        effect = 6 # aroai_compare_building_priority_with_current_highest
+    }
+
+    # If variable wasn't set, then there is nothing to construct
+    if = {
+        limit = {
+            NOT = {
+                has_local_variable = aroai_highest_building_priority
+            }
+        }
+        aroai_clear_country_iteration_variables = yes
+    }
+
+    # Otherwise choose a building type with highest priority to construct
+    else = {
+
+        # If there are no building types with priority higher than 6 and we haven't tried special buildings yet, do it
+        if = {
+            limit = {
+                local_var:aroai_highest_building_priority = 6
+                NOT = {
+                    has_variable = aroai_tried_special_buildings
+                }
+            }
+            aroai_construct_special_buildings = yes
+        }
+
+        # Otherwise proceed with general buildings
+        else = {
+
+            # Create local variable list of building types with highest priority in form of $id$.$order$ array variable
+            aroai_perform_for_every_building_type = {
+                effect = 7 # aroai_add_to_list_of_buildings_with_highest_priority
+            }
+
+            # Find a building type with highest order in this list, ties are resolved by random
+            random_in_local_list = {
+                variable = aroai_buildings_with_highest_priority
+                limit = {
+                    NOT = {
+                        any_in_local_list = {
+                            variable = aroai_buildings_with_highest_priority
+                            aroai_order_of_current_element < prev.aroai_order_of_current_element
+                        }
+                    }
+                }
+
+                # This building type would be the one we are going to construct
+                aroai_perform_for_every_building_type = {
+                    effect = 8 # aroai_choose_states_to_start_construction
+                }
+            }
+
+            # Garbage collection
+            clear_local_variable_list = aroai_buildings_with_highest_priority
+        }
+        
+        # Garbage collection
+        remove_local_variable = aroai_highest_building_priority
+        
+        # If construction of chosen building type failed to start for whatever reason, choose another one
+        if = {
+            limit = {
+                NOT = {
+                    has_local_variable = aroai_started_building_construction
+                }
+            }
+            aroai_choose_building_type_to_construct = yes
+        }
+
+        # Otherwise just schedule future constructions if there are building type with priorities left
+        else = {
+
+            # Clear successful construction flag
+            remove_local_variable = aroai_started_building_construction
+
+            # If we have some days left in the iteration, book an event tomorrow
+            if = {
+                limit = {
+                    aroai_day_of_ongoing_iteration < aroai_half_of_days_in_iteration_rounded_down
+                }
+                trigger_event = {
+                    id = aroai_construction_events.1
+                    days = 1
+                }
+            }
+            
+            # Otherwise exit this event chain
+            else = {
+
+                # In rare cases even after constructing a dozen of building types there are still both free construction
+                # points and some building types that were not yet processed, so we cycle through them all in one day.
+                if = {
+                    limit = {
+                        aroai_has_free_construction_points = yes
+                    }
+                    aroai_choose_building_type_to_construct = yes
+                }
+
+                # But usually we just clear variables and that's it
+                else = {
+                    aroai_clear_country_iteration_variables = yes
+                }
+            }
+        }
+    }
+}
+
+# Set local variable that equals to highest priority, note that highest means lower number
+aroai_compare_building_priority_with_current_highest = {
     if = {
         limit = {
             has_variable = aroai_building_type_$id$_collected_data
@@ -17,6 +131,7 @@
     }
 }
 
+# Create local variable list of building types with highest priority in form of $id$.$order$ array variable
 aroai_add_to_list_of_buildings_with_highest_priority = {
     if = {
         limit = {
@@ -31,89 +146,10 @@ aroai_add_to_list_of_buildings_with_highest_priority = {
     }
 }
 
-aroai_choose_building_type_to_construct = {
-    aroai_perform_for_every_building_type = {
-        effect = 6 # aroai_compare_building_priority_with_current_highest
-    }
-    if = {
-        limit = {
-            NOT = {
-                has_local_variable = aroai_highest_building_priority
-            }
-        }
-        aroai_clear_country_iteration_variables = yes
-    }
-    else = {
-        if = {
-            limit = {
-                local_var:aroai_highest_building_priority = 6
-                NOT = {
-                    has_variable = aroai_tried_special_buildings
-                }
-            }
-            aroai_construct_special_buildings = yes
-        }
-        else = {
-            aroai_perform_for_every_building_type = {
-                effect = 7 # aroai_add_to_list_of_buildings_with_highest_priority
-            }
-            random_in_local_list = {
-                variable = aroai_buildings_with_highest_priority
-                limit = {
-                    NOT = {
-                        any_in_local_list = {
-                            variable = aroai_buildings_with_highest_priority
-                            aroai_buildings_with_highest_priority_order < prev.aroai_buildings_with_highest_priority_order
-                        }
-                    }
-                }
-                aroai_perform_for_every_building_type = {
-                    effect = 8 # aroai_choose_states_to_start_construction
-                }
-            }
-
-            # Garbage collection
-            clear_local_variable_list = aroai_buildings_with_highest_priority
-        }
-        
-        # Garbage collection
-        remove_local_variable = aroai_highest_building_priority
-        
-        if = {
-            limit = {
-                NOT = {
-                    has_local_variable = aroai_started_building_construction
-                }
-            }
-            aroai_choose_building_type_to_construct = yes
-        }
-        else = {
-            remove_local_variable = aroai_started_building_construction
-            if = {
-                limit = {
-                    aroai_day_of_ongoing_iteration < aroai_half_of_days_in_iteration_rounded_down
-                }
-                trigger_event = {
-                    id = aroai_construction_events.1
-                    days = 1
-                }
-            }
-            else = {
-                if = {
-                    limit = {
-                        aroai_has_free_construction_points = yes
-                    }
-                    aroai_choose_building_type_to_construct = yes
-                }
-                else = {
-                    aroai_clear_country_iteration_variables = yes
-                }
-            }
-        }
-    }
-}
-
+# We know what to construct now, but where?
 aroai_choose_states_to_start_construction = {
+
+    # Before we start, make an additional counter check cause something may have changed
     if = {
         limit = {
             aroai_check_if_counter_is_within_limit = {
@@ -122,6 +158,8 @@ aroai_choose_states_to_start_construction = {
                 limit = $limit$
             }
         }
+
+        # Set variable in every state with occupancy of building of current type
         every_scope_building = {
             limit = {
                 is_building_type = $key$
@@ -141,6 +179,8 @@ aroai_choose_states_to_start_construction = {
                 }
             }
         }
+
+        # If variable was not set, then there's no such building or it has no occupancy, so set variable as 0
         every_scope_state = {
             limit = {
                 NOT = {
@@ -152,6 +192,10 @@ aroai_choose_states_to_start_construction = {
                 value = 0
             }
         }
+
+        # States from allocation lists are filtered by aroai_requirements_for_construction_in_state trigger, and in case
+        # of branching being true all the states are also sorted by conditions like being incorporated or having enough
+        # infrastructure. Then lists of filtered and states are passed to aroai_start_building_construction one by one. 
         aroai_filter_and_sort_states_from_allocation_lists = {
             key = $key$
             id = $id$
@@ -164,10 +208,14 @@ aroai_choose_states_to_start_construction = {
             limit = $limit$
             scaling = $scaling$
         }
+
+        # Garbage collection
         every_scope_state = {
             remove_variable = aroai_building_type_occupied_levels
         }
     }
+
+    # Set building type priority to 0 so we don't process it anymore in this iteration
     change_variable = {
         name = aroai_building_type_$id$_collected_data
         subtract = {
@@ -177,6 +225,12 @@ aroai_choose_states_to_start_construction = {
     }
 }
 
+# Branching algorithm used in aroai_filter_and_sort_states_from_allocation_lists. Splits input allocation list into
+# a bunch of branch lists sorted by conditions below. Note that in the current implementation, if you have for example
+# two different allocation lists, the result will be A1B1 A2B1 - A1B2 A2B2 - A1B3 A2B3 - A1B4 A2B4. Branch conditions
+# are considered more important than allocation conditions, so states from all allocation lists will be reshuffled so
+# that all the states that fit first branch conditions will be grouped, then all the states from second condition, etc.
+# But inside of branch group the allocation order is preserved, all A1B1 states will be processed strictly before A2B1.
 aroai_perform_branching_of_allocation_list = {
     every_in_list = {
         variable = aroai_building_type_$id$_allocation_$index_1$
@@ -241,12 +295,17 @@ aroai_perform_branching_of_allocation_list = {
     }
 }
 
+# Takes list of states as input, chooses in which one of them to start construction and queues 1 level of building
 aroai_start_building_construction = {
+
+    # If we got there, then construction is successful (for aroai_choose_building_type_to_construct)
     set_local_variable = {
         name = aroai_started_building_construction
         value = yes
         days = aroai_days_to_keep_short_variables
     }
+
+    # Cycle through states in the list while we can
     while = {
         limit = {
             aroai_has_variable_list = {
@@ -258,20 +317,28 @@ aroai_start_building_construction = {
                 limit = $limit$
             }
         }
+
+        # Take a random list that fits conditions below
         random_in_list = {
             variable = $states$
             limit = {
                 save_temporary_scope_as = aroai_current_state
                 root = {
+
+                    # If economy of scaling applies to this building type
                     trigger_if = {
                         limit = {
                             $scaling$ = 1
                         }
                         OR = {
+
+                            # Either this is a state with one of the highest levels of this building type in a country
                             any_scope_state = {
                                 var:aroai_building_type_occupied_levels > aroai_current_aroai_building_type_occupied_levels
                                 count < aroai_simultaneously_developed
                             }
+
+                            # Or there are no states with higher level in this list
                             NOT = {
                                 any_in_list = {
                                     variable = $states$
@@ -280,7 +347,11 @@ aroai_start_building_construction = {
                             }
                         }
                     }
+
+                    # If economy of scaling does not apply
                     trigger_else = {
+
+                        # Take a state with the lowest level of this building type in the list
                         NOT = {
                             any_in_list = {
                                 variable = $states$
@@ -288,14 +359,24 @@ aroai_start_building_construction = {
                             }
                         }
                     }
+
+                    # Additional conditions to construct new buildings
                     OR = {
+
+                        # If there is already some levels of the building in the state, we don't care
                         aroai_current_aroai_building_type_occupied_levels > 0
+
+                        # For constructing buildings from scratch
                         OR = {
+
+                            # Either this is a state with one of the highest available workforce in the entire country
                             any_scope_state = {
                                 var:aroai_building_type_occupied_levels = 0
                                 aroai_available_workforce > scope:aroai_current_state.aroai_available_workforce
                                 count < aroai_states_for_new_buildings
                             }
+
+                            # Or there are no states with higher available workforce in this list
                             NOT = {
                                 any_in_list = {
                                     variable = $states$
@@ -307,11 +388,20 @@ aroai_start_building_construction = {
                     }
                 }
             }
+
+            # We'll need it here and there
             save_scope_as = aroai_current_state
+
+            # We check if we managed to start construction by comparing number of queued levels in the queue before and
+            # after using start_building_construction. Note about $id$ = 5 aka Port: while other buildings are allowed
+            # to get constructed many times in the same state, ports are not due to their allocation conditions being
+            # pretty complex (e.g. you don't need more than one port for just market access) but it would be expensive
+            # to track properly and it's not a big deal, so we always build one port per state and don't check stuff
+            # like queued levels because of this, we just always assume the construction is successful and move on.
             if = {
                 limit = {
                     NOT = {
-                        $id$ = 5
+                        $id$ = 5 # Port
                     }
                 }
                 set_local_variable = {
@@ -319,16 +409,20 @@ aroai_start_building_construction = {
                     value = root.construction_queue_num_queued_levels
                 }
             }
+
+            # This little line is everything we want, but many thousands of other lines are required to use it properly
             start_building_construction = $key$
+
+            # Set cooldown for government buildings
             if = {
                 limit = {
                     OR = {
-                        $id$ = 1
-                        $id$ = 2
-                        $id$ = 3
-                        $id$ = 5
-                        $id$ = 6
-                        $id$ = 7
+                        $id$ = 1 # Government administration
+                        $id$ = 2 # University
+                        $id$ = 3 # Construction sector
+                        $id$ = 5 # Port
+                        $id$ = 6 # Barracks
+                        $id$ = 7 # Naval base
                     }
                 }
                 root = {
@@ -339,33 +433,41 @@ aroai_start_building_construction = {
                 }
             }
             
-            # We can't check how much levels of a building are queued in a state as well as how much points are left
+            # We can't check how many levels of a building are queued in a state as well as how many points are left
             # before construction will end, so we roughly track it using state scope variable list of array variables.
             # This is important for workforce (hiring for new buildings) and railways. Progress is added in weekly loop.
             if = {
                 limit = {
                     OR = {
-                        $id$ = 5
+                        $id$ = 5 # Port
                         local_var:aroai_construction_queue_num_queued_levels < root.construction_queue_num_queued_levels
                     }
                 }
                 
+                # ---------------------------------------------------------------------------------------------------
                 # aroai_ongoing_construction is an array variable, and aroai_ongoing_constructions is a list of them.
-                # Check aroai_construction_values.txt for cell distribution.
+                # Search for "Cell distribution of aroai_ongoing_construction" in aroai_construction_values.txt
+                # ---------------------------------------------------------------------------------------------------
+
+                # Set up a new record of ongoing construction that we'll add into the list
                 set_local_variable = {
                     name = aroai_ongoing_construction
                     value = {
+
+                        # Cell 1
                         value = $id$
                         max = 9999
                         divide = 100
+
+                        # Cell 2
                         add = {
 
                             # Construction sector and military buildings
                             if = {
                                 limit = {
                                     OR = {
-                                        $id$ = 3
-                                        $class$ = 3
+                                        $id$ = 3 # Construction sector
+                                        $class$ = 3 # Military
                                     }
                                 }
                                 value = construction_cost_very_low
@@ -376,10 +478,10 @@ aroai_start_building_construction = {
                                 limit = {
                                     OR = {
                                         AND = {
-                                            $class$ = 4
-                                            $id$ <= 11
+                                            $class$ = 4 # Resources
+                                            $id$ <= 11 # "Light" resources
                                         }
-                                        $class$ = 5
+                                        $class$ = 5 # Agriculture
                                     }
                                 } 
                                 value = construction_cost_low
@@ -390,11 +492,11 @@ aroai_start_building_construction = {
                             # else_if = {
                                 # limit = {
                                     # OR = {
-                                        # $class$ = 1
-                                        # $id$ = 5
+                                        # $class$ = 1 # Government
+                                        # $id$ = 5 # Port
                                         # AND = {
-                                        #     $class$ = 4
-                                        #     $id$ >= 12
+                                        #     $class$ = 4 # Resources
+                                        #     $id$ >= 12 # "Medium" resources
                                         # }
                                     # }
                                 # }
@@ -404,7 +506,7 @@ aroai_start_building_construction = {
                             # First check if building is "very_high" cause there's no separate class with them
                             else_if = {
                                 limit = {
-                                    $id$ >= 44
+                                    $id$ >= 44 # Range of building types with very high cost
                                     $id$ <= 48
                                 }
                                 value = construction_cost_very_high
@@ -414,8 +516,8 @@ aroai_start_building_construction = {
                             else_if = {
                                 limit = {
                                     OR = {
-                                        $id$ = 4
-                                        $class$ = 6
+                                        $id$ = 4 # Railway
+                                        $class$ = 6 # Industry
                                     }
                                 }
                                 value = construction_cost_high
@@ -425,13 +527,20 @@ aroai_start_building_construction = {
                             else = {
                                 value = construction_cost_medium
                             }
+
+                            # Formatting
                             round = yes
                             max = 9999
                             multiply = 100
                         }
+
+                        # Cell 3
                         add = 1000000
                     }
                 }
+
+                # If there's already such a element in the list with everything except count being the same, set local
+                # variable equal to it and delete the element, so we group multiple levels in one element of the list.
                 if = {
                     limit = {
                         aroai_has_variable_list = {
@@ -455,37 +564,52 @@ aroai_start_building_construction = {
                         }
                     }
                 }
+
+                # Cell 4
                 change_local_variable = {
                     name = aroai_ongoing_construction
                     add = 10000000
                 }
+
+                # Add to the list
                 add_to_variable_list = {
                     name = aroai_ongoing_constructions
                     target = local_var:aroai_ongoing_construction
                 }
+
+                # Garbage collection
                 remove_local_variable = aroai_ongoing_construction
             }
             
+            # Check if construction actually started
             if = {
                 limit = {
                     NOT = {
-                        $id$ = 5
+                        $id$ = 5 # Port
                     }
                 }
+
+                # If number of queued levels changed, then probably yes
                 if = {
                     limit = {
                         local_var:aroai_construction_queue_num_queued_levels < root.construction_queue_num_queued_levels
                     }
+
+                    # Add a level to state scope variable to help in further decision making on where to construct
                     change_variable = {
                         name = aroai_building_type_occupied_levels
                         add = 1
                     }
+
+                    # Add a level to building type counter
                     root = {
-                        aroai_add_to_building_counter = {
+                        aroai_add_to_building_type_counter = {
                             counter = $counter$
                             value = 1
                         }
                     }
+
+                    # Tracking of free arable land for agriculture buildings
                     if = {
                         limit = {
                             aroai_is_agriculture_building = {
@@ -510,24 +634,34 @@ aroai_start_building_construction = {
                             }
                         }
                     }
+
+                    # Check if state is no longer suitable for construction
                     if = {
                         limit = {
                             OR = {
+
+                                # Not enough infrastructure
                                 AND = {
                                     $id$ = 4
                                     aroai_infrastructure_balance_value_with_ongoing_constructions >= 0
                                 }
+
+                                # Can't queue more levels of the building
                                 NOT = {
                                     any_scope_building = {
                                         is_building_type = $key$
                                         can_queue_building_levels = 1
                                     }
                                 }
+
+                                # Workforce restrictions
                                 NOR = {
                                     $workforce$ = 0
                                     root.aroai_building_type_$id$_collected_data_2 <= $crucial$
                                     aroai_available_workforce >= aroai_required_workforce
                                 }
+
+                                # No arable land for agriculture buildings
                                 NOR = {
                                     NOT = {
                                         aroai_is_agriculture_building = {
@@ -546,6 +680,8 @@ aroai_start_building_construction = {
                                 }
                             }
                         }
+
+                        # If any of above is true, remove the state from the list
                         root = {
                             remove_list_variable = {
                                 name = $states$
@@ -554,6 +690,8 @@ aroai_start_building_construction = {
                         }
                     }
                 }
+
+                # If number of queued levels is the same, construction probably failed, remove the state from the list
                 else = {
                     root = {
                         remove_list_variable = {
@@ -562,11 +700,16 @@ aroai_start_building_construction = {
                         }
                     }
                 }
+
+                # Garbage collection
                 remove_local_variable = aroai_construction_queue_num_queued_levels
             }
+
+            # For ports we always assume construction is successful so we add a level to the counter, but we still
+            # remove the state from the list because we don't want to build more than one port at time in a state.
             else = {
                 root = {
-                    aroai_add_to_building_counter = {
+                    aroai_add_to_building_type_counter = {
                         counter = $counter$
                         value = 1
                     }
@@ -576,13 +719,14 @@ aroai_start_building_construction = {
                     }
                 }
             }
+
+            # Garbage collection
             clear_saved_scope = aroai_current_state
         }
     }
 }
 
 # Generated with modding tool, don't edit it manually
-
 aroai_filter_and_sort_states_from_allocation_lists = {
     if = {
         limit = {

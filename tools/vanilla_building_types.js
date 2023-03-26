@@ -62,7 +62,7 @@ classes = ['',
     ["military",          3,    2],
     ["resource",          4,    2],
     ["agriculture",       5,    2],
-    ["industry",          6,    2],
+    ["industry",          6,    1],
 ]
 
 /*
@@ -82,12 +82,13 @@ classes = ['',
                 railways due to market access going down we don't really care if there is free workforce right now.
 [8] Allocate    Informs the script on how much aptitude levels are there in allocate trigger of this building. E.g. if
                 allocate trigger of the building have some conditions for $aptitude$ = 1 and $aptitude$ = 2, then this
-                allocate field must be set to 2. If set to False it'll default to allocate value of building's class.
+                attribute must be set to 2 as well. If set to False it'll default to allocate value of building's class.
+                Max number of aptitude conditions and thus allocate attribute are limited to 10 for performance reasons.
 [9] Branching   Are states getting filtered by stuff like being incorporated for this building? 0 = false, 1 = true.
 [10] Scaling    Does economy of scale apply to this building? 0 = false, 1 = true.
 
 
-ORDER OF BUILDINGS
+Order of buildings
 1) construction_sector
 2) government_administration
 3) railway, port

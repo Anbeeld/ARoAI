@@ -1,5 +1,6 @@
 ﻿namespace = aroai_preparation_events
 
+# Called by aroai_framework_events.1
 aroai_preparation_events.1 = {
     type = country_event
     hidden = yes
@@ -8,7 +9,7 @@ aroai_preparation_events.1 = {
 
     immediate = {
 
-        # Check if we need to redirect innovation to some other technology and do it if yes.
+        # Check if we need to redirect innovation to some other technology and do it if yes
         aroai_choose_technology_for_innovation_redirection = yes
         
         # Collect budget costs and restart costs collection cycle 7 days later
@@ -19,7 +20,7 @@ aroai_preparation_events.1 = {
         # Check if military expenses are higher than usual due to army being in use
         aroai_check_if_military_expenses_are_higher_than_usual = yes
         
-        # Change tax level and government wages
+        # Change tax level and government wages if needed
         aroai_manage_tax_and_wage_level = yes
         
         # Variables are used for performance and consistency but are rechecked later if needed
@@ -36,11 +37,20 @@ aroai_preparation_events.1 = {
             set_local_variable = aroai_construction_is_allowed
         }
 
-        # Track cycles since last check of data used in downsizing of production buildings
-        # TODO it counts into evernity when production downsizing is not possible
-        aroai_add_to_variable = {
-            name = aroai_cycles_since_production_downsizing
-            value = 1
+        # Track cycles since last check of data that is used in downsizing of production buildings
+        if = {
+            limit = {
+                OR = {
+                    NOT = {
+                        has_variable = aroai_iterations_since_production_downsizing
+                    }
+                    var:aroai_iterations_since_production_downsizing < aroai_max_iterations_since_production_downsizing
+                }
+            }
+            aroai_add_to_variable = {
+                name = aroai_iterations_since_production_downsizing
+                value = 1
+            }
         }
         
         # Downsizing and building share a bunch of data required for both of them to function
@@ -56,9 +66,9 @@ aroai_preparation_events.1 = {
             aroai_determine_highest_and_average_military_threat = yes
             aroai_determine_roleplay_building_priorities = yes
             aroai_collect_data_for_construction_and_downsizing = yes
-            aroai_collect_country_coastlines = yes
+            aroai_collect_coastlines_of_market_capital_and_overseas_lands = yes
             
-            # Perform downsizing and immediately clear variables that won't be needed in building
+            # Perform downsizing and immediately clear variables that won't be needed in construction
             if = {
                 limit = {
                     has_local_variable = aroai_downsizing_is_allowed
@@ -67,7 +77,7 @@ aroai_preparation_events.1 = {
             }
             aroai_clear_downsizing_variables = yes
             
-            # Start building if it is still allowed or clear variables otherwise
+            # Start construction if it is still allowed or clear variables otherwise
             if = {
                 limit = {
                     has_local_variable = aroai_construction_is_allowed

@@ -1,5 +1,6 @@
 ﻿namespace = aroai_weekly_loop_events
 
+# Called by aroai_count_and_schedule_iterations_of_weekly_loop
 aroai_weekly_loop_events.1 = {
     type = country_event
     hidden = yes

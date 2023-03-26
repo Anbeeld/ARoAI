@@ -1,6 +1,6 @@
 ﻿aroai_building_is_allowed = {
     OR = {
-        aroai_regular_building = yes
+        aroai_is_regular_construction_allowed = yes
         AND = {
             $critical$ = 1
             aroai_evaluate_building_government_administration = {
@@ -29,14 +29,6 @@ aroai_consider_building = {
             has_variable = aroai_building_type_$id$_collected_data
         }
         aroai_building_type_$id$_collected_data_1 >= 90
-    }
-    OR = {
-        always = yes
-        $profitable$ = 0
-        # NOT = {
-            # has_variable = aroai_building_type_$id$_collected_data
-        # }
-        # aroai_building_type_$id$_collected_data_2 >= 20
     }
 }
 
@@ -75,7 +67,7 @@ aroai_building_can_be_expanded = {
     }
 }
 
-# conditions: 0 = new and expanding, 1 = only new, 2 = only expanding
+# Conditions: 0 = new and expanding, 1 = only new, 2 = only expanding
 aroai_sanction_building = {
     trigger_if = {
         limit = {
@@ -217,7 +209,7 @@ aroai_sanction_resource = {
     }
 }
 
-# Arable buildings
+# Agriculture buildings
 aroai_sanction_agriculture = {
     free_arable_land > 0
     OR = {
@@ -443,7 +435,7 @@ aroai_check_agriculture_resource = {
     }
 }
 
-# Resource buildings – priorities based on resource importance
+# Resource buildings – aptitude based on resource importance
 aroai_allocate_resource = {
     trigger_if = {
         limit = {
@@ -492,7 +484,7 @@ aroai_allocate_resource = {
     }
 }
 
-# Arable buildings – priorities based on resource importance
+# Agriculture buildings – aptitude based on resource importance
 aroai_allocate_agriculture = {
     trigger_if = {
         limit = {

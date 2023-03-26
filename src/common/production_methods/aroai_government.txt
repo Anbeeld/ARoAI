@@ -118,7 +118,7 @@ pm_modern_port = {
 		}
 	}
 	
-	ai_value = 200000
+	ai_value = 100000
 }
 
 pm_simple_organization = {
