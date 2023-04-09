@@ -276,6 +276,7 @@ aroai_manage_tax_and_wage_level = {
                     }
                     if = {
                         limit = {
+                            aroai_government_wages_are_low = yes
                             aroai_can_cut_government_wages = yes
                         }
                         set_government_wage_level = very_low
@@ -283,6 +284,7 @@ aroai_manage_tax_and_wage_level = {
                     }
                     if = {
                         limit = {
+                            aroai_military_wages_are_low = yes
                             aroai_can_cut_military_wages = yes
                         }
                         set_military_wage_level = very_low
@@ -364,6 +366,7 @@ aroai_manage_tax_and_wage_level = {
                 value = yes
                 days = aroai_days_in_the_iteration_plus_week
             }
+            remove_local_variable = aroai_budget_settings_cooldown
         }
     }
 }
