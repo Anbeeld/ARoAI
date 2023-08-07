@@ -90,19 +90,7 @@ aroai_downsize_port = {
     var:aroai_building_port_level > 0
     OR = {
         root = {
-            NOT = {
-                aroai_budget_health_is_equal_or_higher = {
-                    level = -2
-                }
-            }
-            aroai_are_military_expenses_higher_than_usual = no
-        }
-        root = {
-            NOT = {
-                aroai_budget_health_is_equal_or_higher = {
-                    level = -3
-                }
-            }
+            aroai_in_default = yes
         }
         var:aroai_building_port_level <= aroai_building_port_downsizing_threshold
     }
