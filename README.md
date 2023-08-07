@@ -1,6 +1,6 @@
 ### Announcement
 
-**ARoAI is updated to version 1.3.4 with support of Victoria 3 patch 1.3.6, but its further development [is suspended](https://forum.paradoxplaza.com/forum/threads/anbeelds-revision-of-ai.1551230/post-28821582).** Any person or a group of people have my permission to do whatever they want with the mod, the only requirement is to mention that your work is based on it. Check this repository for the source code, modding tools used and some documentation like an instruction on creating compatibility patches.
+**ARoAI is updated to version 1.3.5 with support of Victoria 3 patch 1.3.6, but its further development [is suspended](https://forum.paradoxplaza.com/forum/threads/anbeelds-revision-of-ai.1551230/post-28821582).** Any person or a group of people have my permission to do whatever they want with the mod, the only requirement is to mention that your work is based on it. Check this repository for the source code, modding tools used and some documentation like an instruction on creating compatibility patches.
 
 ### Description
 
