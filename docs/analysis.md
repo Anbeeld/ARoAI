@@ -1,6 +1,6 @@
 # ARoAI -- Anbeeld's Revision of AI
 
-## Comprehensive Technical Documentation
+## Technical Documentation
 
 **Version:** 1.3.5 | **Target game:** Victoria 3 patch 1.3.6 | **License:** MIT
 
@@ -37,8 +37,8 @@
 27. [Mod Metadata](#27-mod-metadata)
 28. [Localization](#28-localization)
 29. [File Map](#29-file-map)
-30. [Design Principles & Trade-offs](#30-design-principles--trade-offs)
-31. [Design Analysis: Strengths, Weaknesses & Improvement Opportunities](#31-design-analysis-strengths-weaknesses--improvement-opportunities)
+30. [Design Principles](#30-design-principles)
+31. [Design Analysis](#31-design-analysis)
 
 ---
 
@@ -56,13 +56,13 @@ ARoAI replaces Victoria 3's built-in AI for **economic construction** and **budg
 - Overrides vanilla strike events with AI-friendly behavior
 - Provides players with an optional "Autobuild" feature using the same algorithms
 
-**Expected outcome:** AI countries achieve noticeably higher GDP and Standard of Living compared to vanilla, because the custom scripts make more rational construction and fiscal decisions than the built-in AI.
+**Design goal:** AI countries should achieve higher GDP and Standard of Living compared to vanilla. The custom scripts make more targeted construction and fiscal decisions than the built-in AI — for example, ARoAI's evaluation system checks market supply/demand before queuing production buildings, whereas the vanilla AI does not. Outcomes vary with starting country, game rules, and mod configuration.
 
 ---
 
 ## 2. Why It Exists
 
-Victoria 3's vanilla AI makes suboptimal economic decisions: it overbuilds certain sectors, underbuilds others, ignores market conditions, and manages budgets poorly. The Paradox scripting language was designed for content (events, journal entries), not heavy algorithmic work, so the vanilla AI relies on C++ code that modders cannot change.
+Victoria 3's vanilla AI makes suboptimal economic decisions: it overbuilds sectors like government administration and military infrastructure (leaving construction starved), builds production buildings without checking whether the market already has surplus supply, and leaves tax levels unchanged for decades at a time. The Paradox scripting language was designed for content (events, journal entries), not heavy algorithmic work, so the vanilla AI relies on C++ code that modders cannot change.
 
 ARoAI works around this by:
 - Disabling the C++ AI for construction/budgeting via `NAI` defines
@@ -115,10 +115,18 @@ aroai_framework_events.1  (daily dispatcher, runs once per game day)
 ### Timing Guarantees
 
 - The framework event fires on `on_monthly_pulse_country` but self-limits to once per game day using a global date variable
-- Each country's iteration start date is randomized on game start to prevent all countries computing on the same day
-- Default iteration length: **4 weeks (28 days)**
+- Each country's iteration start date is distributed on game start to prevent all countries computing on the same day. Distribution uses a 5-tier system:
+  - **Tier 1:** 14 largest countries (by state count) on odd days (1, 3, 5, ..., 27)
+  - **Tier 2:** Next 14 largest countries on even days (2, 4, 6, ..., 28)
+  - **Tier 3:** Players + countries with rank > 2 (minor power+), distributed across days 1--28
+  - **Tier 4:** Countries with rank > 1 (great powers, not yet assigned), distributed across days 29--56
+  - **Tier 5:** All remaining countries, distributed across days 57--84
+  Each country's default iteration date is also reduced by up to 6 days from the full iteration length to prevent overlap if a previous iteration was interrupted early.
+- Default iteration length: **4 weeks (28 days)** (minimum configurable: 14 days)
 - Construction phase: first half (14 days max)
 - Weekly loop: 4 iterations per main loop, starting day 1
+- Budget cooldown: iteration + 7 days (**35 days**), preventing oscillation in tax/wage adjustments
+- Building evaluation cooldown: **70 days**, preventing the same building type from being re-evaluated at lower priorities too soon after a recent construction
 
 ---
 
@@ -126,17 +134,16 @@ aroai_framework_events.1  (daily dispatcher, runs once per game day)
 
 **File:** `src/events/aroai_framework_events.txt`
 
-Entry point: `aroai_framework_events.1`, hooked to `on_monthly_pulse_country`.
+Entry point: `aroai_framework_events.1`, hooked to `on_monthly_pulse_country` via `src/common/on_actions/aroai_on_actions.txt`.
 
 ### Per-game-day operations (via `random_country` scope on all countries):
 
 1. **One-time initialization** (first day of game):
-   - Set `aroai_next_iteration_date` for all countries (random offset 1--28 days)
-   - Count barracks and conscription centers globally
+   - Set `aroai_next_iteration_date` for all countries (5-tier distribution system, see Timing Guarantees)
    - Check agriculture resources in all state regions
 
 2. **Daily maintenance:**
-   - Refresh compatibility patch list (monthly)
+   - Refresh compatibility patch list (daily)
    - Apply accelerated construction modifiers to states (monthly)
    - Track stalemate wars between AI countries (every 30 days)
    - Check agriculture resources (yearly)
@@ -147,7 +154,7 @@ Entry point: `aroai_framework_events.1`, hooked to `on_monthly_pulse_country`.
 
 ### Design choice: daily framework event
 
-The `on_monthly_pulse_country` fires for a random country each month. ARoAI re-fires itself daily to ensure the framework runs for every country. This is necessary because the vanilla monthly pulse only triggers once per country per month, but ARoAI needs daily resolution for construction scheduling.
+The `on_monthly_pulse_country` fires for a random country each month. ARoAI re-fires itself daily to ensure the framework runs for every country. This is necessary because the vanilla monthly pulse only triggers once per country per month, but ARoAI needs daily resolution for construction scheduling. The self-firing is done via `trigger_event` with `days = 1` from inside `random_country`, so there will always be at least one country triggering a re-fire tomorrow.
 
 ---
 
@@ -164,6 +171,9 @@ Runs on **Day 1** of each country's iteration. This is the heaviest data-collect
 3. **Military expense check:** Sets flag if country is at war, in diplomatic play, or has mobilized formations
 4. **Tax/wage management:** Calls `aroai_manage_tax_and_wage_level` to adjust fiscal policy
 5. **Permission checks:** Determines if downsizing and construction are allowed this iteration
+   - Downsizing: allowed if AI country, no revolution, not revolutionary, budget surplus variable exists
+   - Construction: allowed if no revolution, not revolutionary, budget surplus exists, AND (day 1 of iteration OR regular construction allowed with free points OR critical construction allowed). Regular construction requires `scaled_debt < 0.45` (or having no construction sectors) for AI countries; player countries require the autobuild game rule to be allowed and the `aroai_autobuild` variable to be set. Critical construction is allowed regardless of debt.
+   - Production downsizing: additionally blocked if the country has laissez-faire law
 
 ### If downsizing or construction is allowed, collects:
 
@@ -216,13 +226,13 @@ Each government building has a **consider** trigger (gate that decides whether t
 - **Consider gate:** requires `academia`, innovation < target AND building count < target (both must be below target for priorities 5--7; only one needed for 8+), spending < target, expected spending < excess.
 - **Evaluate:** Priorities 5--7 = innovation < threshold OR building count < threshold (either condition). Priorities 8--12 = both innovation AND building count must be below their thresholds (stricter). Building count ceiling stops increasing after priority 8 (uses `building_university_10` for priorities 8--12).
 - **Spending share:** 10% of active income.
-- **Allocation:** single aptitude level (all states equally valid).
+- **Allocation:** 1 aptitude level × 4 branches (branching=1, so states are sorted by incorporation/infrastructure/workforce but not by aptitude tier).
 
 **Construction Sector** (priority range 1--8):
 - **Consider gate:** requires `urbanization`, previous construction point utilization >= 70%, spending < target, expected spending < excess. When investment pool exceeds its transfer threshold, budget health >= -1 is required; otherwise >= 0.
 - **Evaluate:** Each priority level checks spending < a progressively higher threshold (`spending_1` through `spending_8`). Higher priority = more construction spending needed before the AI considers more.
 - **Spending share:** dynamic residual after government + military + university + port, plus investment pool.
-- **Allocation:** single aptitude level.
+- **Allocation:** 1 aptitude level × 4 branches (same as University).
 
 **Railway** (priority levels 1, 5, 9, 16 only -- not sequential):
 - **Consider gate:** requires `railways`, budget health >= -2.
@@ -255,11 +265,11 @@ Each government building has a **consider** trigger (gate that decides whether t
 **Barracks** (priority range 2--10):
 - **Consider gate:** requires `standing_army`, budget health >= -1, battalion count < floor OR (spending < target AND expected < excess).
 - **Evaluate:** Each priority level checks battalion count < a progressively higher threshold (`battalion_1` through `battalion_9`). Priority starts at 2 (not 1), so production buildings with priority 2 can tie with barracks.
-- **Spending share:** 35% of active income. Country-specific spending ceiling multipliers apply before 1870:
-  - Egypt: 2.5x before 1850, declining from 1.5x to 1.0x by 1870
-  - Turkey: 1.5x before 1850, declining from 1.5x to 1.0x by 1870
-  - Prussia: 1.5x before 1850, declining from 1.5x to 1.0x by 1870
-  These multipliers apply to the spending *threshold* (excess/ceiling), allowing these countries to spend more on military before the AI considers barracks overcapacity.
+- **Spending share:** 30% of active income (base). Country-specific spending ceiling multipliers apply before 1870, multiplying both the excess AND ceiling thresholds (not just the ceiling):
+   - Egypt: 2.5x before 1850, declining from 2.5x to 1.0x by 1870 (formula: `1.0 + (1870 - year) × 0.075`)
+   - Turkey: 1.5x before 1850, declining from 1.5x to 1.0x by 1870 (formula: `1.0 + (1870 - year) × 0.025`)
+   - Prussia: 1.5x before 1850, declining from 1.5x to 1.0x by 1870 (formula: `1.0 + (1870 - year) × 0.025`)
+   These multipliers allow these countries to tolerate higher military spending before the AI considers barracks/naval base capacity excessive.
 - **Allocation:** 2 aptitude levels: aptitude 1 = states with non-discriminated homelanders (preferred), aptitude 2 = states without.
 
 **Naval Base** (priority range 2--10):
@@ -303,7 +313,18 @@ These are independent: weight controls *whether* this building gets picked over 
 
 **Productivity requirement level** = `supply_vs_demand_level + offset`. This feeds into the productivity table (Step 4). Since supply/demand ranges 1--22 and offsets range 0--6, this can reach up to 28 in practice. The table extends to 41 levels to cover theoretical edge cases, but values above ~28 are rarely reached.
 
-**Where weight and offset values come from:** Each building's per-good evaluation call is hardcoded in `aroai_static_data_effects.txt` (e.g., `aroai_evaluate_building_logging_camp` passes `weight = aroai_resource_weight_1` and `offset = 0` for wood). The weight values themselves are script values defined in `aroai_evaluation_values.txt` (e.g., `aroai_resource_weight_1` = base value 1 + optional `aroai_resource_weight_factor` variable, floored at 1). The `_factor` variables are never set in the released version, so weights equal their base numbers. There are separate weight families per class: `aroai_resource_weight_N`, `aroai_agriculture_weight_N`, `aroai_industry_weight_N`, each with its own optional factor variable.
+**Where weight and offset values come from:** Each building's per-good evaluation call is hardcoded in `aroai_static_data_effects.txt` (e.g., `aroai_evaluate_building_logging_camp` passes `weight = aroai_resource_weight_1` and `offset = 0` for wood). The weight values themselves are script values defined in `aroai_evaluation_values.txt` (e.g., `aroai_resource_weight_1` = base value 1 + optional `aroai_resource_weight_factor` variable, floored at 1). There are separate weight families per class: `aroai_resource_weight_N`, `aroai_agriculture_weight_N`, `aroai_industry_weight_N`, each with its own optional factor variable.
+
+The `_factor` variables are set by the **Roleplay** game rule via `aroai_determine_roleplay_building_priorities` when enabled (the default). Under the default Roleplay mode, weight factors adjust based on country laws and economic status:
+
+| Condition | Resource factor | Agriculture factor | Industry factor | Effect |
+|-----------|----------------|-------------------|-----------------|--------|
+| Subject/junior market partner (GDP/capita < 2.50) | -1 | -1 | +2 | Weak subjects prioritize agriculture and resources over industry |
+| Subject/junior market partner (GDP/capita >= 2.50) | 0 | 0 | +2 | Stronger subjects still de-prioritize industry |
+| Traditionalism law (or rank ≤ 3 + GDP/capita < 5.00) | +1 | -1 | +2 | Traditional economies favor agriculture over industry |
+| Agrarianism law (or rank ≤ 3 + GDP/capita < 5.00 / rank ≤ 5 + GDP/capita < 2.50) | 0 | -1 | +1 | Agrarian economies slightly favor agriculture, slightly deprioritize industry |
+
+When the **Uniform** game rule is selected, no weight factors are set and weights equal their base numbers.
 
 #### Why the distinction matters -- primary vs secondary goods:
 
@@ -328,9 +349,13 @@ This means the most-shortage good drives the building's priority, and the winnin
 Additionally, some secondary goods are only evaluated conditionally:
 - **Logging camp:** Hardwood only if building already exists and allows new buildings (cell 4 ≥ 1)
 - **Food industry:** Liquor/tobacco/opium only if building already exists
-- **Shipyards:** Man-o-wars and ironclads only when not actively using military forces (or when supply level is below a wartime threshold)
-- **Arms/munition/war machine industry:** Military goods only when not actively using military forces (or below wartime threshold)
-- **Oil rig:** Has special early-game override — if `power_plant_is_available = no`, forces priority to 1 and productivity requirement to 1 regardless of market
+- **Glassworks:** Porcelain only if building already exists (cell 4 ≥ 1)
+- **Shipyards:** PM-dependent evaluation — clippers (primary) and man-o-wars (conditional on military) are evaluated when cell 4 = 1 or 3+; steamers (primary) and ironclads (conditional on military) are evaluated when cell 4 = 2 or 3+. Man-o-wars and ironclads are only evaluated when not actively using military forces (or when their supply level is below the wartime threshold)
+- **Arms industry:** Artillery (secondary) only when `has_technology_researched = artillery` AND (not using military forces OR supply level ≤ wartime threshold)
+- **Munition plants:** Ammunition only evaluated when (not using military forces OR supply level ≤ 6)
+- **War machine industry:** Tanks (secondary) only when `has_technology_researched = mobile_armor` AND (not using military forces OR supply level ≤ wartime threshold)
+- **Oil rig:** Has special early-game override — if the state has `has_potential_resource = bg_oil_extraction` but the building has no collected data (oil not yet discovered), forces priority to 2, supply_vs_demand_level to 1, and productivity requirement to 1 regardless of market conditions
+- **Power plant:** Has similar early-game override — if no collected data exists (`aroai_building_type_44_collected_data` is absent), forces priority to 2, supply_vs_demand_level to 1, and productivity requirement to 1. Once data exists, evaluates normally with electricity (weight 1, offset 0)
 
 #### Step 4: Productivity requirement (gate for expansion and new construction)
 
@@ -372,7 +397,7 @@ See Step 2 above for where these values come from and how the weight families wo
 | Iron Mine | iron | 1 | 0 | — | | |
 | Lead Mine | lead | 1 | 0 | — | | |
 | Sulfur Mine | sulfur | 2 | 0 | — | | |
-| Gold Mine | gold | 6 | 0 | — | | |
+| Gold Mine | gold | —† | — | — | | |
 | **Agriculture** | | | | | | |
 | Rye Farm | grain | 2 | 0 | liquor | 10 | 6 |
 | Wheat Farm | grain | 2 | 0 | wine | 11 | 6 |
@@ -400,15 +425,25 @@ See Step 2 above for where these values come from and how the weight families wo
 | Synthetics Plants | dye | 3 | 0 | silk | 5 | 0 |
 | Steel Mills | steel | 1 | 0 | — | | |
 | Motor Industry | engines | 1 | 0 | automobiles | 4 | 0 |
-| Shipyards | clippers | 3 | 0 | man-o-wars, steamers, ironclads | 3, 3, 3 | 0, 0, 0 |
+| Shipyards | clippers* | 3 | 0 | man-o-wars*, steamers*, ironclads* | 3, 3, 3 | 0, 0, 0 |
 | Power Plant | electricity | 1 | 0 | — | | |
 | Electrics Industry | telephones | 3 | 0 | radios | 3 | 0 |
-| Arms Industry | small_arms | 3 | 0 | — | | |
-| Munition Plants | artillery | 3 | 0 | — | | |
-| War Machine Industry | ammunition | 3 | 0 | aeroplanes, tanks | 3, 3 | 0, 0 |
+| Arms Industry | small_arms | 3 | 0 | artillery* | 3 | 0 |
+| Munition Plants | ammunition* | 3 | 0 | — | | |
+| War Machine Industry | aeroplanes | 3 | 0 | tanks* | 3 | 0 |
 | Arts Academy | fine_art | 5 | 0 | — | | |
 
 **Pattern:** All primary goods have offset 0. Secondary goods with high weights (7+) also get offset 4--6, creating a double barrier — they rarely win on priority, and when they do, the productivity bar is raised. Secondary goods with moderate weights (3--5, like luxury_clothes or explosives) have offset 0, meaning they compete more freely if they happen to have a worse shortage than the primary good.
+
+**Gold Mine** (†): Does not use the weight/offset system at all. Instead, it hardcodes `priority=6`, `supply_vs_demand_level=5`, and `productivity_requirement_level=5` directly, bypassing the `aroai_evaluate_production_building` mechanism entirely.
+
+**Arms Industry** (*): Secondary good `artillery` is only evaluated when `has_technology_researched = artillery`. Conditional military evaluation also applies.
+
+**Munition Plants** (*): Primary good is `ammunition`, not `artillery`. Evaluated only when not using military forces, or when `ammunition` supply_vs_demand_level ≤ 6.
+
+**War Machine Industry** (*): Primary good is `aeroplanes`. Secondary good `tanks` is only evaluated when `has_technology_researched = mobile_armor`. Conditional military evaluation also applies.
+
+**Shipyards** (*): PM-dependent evaluation. Two branches based on `cell_4` (production method group): clippers + man-o-wars are evaluated when cell 4 = 1 or ≥3 (sail PM); steamers + ironclads are evaluated when cell 4 = 2 or ≥3 (steam PM). Man-o-wars and ironclads are conditional on military status.
 
 #### Priority 0 assignment (do not build):
 
@@ -433,7 +468,11 @@ Lower numbers = higher urgency. During construction (Days 3--14), the building t
 
 ### Investment pool multiplier:
 
-The `aroai_target_multiplier_with_investment_pool` value scales non-construction spending shares upward when the investment pool funds a significant portion of construction. It starts at 1.0 and adds up to 1.20 based on the ratio of `aroai_investment_pool_expected` to `aroai_country_active_income`, capped at 0.30 of active income. This ensures that when private sector investment covers construction costs, government spending targets for admin/university/military increase proportionally.
+The `aroai_target_multiplier_with_investment_pool` value scales non-construction spending shares upward when the investment pool funds a significant portion of construction. It starts at 1.0 and adds up to 1.20 based on the ratio of `aroai_investment_pool_expected` to `aroai_country_active_income`, normalized by dividing by 0.30 (then clamped to 0--1). This means the full 1.20 addition is reached when investment pool expected >= 30% of active income. The total maximum multiplier is 2.20 (1.00 base + 1.20 addition). When the investment pool covers 30%+ of active income, non-construction shares effectively double.
+
+Additionally, `aroai_target_multiplier_with_high_government_spending` reduces university, port, and military shares (but not government administration) when government spending is high. The formula subtracts up to 0.75 from the multiplier based on how much government admin spending exceeds its target: `1 - clamp((admin_spending / (admin_target × 1.20)) - 1, 0, 0.75)`. When admin spending is at its target, the multiplier is 1.0 (no reduction); when spending reaches 1.95× the target, the multiplier drops to 0.375; the minimum is 0.25. Note that this is a **reduction** factor despite its name — when government admin is over budget, all other shares are *decreased*, not increased.
+
+Construction sector spending has a separate `aroai_building_construction_sector_spending_factor` that adjusts its target. For AI countries, the target is further modified by workforce utilization: `0.900 + 0.325 × (1 - unutilized_workforce_percent_multiplier)`, ranging from 0.900 (fully utilized workforce → AI spends less on construction) to 1.225 (highly underutilized workforce → AI spends more on construction to absorb unemployment).
 
 ---
 
@@ -460,6 +499,22 @@ Runs on **Days 3--14** (first half of iteration). One building type is construct
    - If construction points remain and building types remain: try next building type tomorrow
    - If out of points or days (day >= 14): clear variables, end construction phase
 
+### Special buildings (monuments and canals):
+
+When the highest remaining building priority is exactly 6 (meaning priorities 1--5 have been exhausted -- only mild shortages or balanced markets remain), and `aroai_tried_special_buildings` has not been set yet, the system attempts to construct **special buildings** before falling back to general construction. These are one-time monument/canal constructions that the vanilla AI often neglects:
+
+| Building | Requirements | State |
+|----------|-------------|-------|
+| Suez Canal | `colonization` tech, owns treaty port in Sinai, `suez_survey_complete` | STATE_SINAI |
+| Panama Canal | `civilizing_mission` tech, owns treaty port in Panama, `panama_survey_complete` | STATE_PANAMA |
+| Big Ben | Owns Home Counties, not already built | STATE_HOME_COUNTIES |
+| Eiffel Tower | `steel_frame_buildings` tech, owns Île-de-France, not already built | STATE_ILE_DE_FRANCE |
+| Statue of Liberty | `steel_frame_buildings` tech, owns New York, not already built | STATE_NEW_YORK |
+| Mosque of Djenne | Owns Eastern Mali, not already built | STATE_EASTERN_MALI |
+| Skyscraper | State has `skyscraper_site` modifier, not already built | Any qualifying state |
+
+After special buildings, the compatibility patch system's `aroai_construct_special_buildings_compatibility` is called, allowing modded special buildings from compatibility patches. Only one special building is constructed per day (they set `aroai_started_building_construction` to skip the normal building queue for that day).
+
 ### Construction limits:
 
 Each building type has a `limit` attribute (1--9, default 5) that controls how many levels can be queued per iteration. The actual limit is calculated from a 9x11 grid:
@@ -478,7 +533,9 @@ Before aptitude scoring, each state must pass a **sanction trigger** that determ
 **Resource buildings** (`aroai_sanction_resource`):
 - State region must have remaining undepleted resource deposits
 - For new buildings: state must have potential for the resource AND (profitability not required OR allowed by cell 4)
-- For expansion: existing building must pass `aroai_building_can_be_expanded` (shortage and profitability checks) AND meet productivity threshold (cell 3)
+- For expansion: existing building must pass `aroai_building_can_be_expanded` AND meet productivity threshold (cell 3)
+
+`aroai_building_can_be_expanded` requires: `can_queue_building_levels = 1` AND either the building has level 0 (doesn't exist yet), OR (level >= 1 AND occupancy >= `aroai_sufficient_occupancy` AND (no goods shortage) AND (building is profitable)). The `aroai_sufficient_occupancy` threshold is dynamic: `(level - (1 + 0.1 × level)) / level`, which simplifies to `0.9 − 1/level` -- for level 1 it's 0%, for level 5 it's 70%, for level 10 it's 80%, asymptotically approaching 90%.
 
 **Agriculture buildings** (`aroai_sanction_agriculture`):
 - `free_arable_land > 0` (hard requirement)
@@ -552,6 +609,8 @@ Industry buildings have no aptitude differentiation. All states that pass the sa
 
 After aptitude assignment, states with **branching enabled** (the `branching` attribute in the building database) are further sorted into **4 branches** per aptitude level. Each state is assigned to its best-matching branch via sequential if/else:
 
+**Branching coverage:** 44 of 49 buildings have branching=1 (all production buildings: resource, agriculture, industry, plus University and Construction Sector). 5 buildings have branching=0 and skip branch sorting entirely: Government Administration, Railway, Port, Barracks, Naval Base.
+
 | Branch | Condition | Meaning |
 |--------|-----------|---------|
 | 1 | `is_incorporated = yes` AND `has_enough_infrastructure` AND `has_enough_workforce` | Ideal: incorporated with good infrastructure and workforce |
@@ -591,8 +650,10 @@ Runs every 7 days, always synchronized with Day 1 of the main loop (4 iterations
    - On Day 1 only: collect total levels, shortage percentages, ongoing construction counters
 
 3. **Calculate investment pool transfer** (`aroai_calculate_investment_pool_transfer`):
-   - Formula: (previous construction sector expenses x goods share) + budget surplus - fixed surplus
-   - Day 1: compute 15-month rolling average as `aroai_investment_pool_expected`
+   - Budget surplus calculated as: `current_treasury - previous_treasury - max(weekly_net_fixed_income, previous_weekly_net_fixed_income)` (falls back to `weekly_net_fixed_income` if treasury data unavailable or at credit limit)
+   - Investment pool transfer formula: `max(0, construction_sector_expenses × share_of_goods_in_expenses + budget_surplus - weekly_net_fixed_income)`
+   - Zero if autonomous investment pool has no private queued levels
+   - Day 1: compute 15-element rolling average as `aroai_investment_pool_expected`
 
 4. **Calculate construction point usage** (`aroai_calculate_usage_of_construction_points`):
    - Ratio of queued levels to available construction capacity
@@ -608,8 +669,10 @@ Runs every 7 days, always synchronized with Day 1 of the main loop (4 iterations
 
 7. **Calculate budget surplus** (`aroai_calculate_budget_surplus`):
    - Refined surplus assuming 100% construction sector utilization
-   - Formula: original surplus + (current sector expenses - current sector spending value)
-   - Stored with historical tracking
+   - Formula: `previous_budget_surplus + (previous_sector_expenses - previous_sector_spending)`, falling back to current values if previous data unavailable
+   - The formula essentially adds back actual construction expenses and subtracts theoretical full-utilization spending, computing what the surplus would be if construction sectors were running at full capacity
+   - Stored as array variable with `aroai_weeks_in_iteration_minus_1` elements (3 weeks) for historical tracking
+   - Saves current treasury, sector expenses, sector spending value, and weekly net fixed income for next week's calculation
 
 ---
 
@@ -623,7 +686,7 @@ The system calculates a **budget health** score based on four inputs:
 - **Scaled debt** (0.0 to 1.0): how close the country is to its debt ceiling
 - **Budget surplus percent**: surplus as a fraction of fixed income
 - **Gold reserves percent**: gold reserves as a fraction of gold reserves limit
-- **Weeks of reserves**: gold reserves divided by negative surplus (how many weeks the country can sustain a deficit); capped at 9000, 0 if surplus >= 0 or reserves = 0
+- **Weeks of reserves**: gold reserves divided by the greater of (1) the actual negative surplus and (2) a proportional floor derived from `(budget_surplus_percent - 0.10, max -0.05 × fixed_income)`; capped at 9000, 0 if surplus >= 0 or reserves = 0. The floor prevents absurdly high week counts from tiny deficits
 
 The trigger `aroai_budget_health_is_equal_or_higher` checks whether a country meets a given health level. The thresholds are **not fixed values** -- they are dynamic curves where the surplus requirement varies with debt level (and vice versa), creating a 2D threshold surface rather than simple cutoffs.
 
@@ -635,11 +698,11 @@ Within that gate, the country must meet **either** a surplus threshold **or** a 
 
 | Health | Surplus threshold | Debt threshold | Interpretation |
 |--------|-------------------|----------------|----------------|
-| -3 | `surplus% >= 0.11 × ((debt - 0.75) / 0.25)` | `debt < 0.75 − 0.25 × (surplus% / 0.15)` | At 75% debt, surplus alone suffices; at 100% debt, need 11% surplus |
-| -2 | `surplus% >= 0.22 × ((debt - 0.50) / 0.50)` | `debt < 0.50 − 0.25 × (surplus% / 0.15)` | At 50% debt, surplus alone suffices; at 100% debt, need 22% surplus |
-| -1 | `surplus% >= 0.33 × ((debt - 0.25) / 0.75)` | `debt < 0.25 − 0.25 × (surplus% / 0.15)` | At 25% debt, surplus alone suffices; at 100% debt, need 33% surplus |
+| -3 | `surplus% >= 0.11 × ((debt - 0.75) / 0.25)` | `debt < 0.75 − 0.25 × (surplus% / 0.1875)` | At 75% debt, surplus alone suffices (threshold = 0); at 100% debt, need 11% surplus |
+| -2 | `surplus% >= 0.22 × ((debt - 0.50) / 0.50)` | `debt < 0.50 − 0.25 × (surplus% / 0.1875)` | At 50% debt, surplus alone suffices; at 100% debt, need 22% surplus |
+| -1 | `surplus% >= 0.33 × ((debt - 0.25) / 0.75)` | `debt < 0.25 − 0.25 × (surplus% / 0.1875)` | At 25% debt, surplus alone suffices; at 100% debt, need 33% surplus |
 
-This means health level worsens progressively: a country at 60% debt with 5% surplus might be health -2, but the same 5% surplus at 90% debt would only achieve health -3. The interplay of debt and surplus creates smooth degradation rather than cliff edges.
+This means health level worsens progressively: a country at 60% debt with 5% surplus might be health -2, but the same 5% surplus at 90% debt would only achieve health -3. The interplay of debt and surplus creates smooth degradation rather than cliff edges. The constant `aroai_country_budget_surplus_critical = 0.1875` (18.75%) defines the deficit level where debt thresholds reach their most restrictive: at -18.75% surplus (relative to fixed income), the debt thresholds are at their absolute minimums. Note: the debt threshold divisor is `aroai_country_budget_surplus_critical = 0.1875`, not 0.15.
 
 #### Neutral and positive health levels (0, 1, 2, 3):
 
@@ -652,7 +715,7 @@ These use OR logic between **surplus** and **weeks of reserves**:
 | +2 | `surplus% >= 0.75 × ((debt + 0.50) / 1.50)` | `surplus% >= 0.22 × ((0.75 - reserves%) / 0.75)` | >= 260 weeks (~5 years) |
 | +3 | `surplus% >= 0.875 × ((debt + 0.75) / 1.75)` | `surplus% >= 0.33 × ((1.00 - reserves%) / 1.00)` | >= 312 weeks (~6 years) |
 
-**Key design insight:** For health levels +1 through +3, debt-free countries have a **separate, easier surplus threshold** that decreases as gold reserves fill up. A debt-free country with 75% full reserves needs 0% surplus for health +2 (the reserves themselves demonstrate fiscal health), while a country with debt at any level needs surplus to prove it can service that debt. This creates a natural reward for paying off debt entirely.
+For health levels +1 through +3, debt-free countries have a separate, easier surplus threshold that decreases as gold reserves fill up. A debt-free country with 75% full reserves needs 0% surplus for health +2 (the reserves themselves demonstrate fiscal health), while a country with debt at any level needs surplus to prove it can service that debt. This creates a natural reward for paying off debt entirely.
 
 #### Summary of the scoring design:
 
@@ -667,30 +730,35 @@ These use OR logic between **surplus** and **weeks of reserves**:
 Runs on Day 1 of each iteration. Two modes:
 
 **When budget is neutral or positive (health >= 0):**
-1. Keep taxes not very high (priority)
-2. Raise government wages from very low up to medium
-3. Lower taxes progressively (very high -> high -> medium -> low -> very low) as health improves
-4. Raise wages (medium -> high -> very high) when surplus allows
+1. If taxes are very high (level 5), lower them immediately -- taxation above medium is considered harmful
+2. Raise government wages from very low up to medium (only if taxes <= high)
+3. Raise military wages from very low up to medium (only if taxes <= high)
+4. If health >= +1 AND taxes <= medium: raise wages further (medium -> high, high -> very high)
+5. If no wage change was made: lower taxes progressively (very high -> high -> medium -> low -> very low) based on health level
 
 **When budget is negative (health < 0):**
-1. Raise taxes (very low -> low -> medium -> high -> very high)
-2. Lower wages (very high -> high -> medium -> low) cautiously
-3. Force military wages to medium during active wars
+1. If taxes are very low, raise to low immediately
+2. If government or military wages are very high, lower both to high
+3. Else if wages are high, lower both to medium
+4. If budget >= -2 AND taxes >= high: **raise** government and military wages from very low to low (counterintuitively, even during negative budgets, very low wages harm IG approval and pop sol, so the AI raises them to low if it can afford the taxes)
+5. If budget < -2 AND taxes >= high: cut government wages to very low (if IG approval allows), cut military wages to very low (if military not in use and IG approval allows)
+6. If military forces are in use: force military wages to medium
+7. If no wage change made: raise taxes progressively (low -> medium -> high -> very high)
 
 ### Wage cut constraints:
 
-The system checks interest group approval before cutting wages:
-- Government wages: checks Intelligentsia and Petty Bourgeoisie approval
-- Military wages: checks Armed Forces approval, only cuts when not at war/mobilized
+The system checks interest group approval before cutting wages. A wage cut is allowed if the budget is already at health -3 (emergency override — IG concerns are ignored in fiscal crisis), OR if the relevant interest group approves:
+- Government wages: requires **both** Intelligentsia AND Petty Bourgeoisie approval (each IG: in government with approval > -3, outside government with approval > -8, or marginal)
+- Military wages: requires `aroai_is_using_military_forces = no` AND Armed Forces approval (same approval thresholds as above)
 
 ### Spending shares:
 
-Total active income is allocated as shares:
-- Government Administration: 20% (adjusted by investment pool multiplier, plus up to 5% bonus from lost taxes due to insufficient tax capacity)
-- University: 10% (adjusted by innovation deficit)
-- Port: 10%
-- Military: 35% (split between barracks and naval base by army/navy ratio)
-- Construction Sector: residual after above shares + investment pool
+Total active income is allocated as shares. `aroai_country_fixed_income` = income minus investment pool transfer, multiplied by tax level factors (very low: 1.5x, low: 1.2x, high: 0.835x, very high: 0.67x). `aroai_country_active_income` = (budget surplus + building expenses - investment pool transfer, falling back to fixed income) multiplied by tax level factors (same as above, normalizing income to what it would be at medium tax), then multiplied by power level, then multiplied by the lower of the China/India power levels, then floored at 1. The tax level normalization ensures spending targets remain consistent regardless of tax rate — a country at very low tax has its income scaled up 1.5x to reflect what it would earn at medium tax rates, while a country at very high tax is scaled down to 0.67x.
+- Government Administration: 20% base (adjusted by investment pool multiplier, plus up to 5% bonus from lost taxes due to insufficient tax capacity, calculated as `0.05 × clamp(lost_taxes / 0.125, 0, 1)` where `lost_taxes` is a discrete variable representing the fraction of tax revenue lost to insufficient tax capacity, with breakpoints at 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875)
+- University: 10% base (adjusted by investment pool multiplier, plus up to 2.5% bonus based on innovation deficit: `0.025 × clamp(10 × (1.10 − current/target), 0, 1)`, adjusted by high government spending multiplier). The innovation bonus adds up to 2.5 percentage points when innovation is far below target (≤0% of target), decreasing as innovation approaches 110% of target, where it reaches 0%.
+- Port: 10% (adjusted by investment pool multiplier, adjusted by high government spending multiplier)
+- Military: 30% base (split dynamically between barracks and naval base based on respective battalion/flotilla targets, each sub-share scaled by a progress factor capped at 5/3x; the barracks share itself is hard-capped at 80% of the total military share). Note: the base is 30%, not 35% — the effective share can scale higher through the progress factor and country-specific multipliers
+- Construction Sector: residual after above shares + investment pool. The sector target is further modified by a workforce utilization factor (0.900 to 1.225 range for AI countries: 0.900 + 0.325 × (1 − unutilized_workforce_percent_multiplier), where the multiplier is 0 if workforce is fully utilized and 1 if above 12.5% unutilized)
 
 Each share has floor/paucity/excess/ceiling multipliers (0.60x to 1.40x of target) used by the evaluation system to determine priority.
 
@@ -708,7 +776,7 @@ Runs on Day 1, after data collection, before construction scheduling.
 - Has budget surplus variable (system is initialized)
 
 ### Global gate:
-All government building downsizing (items 1--6 below) requires `aroai_bureaucracy_load >= 0.75`. If bureaucracy load is below 75%, no government buildings are downsized regardless of other conditions.
+All government building downsizing (items 1--6 below) requires `aroai_bureaucracy_load >= 0.75`. If bureaucracy load is below 75%, no government buildings are downsized regardless of other conditions. Additionally, each building type has a **minimum tax level** gate: government administration, university, and construction sector require tax level >= 2 (medium), while port, barracks, and naval base require tax level >= 3 (high). Downsizing government infrastructure while taxes are too low would be counterproductive.
 
 ### Downsizing order:
 
@@ -756,8 +824,13 @@ Each government building uses a **graduated health-tier system**: progressively 
    - Same tiered structure as Barracks, using `navy_size` vs flotilla thresholds and naval base spending thresholds
 
 7. **Production buildings** (separate from the bureaucracy gate):
-   - Gated on `aroai_is_production_downsizing_allowed`
-   - Via `aroai_perform_for_every_building_type` -- checks for "abandoned" buildings (occupancy < 40% for 6+ iterations)
+   - Gated on `aroai_is_production_downsizing_allowed`, which requires:
+     - `NOT { has_law = law_laissez_faire }` (production downsizing is entirely blocked under laissez-faire)
+     - `aroai_downsizing_is_allowed` local variable is set
+     - Either construction is also allowed, OR enough iterations have passed since last production downsizing (`aroai_iterations_since_production_downsizing >= aroai_max_iterations_since_production_downsizing`)
+     - `aroai_unutilized_workforce_percent < aroai_unutilized_workforce_percent_total_threshold`
+   - Via `aroai_perform_for_every_building_type` -- checks for "abandoned" buildings (occupancy < 40% for 6+ iterations, with the abandoned variable persisting for 147 days = `iteration_days × 5 + 7`)
+   - Abandonment tracking: when a building's occupancy first drops below 40%, a state-scoped variable stores its occupied levels. If occupied levels do not increase sufficiently over subsequent checks (the margin is `level × HIRING_RATE × (0.5 × iterations_since_production_downsizing + 1)`), the iteration counter increments. After 6 iterations of observed abandonment, a country-scoped flag triggers actual downsizing
 
 ### Selection logic:
 For each building type, randomly picks from states meeting the downsize criteria, preferring states with the lowest occupied levels.
@@ -777,9 +850,8 @@ Calculates military targets by comparing against the global landscape.
 3. Find the single highest other country's army power projection -> `aroai_army_size_equal_to_biggest_threat`
 4. Repeat for **navy power projection** (from `aroai_navy_power_projection`)
 5. Convert power projections to required building counts by dividing by **power per building** (calculated as the country's own power projection / building count):
-   - Army: threat power / (aroai_army_power_projection / aroai_building_barracks_total) = required barracks
+   - Army: threat power / (aroai_army_power_projection / aroai_building_barracks_total) = required barracks (conscription power projection is subtracted before division to account for conscription-based power that doesn't require barracks)
    - Navy: threat power / (aroai_navy_power_projection / navy_size) = required naval bases
-   - Conscription power projection is subtracted before the division to account for conscription-based power that doesn't require barracks
 
 ### Square root calculation:
 Used for military scaling. Since Paradox script has no `sqrt()`, ARoAI implements Newton's method iteratively:
@@ -795,13 +867,19 @@ Used for military scaling. Since Paradox script has no `sqrt()`, ARoAI implement
 ### Three modes (game rule):
 
 **Default (Assisted):**
-- Guides AI toward tier 3--4 technologies with weighted bonuses
+- Guides AI toward specific technologies via conditional innovation redirection, chosen based on country situation and tech progress:
+  - Nationalism (USA after 1840, Italian states after 1846, German states after 1850)
+  - Railways (after 7 of 11 tier-3 production techs)
+  - Nitroglycerin (after Intensive Agriculture, then requires 9 of 11 techs)
+  - Breech-loading Artillery (prerequisites: Shell Gun/Percussion Cap/Rifling)
+  - Ironclads (prerequisite: Screw Frigate)
+  - Improved Fertilizer, Steel Frame Buildings, Dynamite, Rubber Mastication, Rotary Valve Engine, Monitor, Pumpjacks, Threshing Machine, Electrical Generation, Electrical Capacitors, Steam Turbine, Electric Railway, Conveyors, Trench Works, Wargaming, Nitrogen Fixation
 - Allows flexibility in research choices
 - Adds innovation progress toward preferred techs
 
 **Railroaded:**
-- Forces strict tech path: Rationalism → Academia → prerequisites (Enclosure, Manufacturies, Shaft Mining, Steelworking, Cotton Gin, Lathe, Mechanical Tools) → Railways
-- Also includes guidance for: Nationalism (USA, Italian states, German states), Nitroglycine, Breech-loading artillery, Ironclads
+- Forces strict tech path: Rationalism → Academia → prerequisites (Enclosure → Manufacturies → Shaft Mining → Steelworking → Cotton Gin → Lathe → Mechanical Tools → Atmospheric Engine) → Railways
+- Also includes guidance for: Nationalism (USA, Italian states, German states), Nitroglycerin, Breech-loading artillery, Ironclads
 - Uses `aroai_innovation_redirection` modifier (-100% innovation multiplier) while redirecting innovation to specific technologies
 - Each tech receives `innovation x iteration_weeks` research progress per iteration
 
@@ -814,7 +892,7 @@ aroai_innovation_redirection = {
     country_weekly_innovation_mult = -1  # Cancels all natural innovation
 }
 ```
-Innovation is then manually added to the target technology via scripted effect. The `aroai_add_progress_to_technology` effect uses a generated switch statement supporting 1--999 innovation levels, each adding `innovation * 4` (weeks per iteration) progress to the chosen tech.
+Innovation is then manually added to the target technology via scripted effect. The `aroai_perform_innovation_redirection` effect first checks that the country is NOT already researching the target technology (to avoid wasting progress). The `aroai_add_progress_to_technology` effect uses a generated switch statement supporting 1--999 innovation levels, each adding `innovation * 4` (weeks per iteration) progress to the chosen tech. If accumulated progress reaches 100% during redirection, the technology is immediately researched via `add_technology_researched`.
 
 ---
 
@@ -826,7 +904,7 @@ Innovation is then manually added to the target technology via scripted effect. 
 AI-vs-AI wars where both sides have 0 war support can persist indefinitely, tying up armies and ruining economies.
 
 ### Solution:
-Every 30 days, the system checks all ongoing wars. For each war where both warleaders are AI with 0 war support:
+Every 30 days, the system checks all ongoing wars. For each war where both warleaders are AI with war support of 0 or -10 (the -10 accounts for the game's surrender signaling mechanic where war support can dip below 0):
 - A **stalemate counter** advances through 24 levels (one level per 30-day check = ~2 years)
 - At level 24, the war is forcefully resolved:
   - **Secessionist wars:** Secessionists win (annexation)
@@ -834,7 +912,7 @@ Every 30 days, the system checks all ongoing wars. For each war where both warle
   - **Other wars:** White peace
 
 ### Implementation:
-- Wars are tracked in numbered lists (`aroai_stalemate_list_1` through `aroai_stalemate_list_24`)
+- Wars are tracked in numbered lists (`aroai_stalemate_wars_1` through `aroai_stalemate_wars_24`)
 - Ended wars are garbage-collected from lists each cycle
 - Uses `aroai_ongoing_wars` list for cross-referencing
 - Resolution happens via finding the diplomatic play containing all war participants and resolving it
@@ -858,8 +936,8 @@ Power level is a 0.0--1.0 multiplier applied to AI income calculations, which ca
 
 ### China/India special handling:
 - Identified by: population >= 50M AND >= 50% of that culture
-- Population scaling: linear from 50M (0x) to 100M (1x), so partially-unified China/India gets partial effect
-- Non-customs-union subject recovery: if the country `is_non_customs_union_subject`, power level is multiplied by 1.25 (capped at 1.0). This partially compensates for the economic penalty of being a regular subject, but does not boost above the game rule setting
+- Population scaling: the power level acts as a *reduction* that phases in linearly from 50M (no reduction, multiplier = 1.0) to 100M (full reduction to game rule value). Formula: `1.00 - (1.00 - game_rule_value) × (population - 50M) / 50M`, clamped to [0, 1]. At 100M population, the result equals the game rule value exactly. This means a partially-unified China/India at 50M population is NOT penalized — the full game rule multiplier applies. As population grows to 100M, the penalty gradually increases to match the configured game rule.
+- Non-customs-union subject recovery: if the country `is_non_customs_union_subject`, power level is multiplied by 1.25 (capped at 1.00, not at the game rule value — the cap prevents subjects from exceeding 100% even with the recovery boost). This partially compensates for the economic penalty of being a regular subject
 - China and India power levels are computed independently; each applies only to its respective country
 
 ### Construction scaling (separate from power level):
@@ -909,7 +987,7 @@ All production method overrides preserve vanilla gameplay values (inputs, output
 | Industrial Port | 100000 |
 | Modern Port | 100000 |
 
-Anchorage gets ai_value = 0 to ensure the AI never picks it over a proper port.
+Anchorage gets ai_value = 0 to ensure the AI never picks it over a proper port. Note that Industrial Port and Modern Port share the same ai_value (100,000) -- the AI differentiates them by technology requirements alone (Modern Port requires `concrete_dockyards`), not by preference weight.
 
 **Administration production methods** -- ai_value only:
 
@@ -984,7 +1062,7 @@ ARoAI includes a complete override of the vanilla strike event chain (9 events i
 | strike.9 | Strikers Crushed | Conclusion for broken strikes. Industrialists get success modifier, optional anti-union bonus. |
 
 ### Why it's in the mod:
-The AI behavior is hardcoded into the events via `ai_chance` values. AI countries always choose to break strikes rather than negotiate (negotiate ai_chance = 0, break ai_chance = 10). This prevents AI from making economic promises it might not follow through on, which could leave lingering negative modifiers.
+The AI behavior is hardcoded into the events via `ai_chance` values. AI countries always choose to break strikes rather than negotiate in the initial event (negotiate ai_chance = 0, break ai_chance = 10). However, subsequent events have more nuanced AI preferences: in strike.4 (anti-strike measures), police crackdown has ai_chance 60 versus strikebreakers at 10; in strike.8 (strikers appeased), "celebrate" has ai_chance 10 versus "keep negotiating" at 0; in strike.9 (strikers crushed), the first option has ai_chance 10 versus the second at 0. This prevents AI from making economic promises it might not follow through on, which could leave lingering negative modifiers.
 
 ### Strike types:
 The system handles three strike types based on the triggering pop's employment:
@@ -1037,7 +1115,7 @@ All this information is **hardcoded** as scripted triggers and effects. For each
 - **`aroai_sanction_X`** -- State-level permission check (technology, resources, workforce, profitability)
 - **`aroai_allocate_X`** -- State aptitude scoring (which states are best for this building)
 
-This is why **modded buildings require compatibility patches** -- ARoAI literally cannot "see" a building's properties at runtime.
+This is why **modded buildings require compatibility patches** -- ARoAI has no way to discover a building's properties at runtime, so anything not explicitly coded is invisible to the evaluation system.
 
 ### Generated code at end of files:
 Both static data files end with auto-generated code blocks (produced by `vanilla_building_types.js`):
@@ -1123,18 +1201,23 @@ This ensures the economy bootstraps correctly: construction capacity -> administ
 | Building | Limit | Crucial | Notes |
 |----------|-------|---------|-------|
 | Government Administration | 4 | 10 | Crucial=10: evaluates priorities 1--10 without suitable states. High crucial = almost always builds when needed |
+| University | 8 | 8 | Crucial=8: evaluates priorities 1--8 without suitable states |
 | Railway | 5 | 99 | Crucial=99: always evaluates without suitable states (99 >= any priority). Effectively "always eligible" |
 | Port | 3 | 99 | Same as Railway: always evaluates without suitable states. Low limit = conservative queuing per iteration |
+| Construction Sector | 5 | 5 | Crucial=5: default threshold, only treated as crucial during significant shortages (supply level ≤ 5) |
 | Barracks | 8 | 8 | Crucial=8: evaluates priorities 1--8 without suitable states. High limit allows aggressive military buildup |
+| Naval Base | 5 | 8 | Crucial=8: evaluates priorities 1--8 without suitable states |
 | Rubber Plantation | 5 | 11 | Crucial=11: treated as crucial for supply levels 1--11 (most shortages and even moderate supply). Bypasses state and profitability checks in severe shortage |
-| Oil Rig | 5 | 11 | Same as Rubber: crucial for supply levels 1--11. Strategic resource always prioritized |
-| Gold Mine | 5 | 5 | Crucial=5: only treated as crucial during significant shortages (supply level ≤ 5). Luxury good, lower urgency |
+| Oil Rig | 5 | 11 | Same as Rubber: crucial for supply levels 1--11. Strategic resource always prioritized. Also has an early-game override that bypasses market evaluation entirely |
+| Gold Mine | 5 | 5 | Crucial=5: only treated as crucial during significant shortages (supply level ≤ 5). Note: Gold Mine bypasses the standard weight/offset evaluation entirely, hardcoding priority=6, supply_vs_demand=5, productivity=5 directly |
+
+All other production buildings (resource, agriculture, industry) use crucial=5, the default threshold.
 
 ---
 
 ## 21. Data Packing Scheme
 
-Paradox script has no arrays, structs, or multi-field variables. ARoAI works around this by packing multiple values into a single integer using digit positions.
+Paradox script has no arrays, structs, or multi-field variables. Packing multiple values into digit positions of a single integer is how ARoAI tracks five data fields per building type in one variable.
 
 ### `aroai_building_type_{id}_collected_data` format:
 
@@ -1145,7 +1228,7 @@ A single integer encodes multiple data cells by position in the number:
 | 1 | Decimal portion (ones/tens) | Priority level |
 | 2 | Hundreds portion | Supply vs demand level |
 | 3 | Ten-thousands to millions | Productivity requirement |
-| 4 | Hundred-millions+ | Production method level (railways) |
+| 4 | Hundred-millions+ | Production method level (used for railway infrastructure-per-level lookup and shipyard PM-dependent evaluation) |
 | 5 | Rounded to millions | Construction counter |
 | avg | Average of cells 1 and 2 | Used for construction limit lookup |
 
@@ -1263,7 +1346,7 @@ The repo includes a complete example at `docs/compatibility_patches/example_file
 - Create effects and triggers following the same patterns as ARoAI's files
 
 ### Runtime detection:
-ARoAI checks for active compatibility patches via `aroai_refresh_list_of_compatibility_patches` (monthly), which populates a global list. The main building iteration loop checks this list and includes patched buildings in evaluation/construction.
+ARoAI checks for active compatibility patches via `aroai_refresh_list_of_compatibility_patches` (daily), which populates a global list. The main building iteration loop checks this list and includes patched buildings in evaluation/construction.
 
 ---
 
@@ -1458,7 +1541,7 @@ tools/
 
 docs/
 ├── how_does_it_work.txt                              Architecture overview (author's words)
-├── ARCHITECTURE.md                                   This file
+├── analysis.md                                        This file
 └── compatibility_patches/
     ├── compatibility_patches.txt                     Step-by-step patch creation guide (9 steps)
     ├── total_conversion_mods.txt                     Notes for total conversions (overwrite, don't patch)
@@ -1472,222 +1555,45 @@ docs/
 
 ---
 
-## 30. Design Principles & Trade-offs
+## 30. Design Principles
 
-### Performance above all
-The single biggest constraint is that Paradox script is not designed for heavy computation. Every design decision reflects this:
-- **Time distribution:** Work is spread across 14+ days per iteration per country
-- **Country staggering:** Iteration start dates are randomized so countries don't all compute simultaneously
-- **Weekly loop:** Budget data that changes frequently gets a dedicated lightweight cycle
-- **Data packing:** Multiple values crammed into single integers to reduce variable count
-- **Selective collection:** Data is only gathered when downsizing/construction is actually allowed
-- **Half-iteration idle:** Days 15--28 are deliberately unused to create breathing room
-
-### Static over dynamic
-Paradox script cannot introspect building definitions at runtime. Rather than attempting fragile workarounds, ARoAI embraces hardcoded static data:
-- Every building's inputs, outputs, technology requirements, and evaluation logic is explicitly coded
-- This means modded buildings require compatibility patches (a known limitation, documented and tooled)
-- The trade-off: perfect accuracy for vanilla buildings, zero support for unknown buildings
-
-### Market-driven production, formula-driven government
-Two fundamentally different evaluation approaches:
-- **Production buildings** (resource, agriculture, industry) are evaluated by querying actual market supply vs demand. This is dynamic and adapts to each game's economy.
-- **Government buildings** (admin, university, ports, military) have no market goods to query, so they use predefined formulas based on population, GDP, innovation targets, military threats, lost tax revenue, etc.
-
-### Targeted PM changes
-Production method overrides add `ai_value` weights to guide the AI toward upgrading. All vanilla gameplay values are preserved exactly -- no inputs, outputs, convoys, or other modifiers are changed. Full PM redefinition is a technical necessity of Paradox modding (can't change one field without replacing the whole block), and the files use 1.3.6 `building_input_*` syntax.
-
-### Minimal vanilla disruption
-ARoAI disables only what it replaces:
-- Construction AI: fully replaced
-- Tax/wage AI: fully replaced
-- Strike events: fully overridden (AI always breaks strikes)
-- Consumption tax AI: kept (ARoAI doesn't handle it)
-- Authority spending AI: kept (commented out in defines)
-- Autonomous investment AI: kept (ARoAI accounts for private queue but doesn't control it)
-- Production method AI: guided via ai_value additions only; all vanilla gameplay values preserved
-- Interest group promotion/suppression: disabled (base values set to 0)
-
-### Fairness by default
-The default game rules (100% power, 100% construction) give AI no advantages over players. The mod makes AI smarter, not cheaty. Construction bonuses above 100% are explicitly warned as "no longer fair play" in the UI.
-
-### Extensibility via compatibility patches
-Rather than trying to auto-detect modded buildings (impossible in Paradox script), ARoAI provides:
-- A 200-slot compatibility patch system
-- JavaScript code generators to automate the tedious parts
-- Detailed documentation with examples (including a full example patch)
-- A GitHub issue tracker for ID registration
-- Guidance for total conversion mods that need a different approach
+- **Performance above all:** Time distribution across 14+ days, country staggering, a weekly loop for frequent data, packed integers, selective collection, and idle days 15–28 all reduce per-tick cost.
+- **Static over dynamic:** Every building's properties are hardcoded because the script engine cannot introspect building definitions. Production buildings compensate by querying live market signals; government buildings use predefined formulas.
+- **Targeted PM changes:** Only `ai_value` weights are added to production methods. All vanilla gameplay values (inputs, outputs, convoys, employment) are preserved. Full PM redefinition is a Paradox modding requirement, not a design choice.
+- **Minimal vanilla disruption:** Construction AI and tax/wage AI are fully replaced. Strike events are overridden. Consumption tax AI, authority spending AI, and autonomous investment AI are left intact.
+- **Fairness by default:** Default game rules (100% power, 100% construction) give AI no numerical advantage. Construction bonuses above 100% are flagged in the UI as "no longer fair play."
+- **Extensibility via compatibility patches:** 200 reserved stub slots, JavaScript code generators, full example patches, a GitHub ID tracker, and guidance for total conversion mods.
 
 ---
 
-## 31. Design Analysis: Strengths, Weaknesses & Improvement Opportunities
+## 31. Design Analysis
 
-### 31.1 Overall Architecture
+The principles above are local responses to specific constraints. This section traces how those responses connect — and where the connections create tensions, unresolved interactions, and trade-offs that a component-by-component reading would miss.
 
-**Strengths:**
-- **Time-distributed computation** is the single most important design choice. Spreading work across 14+ days per country, with randomized start offsets, prevents the catastrophic frame drops that would occur if all AI countries computed simultaneously. This is the key enabler of the entire mod.
-- **Separation of concerns** is clean: preparation (data collection) → evaluation (priority assignment) → construction (state selection and queuing) → weekly loop (budget tracking). Each phase has its own files and variables, making the system maintainable despite the language limitations.
-- **Weekly loop decoupling** from the main 28-day cycle allows budget data to update 4x per iteration, keeping financial decisions responsive without adding to the main loop's computational cost.
-- **Half-iteration idle period** (days 15–28) provides breathing room. If the game engine lags or events fire late, there's a buffer before the next iteration begins.
+A packed integer like `302050100` in `aroai_building_type_{id}_collected_data` is not an error — it encodes priority (2), supply/demand (5), productivity (30), PM level (2), and construction counter (0) across five digit positions. The JS toolchain generates 3,000 extraction script values to decompose these integers back into components. This packing exists because Paradox script has no structs: five logical fields become digit ranges of one variable. The scheme is precise but fragile. If any cell overflows its allocated digit range, adjacent cells are silently corrupted. The guarantee that this will not happen is implicit — the author's testing has not produced overflow values, but there is no runtime validation, no debug logging for packed values, and no way to inspect `aroai_ongoing_constructions` list elements beyond the packing scheme that defines them.
 
-**Weaknesses:**
-- **28-day iteration cycle** means the AI can only react to economic changes every ~4 weeks. A sudden market crash or war declaration mid-cycle won't be reflected until the next preparation phase. The weekly loop mitigates this for budget data, but building priorities are fixed for the full cycle.
-- **Single building type per day** during construction (days 3–14) creates a hard cap of 12 building types per iteration. In a large, diversified economy needing many different buildings, lower-priority types may never get built within a cycle.
-- **No inter-country coordination.** Each country evaluates independently. If two AI countries share a market, they may both identify the same shortage and overbuild the same good simultaneously, creating a surplus by the time constructions complete.
+The absence of structs also means building properties cannot be stored in aggregate. ARoAI cannot ask "what goods does this building type produce?" at runtime. All 49 vanilla buildings have their inputs, outputs, technology requirements, and evaluation logic hardcoded as scripted triggers and effects (§19). The same constraint appears in `aroai_add_progress_to_technology`, a 999-case switch statement that exists because there is no way to compute `innovation × 4` dynamically. Modded buildings need compatibility patches (§23) because a new building type is invisible without hand-written consider/evaluate/sanction/allocate blocks. Two hundred reserved stub slots, a JavaScript code generator, and the GitHub ID registration system automate the mechanical parts, but the per-building evaluation logic must be authored manually. One language gap produced the data packing scheme, the compatibility patch system, the stub slot reservation, and the building database.
 
-### 31.2 Priority & Evaluation System
+The script engine can query market supply and demand for any good. It cannot introspect what a building produces, consumes, or requires. The evaluation system splits along this fault line. Production buildings use market signals: `supply_vs_demand_level + weight` gives a priority number, and `supply_vs_demand_level + offset` gates expansion through a productivity requirement. Weight decides what gets built, offset decides whether expansion is justified, and order breaks ties through a static dependency chain (construction sector at order=1, tools at 4, mines at 5, industries at 6+). The three levers are independent: changing weight never affects offset, changing offset never changes order.
 
-**Strengths:**
-- **Dual evaluation approach** is well-suited to the problem. Government buildings have no market signal (bureaucracy, convoys, battalions are not traded goods), so formula-based evaluation with spending share targets is the right tool. Production buildings can query actual market supply/demand, providing a dynamic signal that adapts to each game's unique economy.
-- **Tiered priority escalation** for government buildings (10–12 sequential levels checked from most urgent to least) creates a graceful degradation: critical shortages get immediate attention, moderate needs get lower priority, and oversupply leads to priority 0 (do not build).
-- **Crucial ratings** serve as a leniency threshold that works differently per building class. For government buildings (classes 1--3), `crucial >= priority` lets evaluation proceed without suitable states — gov admin (crucial=10) evaluates priorities 1--10 freely, while railway/port (crucial=99) always evaluate. For production buildings (classes 4--6), `supply_vs_demand_level <= crucial` bypasses suitable-state requirements during shortages, and the crucial value also gates productivity discounts (÷1.15 or ÷1.30) and profitability checks. This prevents deadlocks where the AI can't build admin because there aren't enough workers, and ensures strategic resources like rubber/oil (crucial=11) bypass profitability bars during moderate shortages.
-- **Three-layer decision hierarchy** cleanly separates concerns: (1) **weight** shifts the priority number itself and is the dominant factor — it encodes how urgently the AI should respond to shortages of each good, (2) **order** breaks ties between building types that land on the same priority — it encodes dependency chains so upstream buildings are preferred (construction sector order=1 before tools order=4 before mines order=5–6 before industries order=6–8), (3) **offset** gates expansion independently of priority — it controls how profitable existing buildings must be before the AI will expand, preventing overbuilding of secondary goods. These three levers are orthogonal: weight decides *what* gets built, order decides *which one first* when weight produces a tie, offset decides *whether expansion is justified*.
-- **Weight + offset dual-lever design for multi-good buildings** elegantly handles buildings that produce both primary and secondary goods. Primary goods get low weight (urgency) + zero offset (easy expansion); secondary goods get high weight (deprioritized) + high offset (strict expansion bar). This creates a double barrier without requiring complex conditional logic — the same `aroai_evaluate_production_building` effect handles both cases uniformly.
-- **Extensible weight families** (`aroai_resource_weight_N`, `aroai_agriculture_weight_N`, `aroai_industry_weight_N`) with optional `_factor` variables allow compatibility patches or game rules to shift entire categories of goods up or down in priority without touching individual building evaluations.
+Government buildings have no traded goods to query. Bureaucracy, convoys, battalions, and innovation are not market commodities, so they use formula-based evaluation with spending share targets and tiered thresholds (priority 1 through 12, each with its own numeric floor). Government buildings get no offset parameter because there is no productivity signal to offset against. The crucial rating partially bridges this gap: production buildings with `supply_vs_demand_level <= crucial` bypass state requirements, government buildings with `crucial >= priority` evaluate even without suitable states. Railway and Port, at crucial=99, always evaluate.
 
-**Weaknesses:**
-- **Supply/demand is a lagging indicator.** By the time a shortage appears in market data, the AI is already behind. There's no forward-looking mechanism (e.g., "I'm about to research steel, so I should start building iron mines now"). The `order` attribute partially compensates by front-loading upstream buildings, but it's a static heuristic, not adaptive.
-- **Order is a coarse tiebreaker.** It only matters when priorities are numerically equal, which is relatively rare for production buildings (different weights produce different priorities). For government buildings, ties are more common (formulaic evaluation often lands multiple types on the same level), making `order` more influential there. But order values are static — they can't adapt to situations where the usual dependency chain is wrong (e.g., a country that already has abundant tools but needs more grain farms).
-- **Weight values are hardcoded per good, not per building.** All buildings producing iron use the same `aroai_resource_weight_1`, regardless of whether the building is a primary iron producer or has iron as a minor output. The offset parameter handles the primary/secondary distinction, but there's no mechanism for "this specific building should weight this good differently than other buildings that produce it."
-- **No consideration of construction time.** A building that takes 52 weeks to complete is treated the same as one that takes 4 weeks. For long-build buildings, the AI should ideally start earlier or assign higher priority.
+The weight system is organized into families (`aroai_resource_weight_N`, `aroai_agriculture_weight_N`, `aroai_industry_weight_N`) with optional `_factor` variables adjusted by the Roleplay game rule. This lets compatibility patches or future rules shift entire categories of goods without touching individual building evaluations. For multi-good buildings, weight and offset together differentiate primary from secondary goods: primary goods get low weight (1–4) and zero offset; secondary goods get high weight (5–11) and offset 4–6. Secondary goods only win construction priority when the market genuinely needs them and existing buildings are profitable enough. But weight values are per-good, not per-building: every building producing iron uses the same `aroai_resource_weight_1`, regardless of whether iron is that building's core output or a minor byproduct.
 
-**Improvement opportunities:**
-- Anticipatory building: when a technology is being researched that unlocks a new building or increases demand for a good, pre-emptively raise priority for upstream buildings.
-- Dynamic order adjustment: allow order to shift based on existing building stock (e.g., if tools are already oversupplied, don't prioritize tooling workshops over downstream industries in tiebreaks).
+A country researching Steel will not start building iron mines early. By the time those mines finish 52 weeks later, the steel shortage has already been handled by whatever the previous iteration queued. Neither evaluation strategy accounts for construction time: a building that takes 52 weeks to complete gets the same priority as one that takes 4 weeks. Supply/demand is a lagging indicator, and there is no forward-looking mechanism. The `order` attribute front-loads upstream buildings as a static compensation (construction sector at order=1, tools at 4, mines at 5, industries at 6+), but it is fixed at compile time and not adaptive to what a specific game's economy already has in surplus. This is one of the trade-offs of the 28-day evaluation cycle described above: priorities are frozen for the full iteration regardless of what changed on day 3.
 
-### 31.3 State Selection & Aptitude Scoring
+Paradox script was designed for event chains and journal entries, not algorithmic work across 50+ countries. Every timing decision in the architecture is a response to the overhead of script execution. The 28-day iteration cycle spreads evaluation and construction across 14 days per country. Country iteration starts are staggered through five tiers so not all countries compute simultaneously. The weekly loop provides a lightweight budget-tracking alternative to re-running the full evaluation. Days 15–28 are deliberately idle. The author reports that removing this distribution produced visible frame drops under the combined evaluation load.
 
-**Strengths:**
-- **Multi-level aptitude system** (1–10 levels with up to 4 branches per level) creates fine-grained state selection. A state with critical infrastructure deficit and free workforce gets aptitude 1; a state with marginal need gets aptitude 8. This prevents wasting construction on suboptimal locations.
-- **Branching with structured fallback** adds a second dimension beyond aptitude levels. The four branches per level encode a clear priority order: (1) incorporated + infrastructure + workforce, (2) incorporated + infrastructure only, (3) incorporated + workforce only, (4) fallback (aptitude only). This handles the common case where an aptitude-1 state is unincorporated or infrastructure-constrained, and the interleaved indexing across allocation lists ensures that branch quality is considered at every aptitude tier before moving to the next.
-- **Variable allocate depth** (1–7 aptitude levels per building type in practice) tunes state selection granularity to each building's needs. Government admin uses allocate=7, giving highly differentiated placement across 7 aptitude tiers. Simpler buildings like arts academies use allocate=1, selecting from a single broad tier. This means the allocation system scales its computational cost and selectivity per building type rather than applying uniform depth.
-- **Scaling attribute** provides a powerful economy-of-scale control. With scaling=1, the AI concentrates construction in states that already have the highest level of that building (preferring expansion over greenfield), while scaling=0 spreads construction to states with the lowest existing level (preferring diversification). This creates fundamentally different construction patterns from the same allocation framework — resource buildings can be concentrated in established production hubs while government buildings are spread across the country.
-- **Random selection within aptitude tiers** prevents the AI from always building in the same "best" state, creating natural geographic diversity.
-- **Dynamic construction limits** use a formula based on both the building's `limit` attribute AND current urgency (average of priority and supply/demand level). The formula `simultaneous_constructions × multiplier + 1` means that high-urgency situations allow more concurrent builds of the same type, while low-urgency situations are more conservative. The 9 distinct limit values (1–9) combined with 11 urgency levels produce 99 different caps, giving fine-grained control over construction throughput per building type.
+The distribution has real costs. Building priorities are fixed for the full 28 days; a market crash or war declaration mid-cycle changes nothing until the next preparation phase. Construction throughput is capped at one building type per day, so at most 12 types per iteration. Construction tracking processes each element in `aroai_ongoing_constructions` individually via `every_in_list`, making it O(states × constructions) per weekly iteration. For large countries late in a campaign, this contributes to the very performance pressure the staggering was designed to avoid. The packed-integer construction list that makes this tracking possible (each element encoding building type, remaining points, status, and count in digit positions) also makes it opaque: there is no way to inspect or debug the queue except by decoding the integers against the packing scheme described in §21.
 
-**Weaknesses:**
-- **Random selection is a blunt instrument.** While it provides diversity, it means an aptitude-3 state might be selected over another aptitude-3 state that has better workforce availability or better market access, purely by chance. A deterministic tiebreaker (e.g., population, infrastructure) within the same aptitude level would produce better outcomes.
-- **Aptitude thresholds are building-specific but not economy-specific.** The thresholds for "good enough" are the same whether the country has 5 states or 50. In a small country, aptitude filtering may be too aggressive, leaving no valid states.
-- **Scaling is binary.** Buildings are either fully concentrating (scaling=1) or fully spreading (scaling=0). There's no intermediate option like "prefer concentration but allow greenfield if existing sites are saturated." In practice, the aptitude system partially compensates — high-level existing sites get better aptitude scores — but the scaling attribute itself is all-or-nothing.
-- **Workforce bypass for Oil Rigs** (workforce=0) is a necessary exception since oil rigs require no local workforce, but it means the workforce gate is a building-level attribute rather than a state-level check. If a future building similarly needs no workforce, a new entry in the building table handles it cleanly, but the semantic meaning of workforce=0 ("skip the check entirely") is not obvious without documentation.
+Because there is no inter-country communication, each AI country evaluates its economy independently, querying only its own market. Two countries sharing a customs union can both identify the same shortage and both queue construction. By the time buildings complete months later, the result is oversupply. Stalemate war resolution (§13) works around the absence of diplomatic query APIs by tracking wars in hardcoded numbered lists, escalating through 24 levels over roughly two years, then forcefully resolving. The resolution does not consider war goals or territorial control: a country occupying 90% of its target gets the same white peace as one that made no progress.
 
-### 31.4 Budget Management
+The budget health score (−3 to +3) uses two-dimensional curves (debt × surplus) with linear interpolation, creating smooth fiscal degradation instead of cliff edges. Reserves serve as both gate (negative health blocked above 156 weeks) and alternative path (positive health achievable through reserves alone, no surplus required). Building reserves creates freedom; accumulating debt constrains options. Tax and wage adjustments follow asymmetric logic: taxes rise fast, wages cut slow, and wage cuts require interest group approval — but even during fiscal crisis (health ≥ -2), very low wages are raised to low rather than cut further, reflecting that rock-bottom wages harm IG approval and pop sol more than the marginal savings help. The cooldown of `iteration_days + 7` (35 days) prevents oscillation but leaves a window where the AI cannot respond to rapidly deteriorating finances.
 
-**Strengths:**
-- **Health score system** (-3 to +3) is more sophisticated than it first appears. Rather than fixed thresholds, it uses two-dimensional curves where the surplus requirement varies with debt level and vice versa. This creates smooth degradation rather than cliff edges. The reserves-as-override mechanism (156+ weeks blocks all negative health) and the debt-free bonus path (easier surplus thresholds when reserves are high) reward long-term fiscal prudence in a way that mirrors real economic reasoning.
-- **Asymmetric tax/wage logic** is realistic: raising taxes is faster and more aggressive than cutting wages, which requires interest group approval checks. This models real political constraints where tax increases are technically easy but wage cuts cause unrest.
-- **Military wage floor during war** (forced to medium) prevents the AI from cutting military wages to save money during wartime, which would cause morale and recruitment problems.
+Several of these algorithmic choices have unresolved interactions. The military downsizing gate (`aroai_is_using_military_forces = no`) means a country at health −3 with mobilized formations cannot downsize barracks: it can only raise taxes, the one remaining lever. Production building downsizing uses an abandoned-building heuristic (occupancy below 40% for 6+ iterations), which catches buildings that have genuinely failed but misses chronically unprofitable buildings that stay fully staffed. The budget surplus calculation has a `# TODO proper fallback` that may produce incorrect estimates when construction sector data is unavailable; when `aroai_country_budget_surplus` or `aroai_total_building_expenses` are missing or zero, the active income falls back to `aroai_country_fixed_income` alone, which doesn't account for spending patterns. Two other unresolved TODOs affect budgeting: a data dependency ordering problem in `aroai_budgeting_effects.txt` (a condition on construction sector spending is commented out because sector spending data isn't available at the point where tax/wage decisions are made), and hardcoded day offsets in `aroai_framework_effects.txt` that should reference `aroai_days_in_the_iteration`. Consumption tax revenue is not integrated into budget calculations.
 
-**Weaknesses:**
-- **Cooldown timing mismatch.** The budget cooldown is `iteration_days + 7` = 35 days. But the iteration itself is 28 days. This means that if a tax change is made at the start of iteration N, it won't be eligible for another change until 7 days into iteration N+1. This creates a variable delay of 7–35 days between the change and when the AI can react to its effects. The intent is likely to prevent oscillation, but it also means the AI can be slow to respond to rapidly deteriorating finances.
-- **Budget surplus TODO.** The `aroai_calculate_budget_surplus` has a `# TODO proper fallback` comment for the else branch, where it falls back to raw `weekly_net_fixed_income` when construction sector data isn't available. This fallback may overestimate surplus (doesn't account for construction costs) or underestimate it (doesn't include investment pool), leading to incorrect fiscal decisions in early game or edge cases.
-- **No consumption tax management.** The defines file leaves consumption tax AI active but tweaks thresholds. ARoAI doesn't integrate consumption tax revenue into its budget calculations, potentially causing disconnect between actual income and projected income.
+The technology guidance system guides AI research toward critical techs through conditional innovation redirection, including a 999-case switch for adding research progress. The author's own TODO asks whether native 1.2.3 tech weights make the entire system redundant. The innovation redirection modifier (`country_weekly_innovation_mult = -1`) zeroes out natural innovation and manually adds it to the target technology; if the scripted effect fails to fire for any reason, the country silently loses all innovation for that iteration. If native weights work, the 999-case switch, the Railroaded mode, and the redirection modifier could be removed.
 
-**Improvement opportunities:**
-- Implement the TODO fallback properly (estimate construction costs from available data).
-- Consider integrating consumption tax awareness into budget calculations.
+Hardcoded constants — workforce thresholds of 5,000 and 20,000, government spending shares of 20%/10%/10%/30%, the 28-day iteration length — were tuned through testing but may not scale across the full game timeline. In early-game states with small populations, 20,000 may be unreachable; in late-game states where populations have ballooned, 5,000 is a trivial gate. The tax level normalization (very_low: 1.5x, low: 1.2x, high: 0.835x, very_high: 0.67x) ensures spending targets are consistent across tax levels, but the factors themselves are hardcoded assumptions about the relationship between tax settings and effective income.
 
-### 31.5 Data Packing & Variable Management
-
-**Strengths:**
-- **Clever use of digit positions** turns Paradox's limitation (no arrays/structs) into a workable system. Packing priority, supply/demand, productivity, PM level, and construction counter into a single integer avoids the save file bloat that would come from 5 separate variables per building type per country.
-- **Generated extraction values** (3,000 script values from the JS toolchain) ensure correct unpacking without human error.
-
-**Weaknesses:**
-- **Precision limits.** The construction tracking list elements pack multiple fields into digit positions, which creates hard limits. The `element_4` field (count of concurrent constructions of this type) maxes out around 213 before overflowing into adjacent digit positions. In practice this is unlikely (213 simultaneous constructions of a single type would require massive construction capacity), but it's an implicit constraint that isn't validated at runtime.
-- **Debugging difficulty.** A variable value of `302050100` is meaningless without knowing the packing scheme. There's no runtime introspection or debug logging for packed values. If a value is wrong, the developer must manually decompose the integer to find which cell is incorrect.
-- **No overflow detection.** If any cell exceeds its allocated digit range, it silently corrupts adjacent cells. The code relies on the evaluation/construction logic never producing out-of-range values, which is generally true but not enforced.
-
-### 31.6 Construction Progress Tracking
-
-**Strengths:**
-- **Three-phase status tracking** (1=under construction, 2=expected finished, 3=confirmed finished) gracefully handles the uncertainty of when a building actually completes. The `expected finished` phase waits an extra week to account for desync between the weekly loop and the game's actual weekly tick, preventing premature removal.
-- **Garbage collection** (remove after 5+ weeks in post-construction) prevents list bloat from buildings that completed long ago.
-
-**Weaknesses:**
-- **Stuck elements.** If a building is cancelled by the player (in autobuild mode) or destroyed by an event, its status=1 element will continue subtracting construction points from cell 2. Once cell 2 reaches 0, it transitions to status=2, then waits for the building to no longer be "under construction" — but since it was cancelled, this check passes immediately. The element then transitions to status=3 and eventually gets garbage collected. This is mostly self-healing but causes the construction point tracking to be inaccurate for the duration, potentially leading to slightly wrong utilization calculations.
-- **No batch removal.** Each element in `aroai_ongoing_constructions` is processed individually via `every_in_list`. For countries with many states each having active constructions, this is O(states × constructions) per weekly iteration.
-
-### 31.7 Technology Guidance
-
-**Strengths:**
-- **Three-tier configurability** (Default/Railroaded/Disabled) lets players choose how much the mod intervenes. Default mode gives gentle guidance; Railroaded forces a specific tech path; Disabled lets vanilla AI handle it.
-- **Railroaded mode's tech ordering** (Rationalism → Academia → prerequisites → Railways, plus Nationalism/military tech guidance) mirrors the optimal strategy most experienced players follow, giving AI a significant economic advantage.
-
-**Weaknesses:**
-- **Author's own TODO note** (`# TODO 1.2.3 introduced tech weights, you can probably remove this system and use weights instead if they work well`) suggests the entire technology guidance system may be redundant. Game patch 1.2.3 added native tech weighting that may achieve the same goals without the complexity.
-- **Innovation redirection modifier** (`country_weekly_innovation_mult = -1`) completely zeroes out natural innovation to redirect it manually. This is a heavy-handed approach — if the scripted effect fails to fire for any reason (event timing issue, unexpected scope), the country loses all innovation for that iteration with no recovery mechanism.
-
-**Improvement opportunities:**
-- Investigate whether native tech weights (added in 1.2.3) make the innovation redirection system unnecessary. If so, removing it would reduce code complexity significantly.
-- If keeping the system, add a safety check: if `aroai_innovation_redirection` modifier persists longer than `iteration_days + 14`, remove it automatically.
-
-### 31.8 Stalemate War Resolution
-
-**Strengths:**
-- **Patient escalation** (24 levels × 30 days = ~2 years before forced resolution) gives wars ample time to resolve naturally before intervention. This is a reasonable balance between preventing infinite stalemates and allowing organic war outcomes.
-- **Type-aware resolution** (secessionists win, revolutionaries by population, others white peace) produces historically plausible outcomes rather than arbitrary resolutions.
-
-**Weaknesses:**
-- **Global variable tracking** (`aroai_stalemate_list_1` through `_24`) persists in the save file even for wars that have long ended. While garbage collection removes ended wars from active lists, the variable names remain. Over a long campaign with many wars, this creates variable accumulation.
-- **No consideration of war goals or territorial control.** A country that has occupied 90% of its target but has 0 war support due to casualty count gets the same treatment as a country that has made no progress. A more nuanced system could check occupation percentage to determine the resolution.
-
-### 31.9 Downsizing System
-
-**Strengths:**
-- **Graduated health-tier system** across all government buildings uses five threshold levels (ceiling → excess → target → paucity → floor) that align with budget health scores. This creates smooth escalation: at health < 1, only egregious overcapacity triggers downsizing; at health < -3, even moderate overcapacity is trimmed. Each tier uses building-specific variables for capacity, spending, and secondary metrics (bureaucracy, innovation, convoys, battalions).
-- **Building-specific safety gates** prevent inappropriate downsizing. Military buildings (barracks, naval base) require tax level >= 3 AND `aroai_is_using_military_forces = no`. Port downsizing has complex state-level rules protecting market capital coastline ports and overseas connections. University and construction sector downsizing at the worst health tiers are gated on `aroai_are_military_expenses_higher_than_usual = no`, preventing economic self-harm during wartime.
-- **Port downsizing trigger** is notably sophisticated: it checks overseas connection requirements, market capital coastline port counts, and the `aroai_safe_to_delete_ports_in_overseas_lands` list. It also prefers downsizing smaller ports first (won't downsize a port if another state has a smaller one that also qualifies), preventing the AI from removing its largest ports.
-- **Production building downsizing** uses an "abandoned" heuristic (< 40% occupancy for 6+ iterations), which correctly targets buildings that have genuinely failed rather than buildings in temporary slumps.
-- **Bureaucracy load gate** (`>= 0.75`) prevents all government building downsizing when administrative capacity is low, which is a sensible safeguard — you shouldn't be demolishing buildings when you can barely govern.
-
-**Weaknesses:**
-- **Military downsizing is gated on `aroai_is_using_military_forces = no`.** If a country enters a long peacetime economic crisis but keeps formations mobilized (e.g., from diplomatic play posturing), barracks won't downsize even though the spending is unsustainable. This could prolong budget crises.
-- **No production building downsizing based on profitability.** The "abandoned" check (occupancy < 40%) catches extreme cases but misses chronically unprofitable buildings that are fully staffed but losing money. A building with 100% occupancy but negative profit will never be downsized.
-
-### 31.10 Hardcoded Constants
-
-Several values are hardcoded as `script_values` that could potentially be configurable or calculated dynamically:
-
-| Constant | Value | Location | Note |
-|----------|-------|----------|------|
-| `aroai_required_workforce` | 5,000 | preparation_values.txt | Minimum workforce to consider building |
-| `aroai_sufficient_workforce` | 20,000 | preparation_values.txt | Workforce threshold for full consideration |
-| `base_construction_points` | 5 | preparation_values.txt | Base construction points used in calculations |
-| `aroai_days_in_the_iteration` | 28 (min 14) | framework_values.txt | Main loop cycle length |
-| Government admin share | 20% | evaluation_values.txt | Fixed portion of active income |
-| University share | 10% | evaluation_values.txt | Fixed portion of active income |
-| Port share | 10% | evaluation_values.txt | Fixed portion of active income |
-| Military share | 35% | evaluation_values.txt | Fixed portion of active income |
-
-These values were presumably tuned through testing, but making some of them game rules or scaling them by era/country size could improve adaptability. For instance, the workforce constants don't account for late-game population growth where 5,000 is trivial, or early-game situations where 20,000 may be unreachable.
-
-### 31.11 Summary Assessment
-
-**Greatest strengths:**
-1. Time-distributed architecture that makes heavy scripted AI feasible within Paradox engine constraints
-2. Three-layer decision hierarchy (weight → order → offset) that cleanly separates priority selection, tiebreaking, and expansion gating into orthogonal concerns
-3. Market-based evaluation for production buildings — adapts to each game's unique economic conditions
-4. Comprehensive coverage — 49 building types with individual evaluation, sanction, and allocation logic, each with 11 tunable attributes in a centralized building database
-5. Clean separation of budget management from construction decisions
-6. Extensibility through compatibility patch system with tooling support, including weight families with external factor hooks
-7. Scaling attribute creates fundamentally different construction patterns (concentrate vs. spread) from the same allocation framework, with no additional code complexity
-8. Dynamic construction limits that scale with both building type and urgency, producing 99 distinct caps from a compact formula
-
-**Greatest weaknesses:**
-1. Reactive rather than predictive — the AI responds to current conditions, not anticipated future needs
-2. No inter-country market coordination — multiple AI countries can overbuild the same good
-3. Technology guidance system may be redundant with native 1.2.3 tech weights
-4. Several TODO items and edge cases in budget calculations remain unresolved
-5. 28-day reaction time to market changes limits responsiveness
-6. Order tiebreaker is static — cannot adapt to situations where the usual dependency chain is suboptimal
-7. Scaling is binary (concentrate or spread) with no intermediate option for mixed strategies
-
-**Highest-impact improvement opportunities:**
-1. Investigate replacing innovation redirection with native tech weights (simplification)
-2. Implement the budget surplus TODO fallback properly (correctness)
-3. Add anticipatory building based on in-progress research (strategic improvement)
-4. Add profitability-based production building downsizing (economic efficiency)
-5. Consider deterministic tiebreakers within aptitude tiers for state selection (construction quality)
-6. Dynamic order adjustment based on existing building stock (adaptive tiebreaking)
+The architecture succeeds because it is disciplined about what the language allows. The reactive orientation — responding to current market conditions, not anticipating future needs — is the deepest limitation, but it also keeps the system honest about what the scripting layer can actually deliver. A forward-looking system that predicted demand from in-progress research or anticipated market shifts would be fragile in a language with no data structures, no inter-country communication, and script execution expensive enough to require time distribution. Within those constraints, the three-layer decision hierarchy, the two-dimensional budget curves, and the generated-code toolchain represent consistent trade-offs: static data over fragile workarounds, hardcoded accuracy over dynamic generality. Some problems — inter-country coordination, anticipatory building, profitability-based downsizing — sit beyond what the scripting layer can reliably express. The most practical improvements are the ones the author already flagged: verify whether native tech weights work and remove the redirection system if they do, implement the budget surplus fallback properly, and resolve the hardcoded day offsets that the `aroai_framework_effects.txt` TODO already identifies.
